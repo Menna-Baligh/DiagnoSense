@@ -18,15 +18,15 @@ class RegisterController extends Controller
     {
         return $this->register($request, 'patient');
     }
-    protected function register(RegistrationRequest $request, string $role)
+    protected function register(RegistrationRequest $request, string $type)
     {
         $validated = $request->validated();
-        $validated['type'] = $role;
+        $validated['type'] = $type;
         $validated['password'] = Hash::make($validated['password']);
         $user = User::create($validated);
-        if($role === 'patient'){
+        if($type === 'patient'){
             $user->patient()->create();
-        } elseif($role === 'doctor'){
+        } elseif($type === 'doctor'){
             $user->doctor()->create();
         }
         $token = $user->createToken('register-token')->plainTextToken ;
