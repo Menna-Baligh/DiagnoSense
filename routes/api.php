@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\ForgetPasswordController;
+use App\Http\Controllers\Auth\EmailVerificationController;
 
 
 Route::prefix('doctor')->group(function () {
@@ -18,6 +19,8 @@ Route::prefix('doctor')->group(function () {
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [LogoutController::class, 'logoutDoctor']);
+        Route::post('/verify-email', [EmailVerificationController::class, 'verifyEmail']);
+        Route::get('/resend-otp', [EmailVerificationController::class, 'resendOtp']);
     });
 });
 
@@ -30,5 +33,7 @@ Route::prefix('patient')->group(function () {
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [LogoutController::class, 'logoutPatient']);
+        Route::post('/verify-email', [EmailVerificationController::class, 'verifyEmail']);
+        Route::get('/resend-otp', [EmailVerificationController::class, 'resendOtp']);
     });
 });

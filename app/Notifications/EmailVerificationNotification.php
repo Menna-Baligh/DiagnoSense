@@ -2,21 +2,23 @@
 
 namespace App\Notifications;
 
+use Ichtrojan\Otp\Otp;
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 
-class RegisterNotification extends Notification implements ShouldQueue
+class EmailVerificationNotification extends Notification implements ShouldQueue
 {
     use Queueable;
+    private $otp;
 
     /**
      * Create a new notification instance.
      */
     public function __construct()
     {
-        //
+        $this->otp = new Otp;
     }
 
     /**
@@ -34,11 +36,14 @@ class RegisterNotification extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
+        $otp = $this->otp->generate($notifiable->email, 'numeric', 6, 10);
+
         return (new MailMessage)
-                    ->subject('Welcome to DiagnoSense')
-                    ->greeting('Hello ' . $notifiable->name . ' 💙')
-                    ->line('Welcome to DiagnoSense. We are excited to have you on board.')
-                    ->line('Thank you for joining us!');
+            ->subject('Verify Your Email')
+            ->greeting('Hello ' . $notifiable->name)
+            ->line('Use the following OTP to verify your email:')
+            ->line('Your OTP is: **' . $otp->token . '**')
+            ->line('This OTP will expire in 10 minutes.');
     }
 
     /**
