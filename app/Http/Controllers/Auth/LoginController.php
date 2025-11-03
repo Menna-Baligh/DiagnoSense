@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Responses\ApiResponse;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -28,10 +29,7 @@ class LoginController extends Controller
                     ->first();
 
         if (!$user || !Hash::check($validated['password'], $user->password)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Bad credentials provided.',
-            ], 401);
+            return ApiResponse::error('Bad credentials provided.', null, 401);
         }
 
         $token = $user->createToken('login-token')->plainTextToken;
@@ -42,13 +40,11 @@ class LoginController extends Controller
             'updated_at' => $user->updated_at->format('Y-m-d h:i:s'),
             'created_at' => $user->created_at->format('Y-m-d h:i:s'),
             ];
-        return response()->json([
-            'success' => true,
-            'message' => 'Login successfully.',
-            'data' => [
-                'user' => $user,
-                'token' => $token,
-            ],
-        ], 200);
+        $data = [
+            'user' => $user,
+            'token' => $token,
+        ];
+        return ApiResponse::success('Login successfully.', $data , 200);
+
     }
 }

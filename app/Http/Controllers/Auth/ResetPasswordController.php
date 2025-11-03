@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Responses\ApiResponse;
 use App\Models\User;
 use Hash;
 use Ichtrojan\Otp\Otp;
@@ -28,27 +29,19 @@ class ResetPasswordController extends Controller
                     ->where('type', $type)
                     ->first();
         if(!$user){
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized attempt.',
-            ], 403);
+            return ApiResponse::error('Unauthorized attempt.', null, 403);
         }
-        
+
         $otp2 = $this->otp->validate($validated['email'], $validated['otp']);
         if(!$otp2->status){
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid or expired OTP.',
-            ], 400);
+            return ApiResponse::error('Invalid or expired OTP.', null, 400);
         }
 
         $user->update([
             'password' => Hash::make($validated['password'])
         ]);
         $user->tokens()->delete();
-        return response()->json([
-            'success' => true,
-            'message' => 'Password has been reset successfully.',
-        ], 200);
+        return ApiResponse::success('Password has been reset successfully.', null, 200);
+        
     }
 }

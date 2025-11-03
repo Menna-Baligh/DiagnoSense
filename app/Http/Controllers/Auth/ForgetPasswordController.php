@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Responses\ApiResponse;
 use App\Models\User;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Http\Request;
@@ -22,15 +23,10 @@ class ForgetPasswordController extends Controller
                     ->where('type', $type)
                     ->first();
         if(!$user){
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized attempt.',
-            ], 403);
+            return ApiResponse::error('Unauthorized attempt.', null, 403);
         }
         $user->notify(new ResetPasswordNotification());
-        return response()->json([
-            'success' => true,
-            'message' => 'An OTP has been sent to your email for password reset. Please check your inbox.',
-        ], 200);
+        return ApiResponse::success('An OTP has been sent to your email for password reset. Please check your inbox.', null, 200);
+        
     }
 }

@@ -1,4 +1,15 @@
 <?php return array (
+  'ichtrojan/laravel-otp' => 
+  array (
+    'aliases' => 
+    array (
+      'Otp' => 'Ichtrojan\\Otp\\Otp',
+    ),
+    'providers' => 
+    array (
+      0 => 'Ichtrojan\\Otp\\OtpServiceProvider',
+    ),
+  ),
   'laravel/pail' => 
   array (
     'providers' => 
@@ -18,17 +29,6 @@
     'providers' => 
     array (
       0 => 'Laravel\\Sanctum\\SanctumServiceProvider',
-    ),
-  ),
-  'laravel/socialite' => 
-  array (
-    'aliases' => 
-    array (
-      'Socialite' => 'Laravel\\Socialite\\Facades\\Socialite',
-    ),
-    'providers' => 
-    array (
-      0 => 'Laravel\\Socialite\\SocialiteServiceProvider',
     ),
   ),
   'laravel/tinker' => 

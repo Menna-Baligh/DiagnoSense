@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Http\Responses\ApiResponse;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -37,10 +38,9 @@ class LoginRequest extends FormRequest
         ];
     }
     public function failedValidation(Validator $validator){
-        throw new HttpResponseException(response()->json([
-            'success' => false,
-            'message' => 'This action could not be completed due to validation errors.',
-            'errors' => $validator->errors()
-        ], 422));
+        throw new HttpResponseException(
+            ApiResponse::error('This action could not be completed due to validation errors.',
+            $validator->errors(),
+            422));
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Responses\ApiResponse;
 use Illuminate\Http\Request ;
 
 class LogoutController extends Controller
@@ -17,25 +18,15 @@ class LogoutController extends Controller
         return $this->logout($request, 'patient');
     }
     protected function logout(Request $request ,string $type){
-        try{
-            $user = $request->user();
-            if ($user->type !== $type) {
-                return response()->json([
-                    'status' => false,
-                    'message' => "Unauthorized: user is not a {$type}.",
-                ], 403);
-            }
-            $user->tokens()->delete();
+        $user = $request->user();
+        if ($user->type !== $type) {
             return response()->json([
-                'success' => true,
-                'message' => 'Logout successfully.',
-            ], 200);
-        }catch(\Exception $e){
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ], 401);
+                'status' => false,
+                'message' => "Unauthorized: user is not a {$type}.",
+            ], 403);
         }
-
+        $user->tokens()->delete();
+        return ApiResponse::success('Logout successfully.', null, 200);
+        
     }
 }
