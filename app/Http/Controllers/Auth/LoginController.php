@@ -11,15 +11,7 @@ use App\Http\Requests\Auth\LoginRequest;
 
 class LoginController extends Controller
 {
-    public function loginDoctor(LoginRequest $request)
-    {
-        return $this->login($request, 'doctor');
-    }
 
-    public function loginPatient(LoginRequest $request)
-    {
-        return $this->login($request, 'patient');
-    }
     public function login(LoginRequest $request, string $type)
     {
         $validated = $request->validated();

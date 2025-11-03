@@ -14,15 +14,8 @@ use App\Notifications\EmailVerificationNotification;
 
 class RegisterController extends Controller
 {
-    public function registerDoctor(RegistrationRequest $request)
-    {
-        return $this->register($request, 'doctor');
-    }
-    public function registerPatient(RegistrationRequest $request)
-    {
-        return $this->register($request, 'patient');
-    }
-    protected function register(RegistrationRequest $request, string $type)
+
+    public function register(RegistrationRequest $request, string $type)
     {
         $validated = $request->validated();
         $validated['type'] = $type;

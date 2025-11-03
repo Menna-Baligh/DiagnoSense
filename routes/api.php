@@ -10,30 +10,16 @@ use App\Http\Controllers\Auth\ForgetPasswordController;
 use App\Http\Controllers\Auth\EmailVerificationController;
 
 
-Route::prefix('doctor')->group(function () {
-    Route::post('/register', [RegisterController::class, 'registerDoctor']);
-    Route::post('/login', [LoginController::class, 'loginDoctor']);
+Route::middleware('check-user-type')->group(function () {
+    Route::post('/register/{type}', [RegisterController::class, 'register']);
+    Route::post('/login/{type}', [LoginController::class, 'login']);
 
-    Route::post('/forget-password', [ForgetPasswordController::class, 'DoctorForgetPassword']);
-    Route::post('/reset-password', [ResetPasswordController::class, 'DoctorResetPassword']);
-
-    Route::middleware('auth:sanctum')->group(function () {
-        Route::post('/logout', [LogoutController::class, 'logoutDoctor']);
-        Route::post('/verify-email', [EmailVerificationController::class, 'verifyEmail']);
-        Route::get('/resend-otp', [EmailVerificationController::class, 'resendOtp']);
-    });
-});
-
-Route::prefix('patient')->group(function () {
-    Route::post('/register', [RegisterController::class, 'registerPatient']);
-    Route::post('/login', [LoginController::class, 'loginPatient']);
-
-    Route::post('/forget-password', [ForgetPasswordController::class, 'PatientForgetPassword']);
-    Route::post('/reset-password', [ResetPasswordController::class, 'PatientResetPassword']);
+    Route::post('/forget-password/{type}', [ForgetPasswordController::class, 'forgetPassword']);
+    Route::post('/reset-password/{type}', [ResetPasswordController::class, 'resetPassword']);
 
     Route::middleware('auth:sanctum')->group(function () {
-        Route::post('/logout', [LogoutController::class, 'logoutPatient']);
-        Route::post('/verify-email', [EmailVerificationController::class, 'verifyEmail']);
-        Route::get('/resend-otp', [EmailVerificationController::class, 'resendOtp']);
+        Route::post('/logout/{type}', [LogoutController::class, 'logout']);
+        Route::post('/verify-email/{type}', [EmailVerificationController::class, 'verifyEmail']);
+        Route::get('/resend-otp/{type}', [EmailVerificationController::class, 'resendOtp']);
     });
 });

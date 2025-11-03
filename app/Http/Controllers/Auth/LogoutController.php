@@ -8,16 +8,8 @@ use Illuminate\Http\Request ;
 
 class LogoutController extends Controller
 {
-    public function logoutDoctor(Request $request)
-    {
-        return $this->logout($request, 'doctor');
-    }
 
-    public function logoutPatient(Request $request)
-    {
-        return $this->logout($request, 'patient');
-    }
-    protected function logout(Request $request ,string $type){
+    public function logout(Request $request ,string $type){
         $user = $request->user();
         if ($user->type !== $type) {
             return response()->json([
@@ -27,6 +19,6 @@ class LogoutController extends Controller
         }
         $user->tokens()->delete();
         return ApiResponse::success('Logout successfully.', null, 200);
-        
+
     }
 }

@@ -11,12 +11,7 @@ use App\Http\Requests\Auth\ForgetPasswordRequest;
 
 class ForgetPasswordController extends Controller
 {
-    public function DoctorForgetPassword(ForgetPasswordRequest $request){
-        return $this->forgetPassword($request , 'doctor');
-    }
-    public function PatientForgetPassword(ForgetPasswordRequest $request){
-        return $this->forgetPassword($request , 'patient');
-    }
+
     public function forgetPassword(ForgetPasswordRequest $request , string $type){
         $validated = $request->validated();
         $user = User::where('email', $validated['email'])
@@ -27,6 +22,6 @@ class ForgetPasswordController extends Controller
         }
         $user->notify(new ResetPasswordNotification());
         return ApiResponse::success('An OTP has been sent to your email for password reset. Please check your inbox.', null, 200);
-        
+
     }
 }

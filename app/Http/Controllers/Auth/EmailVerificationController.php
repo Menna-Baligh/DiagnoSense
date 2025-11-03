@@ -9,6 +9,8 @@ use App\Http\Responses\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\EmailVerificationRequest;
 use App\Notifications\EmailVerificationNotification;
+use App\Http\Requests\Auth\ForgetPasswordRequest as ResendOtpRequest;
+
 
 class EmailVerificationController extends Controller
 {
@@ -17,9 +19,11 @@ class EmailVerificationController extends Controller
     {
         $this->otp = new Otp;
     }
-    public function verifyEmail(EmailVerificationRequest $request){
+    public function verifyEmail(EmailVerificationRequest $request , string $type){
         $validated = $request->validated();
-        $user = User::where('email', $validated['email'])->first();
+        $user = User::where('email', $validated['email'])
+                        ->where('type', $type)
+                        ->first();
         if(!$user){
             return ApiResponse::error('User not found.', null, 404);
         }
@@ -32,7 +36,14 @@ class EmailVerificationController extends Controller
         ]);
         return ApiResponse::success('Email has been verified successfully.', null, 200);
     }
-    public function resendOtp(Request $request){
+    public function resendOtp(ResendOtpRequest $request , string $type){
+        $validated = $request->validated();
+        $user = User::where('email', $validated['email'])
+                        ->where('type', $type)
+                        ->first();
+        if(!$user){
+            return ApiResponse::error('User not found.', null, 404);
+        }
         $request->user()->notify(new EmailVerificationNotification());
         return ApiResponse::success('A new OTP has been sent to your email.', null, 200);
     }

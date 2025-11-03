@@ -17,12 +17,7 @@ class ResetPasswordController extends Controller
     {
         $this->otp = new Otp;
     }
-    public function DoctorResetPassword(ResetPasswordRequest $request){
-        return $this->resetPassword($request , 'doctor');
-    }
-    public function PatientResetPassword(ResetPasswordRequest $request){
-        return $this->resetPassword($request , 'patient');
-    }
+
     public function resetPassword(ResetPasswordRequest $request , string $type){
         $validated = $request->validated();
         $user = User::where('email', $validated['email'])
@@ -42,6 +37,6 @@ class ResetPasswordController extends Controller
         ]);
         $user->tokens()->delete();
         return ApiResponse::success('Password has been reset successfully.', null, 200);
-        
+
     }
 }
