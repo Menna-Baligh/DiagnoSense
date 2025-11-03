@@ -26,6 +26,7 @@ class SocialAuthController extends Controller
             [
                 'name' => $googleUser->getName(),
                 'password' => Hash::make(Str::random(16)),
+                'type' => 'doctor',
                 'provider' => 'google',
                 'provider_id' => $googleUser->getId(),
             ]
