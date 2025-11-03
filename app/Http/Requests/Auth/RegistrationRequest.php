@@ -45,9 +45,7 @@ class RegistrationRequest extends FormRequest
         throw new HttpResponseException(response()->json([
             'success' => false,
             'message' => 'This action could not be completed due to validation errors.',
-            'data' => [
-                'errors' => $validator->errors()
-            ]
+            'errors' => $validator->errors()
         ], 422));
     }
 }

@@ -31,7 +31,7 @@ class RegisterController extends Controller
         }
         $token = $user->createToken('register-token')->plainTextToken ;
         return response()->json([
-            'status' => true,
+            'success' => true,
             'message' => 'user registered successfully.',
             'data' => [
                 'user' => [

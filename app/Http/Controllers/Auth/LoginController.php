@@ -39,10 +39,11 @@ class LoginController extends Controller
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
-            'type' => $user->type,
-        ];
+            'updated_at' => $user->updated_at->format('Y-m-d h:i:s'),
+            'created_at' => $user->created_at->format('Y-m-d h:i:s'),
+            ];
         return response()->json([
-            'status' => true,
+            'success' => true,
             'message' => 'Login successfully.',
             'data' => [
                 'user' => $user,

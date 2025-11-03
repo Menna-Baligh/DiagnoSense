@@ -24,24 +24,23 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email|exists:users,email',
-            'password' => 'required|string|min:8',
+            'email' => 'required|email',
+            'password' => 'required|string',
         ];
     }
     public function messages(): array
     {
         return [
             'email.required' => 'Email is required.',
-            'email.email' => 'Email must be a valid email address.',
+            'email.email' => 'Please enter a valid email format',
             'password.required' => 'Password is required.',
-            'password.min' => 'Password must be at least 8 characters.',
         ];
     }
     public function failedValidation(Validator $validator){
         throw new HttpResponseException(response()->json([
             'success' => false,
             'message' => 'This action could not be completed due to validation errors.',
-            'data' => $validator->errors()
+            'errors' => $validator->errors()
         ], 422));
     }
 }
