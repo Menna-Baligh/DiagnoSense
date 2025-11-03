@@ -5,9 +5,10 @@ namespace App\Http\Controllers\Auth;
 use Hash;
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\RegistrationRequest;
 use App\Http\Responses\ApiResponse;
+use App\Http\Controllers\Controller;
+use App\Notifications\RegisterNotification;
+use App\Http\Requests\Auth\RegistrationRequest;
 
 class RegisterController extends Controller
 {
@@ -42,8 +43,9 @@ class RegisterController extends Controller
             ] ,
             'token' => $token
         ];
+        $user->notify(new RegisterNotification());
 
         return ApiResponse::success('user registered successfully.', $data, 201);
-        
+
     }
 }
