@@ -21,7 +21,7 @@ class LoginController extends Controller
                     ->first();
 
         if (!$user || !Hash::check($validated['password'], $user->password)) {
-            return ApiResponse::error('Bad credentials provided.', null, 401);
+            return ApiResponse::error('Invalid Email or Password', null, 401);
         }
 
         $token = $user->createToken('login-token')->plainTextToken;
