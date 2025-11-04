@@ -27,8 +27,8 @@ class AppServiceProvider extends ServiceProvider
     {
         Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
         Event::listen(UserRegistered::class, [
-            SendWelcomeEmail::class,
             SendVerificationEmail::class,
+            SendWelcomeEmail::class,
         ]);
     }
 }

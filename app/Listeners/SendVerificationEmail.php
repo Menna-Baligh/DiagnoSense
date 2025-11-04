@@ -9,7 +9,6 @@ use App\Notifications\EmailVerificationNotification;
 
 class SendVerificationEmail implements ShouldQueue
 {
-    public $delay = 60;
 
     public function handle(UserRegistered $event): void
     {

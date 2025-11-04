@@ -9,8 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 
 class SendWelcomeEmail implements ShouldQueue
 {
-    
-
+    public $delay = 60;
     /**
      * Handle the event.
      */
