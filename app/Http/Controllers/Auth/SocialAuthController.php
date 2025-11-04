@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Events\UserRegistered;
 use App\Http\Controllers\Controller;
+use App\Http\Responses\ApiResponse;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -18,7 +20,8 @@ class SocialAuthController extends Controller
         ]);
     }
 
-    public function handleGoogleCallback() {
+    public function handleGoogleCallback()
+    {
         $googleUser = Socialite::driver('google')->stateless()->user();
 
         $user = User::updateOrCreate(
@@ -33,20 +36,16 @@ class SocialAuthController extends Controller
         );
 
         $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()->json([
-            'success' => true,
-            'message' => 'User successfully logged in',
-            'data' => [
-                'user' => [
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'created_at' => $user->created_at,
-                    'updated_at' => $user->updated_at,
-                    'id' => $user->id
-                ],
-                'token' => $token,
+        UserRegistered::dispatch($user);
+        return ApiResponse::success('User successfully logged in.', [
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'created_at' => $user->created_at->format('Y-m-d h:i:s'),
+                'updated_at' => $user->updated_at->format('Y-m-d h:i:s'),
             ],
-        ]);
+            'token' => $token,
+        ],200);
     }
 }

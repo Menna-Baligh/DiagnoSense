@@ -23,11 +23,12 @@ Route::middleware('check-user-type')->group(function () {
         Route::post('/verify-email/{type}', [EmailVerificationController::class, 'verifyEmail']);
         Route::get('/resend-otp/{type}', [EmailVerificationController::class, 'resendOtp']);
     });
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    })->middleware('auth:sanctum');
+});
 
-Route::controller(SocialAuthController::class)->prefix('auth')->group(function () {
+Route::controller(SocialAuthController::class)->group(function () {
     Route::get('/google/redirect', 'redirectToGoogle');
     Route::get('/google/callback', 'handleGoogleCallback');
 });
