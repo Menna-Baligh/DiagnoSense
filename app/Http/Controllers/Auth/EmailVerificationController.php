@@ -7,9 +7,9 @@ use Ichtrojan\Otp\Otp;
 use Illuminate\Http\Request;
 use App\Http\Responses\ApiResponse;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Auth\EmailVerificationRequest;
 use App\Notifications\EmailVerificationNotification;
-use App\Http\Requests\Auth\ForgetPasswordRequest as ResendOtpRequest;
 
 
 class EmailVerificationController extends Controller
@@ -36,13 +36,13 @@ class EmailVerificationController extends Controller
         ]);
         return ApiResponse::success('Email has been verified successfully.', null, 200);
     }
-    public function resendOtp(ResendOtpRequest $request , string $type){
-        $validated = $request->validated();
-        $user = User::where('email', $validated['email'])
-                        ->where('type', $type)
-                        ->first();
+    public function resendOtp(Request $request , string $type){
+        $user = Auth::user();
         if(!$user){
             return ApiResponse::error('User not found.', null, 404);
+        }
+        if($type !== $user->type){
+            return ApiResponse::error('Unauthorized action.', null, 403);
         }
         $request->user()->notify(new EmailVerificationNotification());
         return ApiResponse::success('A new OTP has been sent to your email.', null, 200);
