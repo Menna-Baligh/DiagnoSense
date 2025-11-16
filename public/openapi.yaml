@@ -1,0 +1,312 @@
+openapi: 3.0.3
+info:
+  title: 'DiagnoSense API Documentation'
+  description: ''
+  version: 1.0.0
+servers:
+  -
+    url: 'http://localhost:8000'
+tags:
+  -
+    name: Endpoints
+    description: ''
+paths:
+  '/api/register/{type}':
+    post:
+      summary: ''
+      operationId: postApiRegisterType
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'Must not be greater than 255 characters.'
+                  example: vmqeopfuudtdsufvyvddq
+                  nullable: false
+                email:
+                  type: string
+                  description: 'Must be a valid email address. Must not be greater than 255 characters.'
+                  example: kunde.eloisa@example.com
+                  nullable: false
+                password:
+                  type: string
+                  description: 'Must be at least 8 characters.'
+                  example: '4[*UyPJ"}6'
+                  nullable: false
+              required:
+                - name
+                - email
+                - password
+      security: []
+    parameters:
+      -
+        in: path
+        name: type
+        description: ''
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  '/api/login/{type}':
+    post:
+      summary: ''
+      operationId: postApiLoginType
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 'Must be a valid email address.'
+                  example: qkunze@example.com
+                  nullable: false
+                password:
+                  type: string
+                  description: ''
+                  example: 'O[2UZ5ij-e/dl4m{o,'
+                  nullable: false
+              required:
+                - email
+                - password
+      security: []
+    parameters:
+      -
+        in: path
+        name: type
+        description: ''
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  '/api/forget-password/{type}':
+    post:
+      summary: ''
+      operationId: postApiForgetPasswordType
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 'Must be a valid email address. The <code>email</code> of an existing record in the users table.'
+                  example: qkunze@example.com
+                  nullable: false
+              required:
+                - email
+      security: []
+    parameters:
+      -
+        in: path
+        name: type
+        description: ''
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  '/api/reset-password/{type}':
+    post:
+      summary: ''
+      operationId: postApiResetPasswordType
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 'Must be a valid email address. The <code>email</code> of an existing record in the users table.'
+                  example: qkunze@example.com
+                  nullable: false
+                otp:
+                  type: string
+                  description: 'Must not be greater than 6 characters.'
+                  example: opfuu
+                  nullable: false
+                password:
+                  type: string
+                  description: 'Must be at least 8 characters.'
+                  example: 'e/dl4m{o'
+                  nullable: false
+              required:
+                - email
+                - otp
+                - password
+      security: []
+    parameters:
+      -
+        in: path
+        name: type
+        description: ''
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  '/api/logout/{type}':
+    post:
+      summary: ''
+      operationId: postApiLogoutType
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: type
+        description: ''
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  '/api/verify-email/{type}':
+    post:
+      summary: ''
+      operationId: postApiVerifyEmailType
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 'Must be a valid email address. The <code>email</code> of an existing record in the users table.'
+                  example: qkunze@example.com
+                  nullable: false
+                otp:
+                  type: string
+                  description: 'Must not be greater than 6 characters.'
+                  example: opfuu
+                  nullable: false
+              required:
+                - email
+                - otp
+      security: []
+    parameters:
+      -
+        in: path
+        name: type
+        description: ''
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  '/api/resend-otp/{type}':
+    get:
+      summary: ''
+      operationId: getApiResendOtpType
+      description: ''
+      parameters: []
+      responses:
+        400:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Invalid user type.'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Invalid user type.'
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: type
+        description: ''
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  /api/google/redirect:
+    get:
+      summary: ''
+      operationId: getApiGoogleRedirect
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  url: 'https://accounts.google.com/o/oauth2/auth?client_id=1070705461335-kuvjl2bc2oaovka7fp3t8onv97qaotlj.apps.googleusercontent.com&redirect_uri=http%3A%2F%2F127.0.0.1%3A8000%2Fapi%2Fgoogle%2Fcallback&scope=openid+profile+email&response_type=code'
+                properties:
+                  url:
+                    type: string
+                    example: 'https://accounts.google.com/o/oauth2/auth?client_id=1070705461335-kuvjl2bc2oaovka7fp3t8onv97qaotlj.apps.googleusercontent.com&redirect_uri=http%3A%2F%2F127.0.0.1%3A8000%2Fapi%2Fgoogle%2Fcallback&scope=openid+profile+email&response_type=code'
+      tags:
+        - Endpoints
+      security: []
+  /api/google/callback:
+    get:
+      summary: ''
+      operationId: getApiGoogleCallback
+      description: ''
+      parameters: []
+      responses:
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Server Error'
+                properties:
+                  message:
+                    type: string
+                    example: 'Server Error'
+      tags:
+        - Endpoints
+      security: []
