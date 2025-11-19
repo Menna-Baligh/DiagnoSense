@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\ForgetPasswordController;
 use App\Http\Controllers\Auth\EmailVerificationController;
+use App\Http\Controllers\Room\CaseRoomController;
 
 
 Route::middleware('check-user-type')->group(function () {
@@ -23,10 +24,16 @@ Route::middleware('check-user-type')->group(function () {
         Route::post('/verify-email/{type}', [EmailVerificationController::class, 'verifyEmail']);
         Route::get('/resend-otp/{type}', [EmailVerificationController::class, 'resendOtp']);
     });
-    
+
 });
 
 Route::controller(SocialAuthController::class)->group(function () {
     Route::get('/google/redirect', 'redirectToGoogle');
     Route::get('/google/callback', 'handleGoogleCallback');
 });
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/case-rooms', [CaseRoomController::class, 'store']);
+//    Route::get('/case-rooms/{caseRoom}', [CaseRoomController::class, 'show']);
+});
+
