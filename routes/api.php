@@ -10,7 +10,7 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\ForgetPasswordController;
 use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Room\RoomController;
-use App\Http\Controllers\Patient\AddPatientController;
+use App\Http\Controllers\Patient\PatientController;
 
 
 Route::middleware('check-user-type')->group(function () {
@@ -33,12 +33,8 @@ Route::controller(SocialAuthController::class)->group(function () {
     Route::get('/google/callback', 'handleGoogleCallback');
 });
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('patients/{patient}/rooms', [RoomController::class, 'store']);
-});
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/patients', [AddPatientController::class, 'store']);
-    Route::post('/patients/{patient}/medical-history', [AddPatientController::class, 'storeMedicalHistory']);
-    Route::post('/patients/{patient}/reports',[AddPatientController::class, 'upload']);
+    Route::post('/patients', [PatientController::class, 'store']);
+
 });
