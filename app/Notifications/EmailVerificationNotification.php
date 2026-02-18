@@ -4,13 +4,13 @@ namespace App\Notifications;
 
 use Ichtrojan\Otp\Otp;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
-class EmailVerificationNotification extends Notification 
+class EmailVerificationNotification extends Notification
 {
     use Queueable;
+
     private $otp;
 
     /**
@@ -40,9 +40,9 @@ class EmailVerificationNotification extends Notification
 
         return (new MailMessage)
             ->subject('Verify Your Email')
-            ->greeting('Hello ' . $notifiable->name)
+            ->greeting('Hello '.$notifiable->name)
             ->line('Use the following OTP to verify your email:')
-            ->line('Your OTP is: **' . $otp->token . '**')
+            ->line('Your OTP is: **'.$otp->token.'**')
             ->line('This OTP will expire in 10 minutes.');
     }
 

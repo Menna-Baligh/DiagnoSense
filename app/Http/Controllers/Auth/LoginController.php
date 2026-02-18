@@ -2,25 +2,23 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Responses\ApiResponse;
 use App\Models\User;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Requests\Auth\LoginRequest;
 
 class LoginController extends Controller
 {
-
     public function login(LoginRequest $request, string $type)
     {
         $validated = $request->validated();
 
         $user = User::where('email', $validated['email'])
-                    ->where('type', $type)
-                    ->first();
+            ->where('type', $type)
+            ->first();
 
-        if (!$user || !Hash::check($validated['password'], $user->password)) {
+        if (! $user || ! Hash::check($validated['password'], $user->password)) {
             return ApiResponse::error('Invalid Email or Password', null, 401);
         }
 
@@ -31,12 +29,13 @@ class LoginController extends Controller
             'email' => $user->email,
             'updated_at' => $user->updated_at->format('Y-m-d h:i:s'),
             'created_at' => $user->created_at->format('Y-m-d h:i:s'),
-            ];
+        ];
         $data = [
             'user' => $user,
             'token' => $token,
         ];
-        return ApiResponse::success('Login successfully.', $data , 200);
+
+        return ApiResponse::success('Login successfully.', $data, 200);
 
     }
 }

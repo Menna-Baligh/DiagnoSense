@@ -4,11 +4,10 @@ namespace App\Notifications;
 
 use Ichtrojan\Otp\Otp;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
-class ResetPasswordNotification extends Notification 
+class ResetPasswordNotification extends Notification
 {
     use Queueable;
 
@@ -41,9 +40,9 @@ class ResetPasswordNotification extends Notification
 
         return (new MailMessage)
             ->subject('Password Reset OTP')
-            ->greeting('Hello ' . $notifiable->name)
+            ->greeting('Hello '.$notifiable->name)
             ->line('Use the following OTP to reset your password:')
-            ->line('Your OTP is: **' . $otp->token . '**')
+            ->line('Your OTP is: **'.$otp->token.'**')
             ->line('This OTP will expire in 10 minutes.')
             ->line('If you did not request a password reset, please ignore this email.');
     }

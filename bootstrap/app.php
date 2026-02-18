@@ -20,6 +20,4 @@ return Application::configure(basePath: dirname(__DIR__))
             'check-user-type' => \App\Http\Middleware\CheckUserType::class,
         ]);
     })
-    ->withExceptions(function (Exceptions $exceptions): void {
-
-    })->create();
+    ->withExceptions(function (Exceptions $exceptions): void {})->create();

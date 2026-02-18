@@ -3,11 +3,10 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class RegisterNotification extends Notification 
+class RegisterNotification extends Notification
 {
     use Queueable;
 
@@ -35,10 +34,10 @@ class RegisterNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->subject('Welcome to DiagnoSense')
-                    ->greeting('Hello ' . $notifiable->name . ' 💙')
-                    ->line('Welcome to DiagnoSense. We are excited to have you on board.')
-                    ->line('Thank you for joining us!');
+            ->subject('Welcome to DiagnoSense')
+            ->greeting('Hello '.$notifiable->name.' 💙')
+            ->line('Welcome to DiagnoSense. We are excited to have you on board.')
+            ->line('Thank you for joining us!');
     }
 
     /**

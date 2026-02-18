@@ -6,15 +6,14 @@ use App\Events\UserRegistered;
 use App\Http\Controllers\Controller;
 use App\Http\Responses\ApiResponse;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use Illuminate\Testing\Fluent\Concerns\Has;
 use Laravel\Socialite\Socialite;
 
 class SocialAuthController extends Controller
 {
-    public function redirectToGoogle() {
+    public function redirectToGoogle()
+    {
         return response()->json([
             'url' => Socialite::driver('google')->stateless()->redirect()->getTargetUrl(),
         ]);
@@ -37,6 +36,7 @@ class SocialAuthController extends Controller
 
         $token = $user->createToken('auth_token')->plainTextToken;
         UserRegistered::dispatch($user);
+
         return ApiResponse::success('User successfully logged in.', [
             'user' => [
                 'id' => $user->id,
@@ -46,6 +46,6 @@ class SocialAuthController extends Controller
                 'updated_at' => $user->updated_at->format('Y-m-d h:i:s'),
             ],
             'token' => $token,
-        ],200);
+        ], 200);
     }
 }

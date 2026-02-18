@@ -2,13 +2,13 @@
 
 namespace App\Providers;
 
-use Laravel\Sanctum\Sanctum;
+use App\Events\UserRegistered;
+use App\Listeners\SendVerificationEmail;
+use App\Listeners\SendWelcomeEmail;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Sanctum\PersonalAccessToken;
-use App\Events\UserRegistered;
-use App\Listeners\SendWelcomeEmail;
-use App\Listeners\SendVerificationEmail;
-use Illuminate\Support\Facades\Event;
+use Laravel\Sanctum\Sanctum;
 
 class AppServiceProvider extends ServiceProvider
 {

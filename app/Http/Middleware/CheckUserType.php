@@ -2,9 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Http\Responses\ApiResponse;
 use Closure;
 use Illuminate\Http\Request;
-use App\Http\Responses\ApiResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class CheckUserType
@@ -18,9 +18,10 @@ class CheckUserType
     {
         $type = $request->route('type');
 
-        if (!in_array($type, ['doctor', 'patient'])) {
+        if (! in_array($type, ['doctor', 'patient'])) {
             return ApiResponse::error('Invalid user type.', null, 400);
         }
+
         return $next($request);
     }
 }

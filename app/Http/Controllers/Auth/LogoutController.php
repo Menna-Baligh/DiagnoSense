@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Responses\ApiResponse;
-use Illuminate\Http\Request ;
+use Illuminate\Http\Request;
 
 class LogoutController extends Controller
 {
-
-    public function logout(Request $request ,string $type){
+    public function logout(Request $request, string $type)
+    {
         $user = $request->user();
         if ($user->type !== $type) {
             return response()->json([
@@ -18,6 +18,7 @@ class LogoutController extends Controller
             ], 403);
         }
         $user->tokens()->delete();
+
         return ApiResponse::success('Logout successfully.', null, 200);
 
     }

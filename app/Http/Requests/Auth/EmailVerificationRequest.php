@@ -3,8 +3,8 @@
 namespace App\Http\Requests\Auth;
 
 use App\Http\Responses\ApiResponse;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
 class EmailVerificationRequest extends FormRequest
@@ -29,6 +29,7 @@ class EmailVerificationRequest extends FormRequest
             'otp' => 'required|max:6',
         ];
     }
+
     public function messages(): array
     {
         return [
@@ -39,10 +40,12 @@ class EmailVerificationRequest extends FormRequest
             'otp.max' => 'OTP must not exceed 6 characters.',
         ];
     }
-    public function failedValidation(Validator $validator){
+
+    public function failedValidation(Validator $validator)
+    {
         throw new HttpResponseException(
             ApiResponse::error('This action could not be completed due to validation errors.',
-            $validator->errors(),
-            422));
+                $validator->errors(),
+                422));
     }
 }

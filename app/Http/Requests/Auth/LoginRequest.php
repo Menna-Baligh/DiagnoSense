@@ -3,8 +3,8 @@
 namespace App\Http\Requests\Auth;
 
 use App\Http\Responses\ApiResponse;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
 class LoginRequest extends FormRequest
@@ -29,6 +29,7 @@ class LoginRequest extends FormRequest
             'password' => 'required|string',
         ];
     }
+
     public function messages(): array
     {
         return [
@@ -37,10 +38,12 @@ class LoginRequest extends FormRequest
             'password.required' => 'Password is required.',
         ];
     }
-    public function failedValidation(Validator $validator){
+
+    public function failedValidation(Validator $validator)
+    {
         throw new HttpResponseException(
             ApiResponse::error('This action could not be completed due to validation errors.',
-            $validator->errors(),
-            422));
+                $validator->errors(),
+                422));
     }
 }

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class MedicalHistory extends Model
 {
-        protected $fillable = [
+    protected $fillable = [
         'patient_id',
         'is_smoker',
         'previous_surgeries',
@@ -14,10 +14,10 @@ class MedicalHistory extends Model
         'medications',
         'allergies',
         'family_history',
-        'previous_surgeries_name'
+        'previous_surgeries_name',
     ];
-    
-     public function patient()
+
+    public function patient()
     {
         return $this->belongsTo(Patient::class);
     }

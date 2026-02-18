@@ -2,11 +2,11 @@
 
 namespace App\Http\Requests\Auth;
 
-use Illuminate\Validation\Rule;
 use App\Http\Responses\ApiResponse;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rule;
 
 class RegistrationRequest extends FormRequest
 {
@@ -26,6 +26,7 @@ class RegistrationRequest extends FormRequest
     public function rules(): array
     {
         $type = $this->route('type');
+
         return [
             'name' => [
                 'required',
@@ -51,6 +52,7 @@ class RegistrationRequest extends FormRequest
             ],
         ];
     }
+
     public function messages(): array
     {
         return [
@@ -63,11 +65,13 @@ class RegistrationRequest extends FormRequest
             'password.confirmed' => 'Password confirmation does not match.',
         ];
     }
-    public function failedValidation(Validator $validator){
+
+    public function failedValidation(Validator $validator)
+    {
         throw new HttpResponseException(
             ApiResponse::error('This action could not be completed due to validation errors.',
-            $validator->errors(),
-            422)
+                $validator->errors(),
+                422)
         );
     }
 }
