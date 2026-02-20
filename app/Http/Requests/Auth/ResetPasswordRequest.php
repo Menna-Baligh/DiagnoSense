@@ -25,9 +25,20 @@ class ResetPasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email|exists:users,email',
+            'identity' => 'required|string',
             'otp' => 'required|max:6',
             'password' => 'required|string|min:8|confirmed',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'identity.required' => 'Please enter your email or phone number.',
+            'otp.required' => 'Please enter your OTP.',
+            'password.required' => 'Please enter your new password.',
+            'password.min' => 'Password must be at least 8 characters.',
+            'password.confirmed' => 'Password confirmation does not match.',
         ];
     }
 

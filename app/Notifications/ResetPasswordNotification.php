@@ -5,6 +5,7 @@ namespace App\Notifications;
 use Ichtrojan\Otp\Otp;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Messages\VonageMessage;
 use Illuminate\Notifications\Notification;
 
 class ResetPasswordNotification extends Notification
@@ -28,7 +29,11 @@ class ResetPasswordNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        $channels = [];
+        if ($notifiable->email) $channels[] = 'mail';
+        if ($notifiable->phone) $channels[] = 'vonage';
+
+        return $channels;
     }
 
     /**
@@ -45,6 +50,15 @@ class ResetPasswordNotification extends Notification
             ->line('Your OTP is: **'.$otp->token.'**')
             ->line('This OTP will expire in 10 minutes.')
             ->line('If you did not request a password reset, please ignore this email.');
+    }
+
+
+    public function toVonage($notifiable)
+    {
+        $otp = $this->otp->generate($notifiable->phone, 'numeric', 6, 10);
+
+        return (new VonageMessage())
+            ->content("Your DiagnoSense password reset OTP is: {$otp->token}. It will expire in 10 minutes. If you did not request this, please ignore.");
     }
 
     /**

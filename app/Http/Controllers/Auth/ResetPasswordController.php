@@ -21,14 +21,15 @@ class ResetPasswordController extends Controller
     public function resetPassword(ResetPasswordRequest $request, string $type)
     {
         $validated = $request->validated();
-        $user = User::where('email', $validated['email'])
+        $fieldType = filter_var($validated['identity'], FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
+        $user = User::where($fieldType, $validated['identity'])
             ->where('type', $type)
             ->first();
         if (! $user) {
             return ApiResponse::error('Unauthorized attempt.', null, 403);
         }
 
-        $otp2 = $this->otp->validate($validated['email'], $validated['otp']);
+        $otp2 = $this->otp->validate($validated['identity'], $validated['otp']);
         if (! $otp2->status) {
             return ApiResponse::error('Invalid or expired OTP.', null, 400);
         }
