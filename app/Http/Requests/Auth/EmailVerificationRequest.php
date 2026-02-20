@@ -25,7 +25,7 @@ class EmailVerificationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email|exists:users,email',
+            'identity' => 'required|string',
             'otp' => 'required|max:6',
         ];
     }
@@ -33,9 +33,7 @@ class EmailVerificationRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'email.required' => 'Email is required.',
-            'email.email' => 'Please provide a valid email address.',
-            'email.exists' => 'No account found with this email.',
+            'identity.required' => 'Email or phone number is required.',
             'otp.required' => 'OTP is required.',
             'otp.max' => 'OTP must not exceed 6 characters.',
         ];

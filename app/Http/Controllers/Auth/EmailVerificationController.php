@@ -23,13 +23,14 @@ class EmailVerificationController extends Controller
     public function verifyEmail(EmailVerificationRequest $request, string $type)
     {
         $validated = $request->validated();
-        $user = User::where('email', $validated['email'])
+        $fieldType = filter_var($validated['identity'], FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
+        $user = User::where($fieldType, $validated['identity'])
             ->where('type', $type)
             ->first();
         if (! $user) {
             return ApiResponse::error('User not found.', null, 404);
         }
-        $otp2 = $this->otp->validate($validated['email'], $validated['otp']);
+        $otp2 = $this->otp->validate($validated['identity'], $validated['otp']);
         if (! $otp2->status) {
             return ApiResponse::error('Invalid or expired OTP.', null, 400);
         }
@@ -51,6 +52,8 @@ class EmailVerificationController extends Controller
         }
         $request->user()->notify(new EmailVerificationNotification);
 
-        return ApiResponse::success('A new OTP has been sent to your email.', null, 200);
+        $sentTo = $user->phone ? 'phone number' : 'email';
+
+        return ApiResponse::success('A new OTP has been sent to your '.$sentTo.' for verification. Please check your inbox.', null, 200);
     }
 }
