@@ -30,5 +30,7 @@ class AppServiceProvider extends ServiceProvider
             SendVerificationEmail::class,
             SendWelcomeEmail::class,
         ]);
+
+        
     }
 }

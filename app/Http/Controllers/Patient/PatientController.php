@@ -40,11 +40,12 @@ class PatientController extends Controller
             'family_history' => $request->family_history ?? null,
         ]);
         $reportsTypes = ['lab', 'radiology', 'medical_history'];
+        $filesForAI = [];
         foreach ($reportsTypes as $type) {
             if ($request->hasFile($type)) {
                 foreach ($request->file($type) as $file) {
                     $fileName = $file->getClientOriginalName();
-                    $filePath = Storage::putFileAs($type, $file, $fileName, 'public');
+                    $filePath = Storage::disk('azure')->putFileAs($type, $file, $fileName);
                     $mimeType = $file->getMimeType();
                     Report::query()->create([
                         'patient_id' => $patient->id,
@@ -53,9 +54,19 @@ class PatientController extends Controller
                         'file_path' => $filePath,
                         'mime_type' => $mimeType,
                     ]);
+                    $filesForAI[] = Storage::disk('azure')->temporaryUrl(
+                        $filePath,
+                        now()->addMinutes(10)
+                    );
                 }
             }
         }
+        //* only for testing i will delete it later
+        return response()->json([
+        'status' => 'success',
+        'ai_links' => $filesForAI
+        ], 201);
+
         // call ai
         // return response
     }

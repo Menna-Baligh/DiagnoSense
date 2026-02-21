@@ -18,6 +18,9 @@
         "laravel/socialite": "^5.23",
         "laravel/tinker": "^2.10.1",
         "laravel/vonage-notification-channel": "^3.3",
+        "league/flysystem-azure-blob-storage": "^3.31",
+        "matthewbdaly/laravel-azure-storage": "^2.0",
+        "microsoft/azure-storage-blob": "^1.5",
         "scalar/laravel": "^0.2.0",
         "vonage/client": "^4.3"
     },
