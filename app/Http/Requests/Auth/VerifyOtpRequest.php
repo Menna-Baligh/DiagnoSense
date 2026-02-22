@@ -7,7 +7,8 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class ResetPasswordRequest extends FormRequest
+
+class VerifyOtpRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,21 +26,18 @@ class ResetPasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'reset_token' => 'required|string',
-            'password' => 'required|string|min:8|confirmed',
+            'identity' => 'required|string',
+            'otp' => 'required|max:6',
         ];
     }
-
     public function messages(): array
     {
         return [
-            'reset_token.required' => 'Please enter your reset token.',
-            'password.required' => 'Please enter your new password.',
-            'password.min' => 'Password must be at least 8 characters.',
-            'password.confirmed' => 'Password confirmation does not match.',
+            'identity.required' => 'Please enter your email or phone number.',
+            'otp.required' => 'Please enter your OTP.',
+            'otp.max' => 'OTP must not exceed 6 characters.',
         ];
     }
-
     public function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(

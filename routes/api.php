@@ -15,6 +15,7 @@ Route::middleware('check-user-type')->group(function () {
     Route::post('/login/{type}', [LoginController::class, 'login']);
 
     Route::post('/forget-password/{type}', [ForgetPasswordController::class, 'forgetPassword']);
+    Route::post('/verify-otp/{type}', [ResetPasswordController::class, 'verifyOtp']);
     Route::post('/reset-password/{type}', [ResetPasswordController::class, 'resetPassword']);
 
     Route::middleware('auth:sanctum')->group(function () {
