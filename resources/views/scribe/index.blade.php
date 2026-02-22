@@ -80,6 +80,9 @@
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-POSTapi-forget-password--type-">
                                 <a href="#endpoints-POSTapi-forget-password--type-">POST api/forget-password/{type}</a>
                             </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-POSTapi-verify-otp--type-">
+                                <a href="#endpoints-POSTapi-verify-otp--type-">POST api/verify-otp/{type}</a>
+                            </li>
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-POSTapi-reset-password--type-">
                                 <a href="#endpoints-POSTapi-reset-password--type-">POST api/reset-password/{type}</a>
                             </li>
@@ -112,7 +115,7 @@
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: February 20, 2026</li>
+        <li>Last updated: February 22, 2026</li>
     </ul>
 </div>
 
@@ -626,6 +629,165 @@ You can check the Dev Tools console for debugging information.</code></pre>
         </div>
         </form>
 
+                    <h2 id="endpoints-POSTapi-verify-otp--type-">POST api/verify-otp/{type}</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-POSTapi-verify-otp--type-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://localhost:8000/api/verify-otp/consequatur" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"identity\": \"consequatur\",
+    \"otp\": \"mqeop\"
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost:8000/api/verify-otp/consequatur"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "identity": "consequatur",
+    "otp": "mqeop"
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-verify-otp--type-">
+</span>
+<span id="execution-results-POSTapi-verify-otp--type-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-verify-otp--type-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-verify-otp--type-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-verify-otp--type-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-verify-otp--type-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-verify-otp--type-" data-method="POST"
+      data-path="api/verify-otp/{type}"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-verify-otp--type-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-verify-otp--type-"
+                    onclick="tryItOut('POSTapi-verify-otp--type-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-verify-otp--type-"
+                    onclick="cancelTryOut('POSTapi-verify-otp--type-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-verify-otp--type-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/verify-otp/{type}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-verify-otp--type-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-verify-otp--type-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>type</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="type"                data-endpoint="POSTapi-verify-otp--type-"
+               value="consequatur"
+               data-component="url">
+    <br>
+<p>Example: <code>consequatur</code></p>
+            </div>
+                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>identity</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="identity"                data-endpoint="POSTapi-verify-otp--type-"
+               value="consequatur"
+               data-component="body">
+    <br>
+<p>Example: <code>consequatur</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>otp</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="otp"                data-endpoint="POSTapi-verify-otp--type-"
+               value="mqeop"
+               data-component="body">
+    <br>
+<p>Must not be greater than 6 characters. Example: <code>mqeop</code></p>
+        </div>
+        </form>
+
                     <h2 id="endpoints-POSTapi-reset-password--type-">POST api/reset-password/{type}</h2>
 
 <p>
@@ -643,9 +805,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"identity\": \"consequatur\",
-    \"otp\": \"mqeop\",
-    \"password\": \"ij-e\\/dl4m\"
+    \"reset_token\": \"consequatur\",
+    \"password\": \"[2UZ5ij-e\\/dl4\"
 }"
 </code></pre></div>
 
@@ -661,9 +822,8 @@ const headers = {
 };
 
 let body = {
-    "identity": "consequatur",
-    "otp": "mqeop",
-    "password": "ij-e\/dl4m"
+    "reset_token": "consequatur",
+    "password": "[2UZ5ij-e\/dl4"
 };
 
 fetch(url, {
@@ -762,28 +922,16 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>identity</code></b>&nbsp;&nbsp;
+            <b style="line-height: 2;"><code>reset_token</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
  &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="identity"                data-endpoint="POSTapi-reset-password--type-"
+                              name="reset_token"                data-endpoint="POSTapi-reset-password--type-"
                value="consequatur"
                data-component="body">
     <br>
 <p>Example: <code>consequatur</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>otp</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="otp"                data-endpoint="POSTapi-reset-password--type-"
-               value="mqeop"
-               data-component="body">
-    <br>
-<p>Must not be greater than 6 characters. Example: <code>mqeop</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>password</code></b>&nbsp;&nbsp;
@@ -792,10 +940,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="password"                data-endpoint="POSTapi-reset-password--type-"
-               value="ij-e/dl4m"
+               value="[2UZ5ij-e/dl4"
                data-component="body">
     <br>
-<p>Must be at least 8 characters. Example: <code>ij-e/dl4m</code></p>
+<p>Must be at least 8 characters. Example: <code>[2UZ5ij-e/dl4</code></p>
         </div>
         </form>
 
@@ -1493,18 +1641,18 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "email=kunde.eloisa@example.com"\
     --form "phone=hfqcoynlazghd"\
     --form "age=17"\
-    --form "gender=male"\
+    --form "gender=female"\
     --form "national_id=mqeopfuudtdsu"\
-    --form "is_smoker="\
+    --form "is_smoker=1"\
     --form "previous_surgeries="\
     --form "chronic_diseases[]=consequatur"\
     --form "previous_surgeries_name=consequatur"\
     --form "medications=consequatur"\
     --form "allergies=consequatur"\
     --form "family_history=consequatur"\
-    --form "lab[]=@C:\Users\Solo\AppData\Local\Temp\php6715.tmp" \
-    --form "radiology[]=@C:\Users\Solo\AppData\Local\Temp\php6726.tmp" \
-    --form "medical_history[]=@C:\Users\Solo\AppData\Local\Temp\php6727.tmp" </code></pre></div>
+    --form "lab[]=@C:\Users\Solo\AppData\Local\Temp\phpF55E.tmp" \
+    --form "radiology[]=@C:\Users\Solo\AppData\Local\Temp\phpF56F.tmp" \
+    --form "medical_history[]=@C:\Users\Solo\AppData\Local\Temp\phpF570.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -1522,9 +1670,9 @@ body.append('name', 'vmqeopfuudtdsufvyvddq');
 body.append('email', 'kunde.eloisa@example.com');
 body.append('phone', 'hfqcoynlazghd');
 body.append('age', '17');
-body.append('gender', 'male');
+body.append('gender', 'female');
 body.append('national_id', 'mqeopfuudtdsu');
-body.append('is_smoker', '');
+body.append('is_smoker', '1');
 body.append('previous_surgeries', '');
 body.append('chronic_diseases[]', 'consequatur');
 body.append('previous_surgeries_name', 'consequatur');
@@ -1672,10 +1820,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="gender"                data-endpoint="POSTapi-patients"
-               value="male"
+               value="female"
                data-component="body">
     <br>
-<p>Example: <code>male</code></p>
+<p>Example: <code>female</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>male</code></li> <li><code>female</code></li></ul>
         </div>
@@ -1711,7 +1859,7 @@ Must be one of:
             <code>false</code>
         </label>
     <br>
-<p>Example: <code>false</code></p>
+<p>Example: <code>true</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>previous_surgeries</code></b>&nbsp;&nbsp;

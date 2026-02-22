@@ -218,7 +218,7 @@ endpoints:
     custom: []
     httpMethods:
       - POST
-    uri: 'api/reset-password/{type}'
+    uri: 'api/verify-otp/{type}'
     metadata:
       custom: []
       groupName: Endpoints
@@ -271,21 +271,76 @@ endpoints:
         exampleWasSpecified: false
         nullable: false
         deprecated: false
+    cleanBodyParameters:
+      identity: consequatur
+      otp: mqeop
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/reset-password/{type}'
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      type:
+        custom: []
+        name: type
+        description: ''
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      type: consequatur
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      reset_token:
+        custom: []
+        name: reset_token
+        description: ''
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
       password:
         custom: []
         name: password
         description: 'Must be at least 8 characters.'
         required: true
-        example: ij-e/dl4m
+        example: '[2UZ5ij-e/dl4'
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         deprecated: false
     cleanBodyParameters:
-      identity: consequatur
-      otp: mqeop
-      password: ij-e/dl4m
+      reset_token: consequatur
+      password: '[2UZ5ij-e/dl4'
     fileParameters: []
     responses: []
     responseFields: []
@@ -610,7 +665,7 @@ endpoints:
         name: gender
         description: ''
         required: false
-        example: male
+        example: female
         type: string
         enumValues:
           - male
@@ -634,7 +689,7 @@ endpoints:
         name: is_smoker
         description: ''
         required: false
-        example: false
+        example: true
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -748,9 +803,9 @@ endpoints:
       email: kunde.eloisa@example.com
       phone: hfqcoynlazghd
       age: 17
-      gender: male
+      gender: female
       national_id: mqeopfuudtdsu
-      is_smoker: false
+      is_smoker: true
       previous_surgeries: false
       chronic_diseases:
         - consequatur

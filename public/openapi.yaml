@@ -132,10 +132,10 @@ paths:
         required: true
         schema:
           type: string
-  '/api/reset-password/{type}':
+  '/api/verify-otp/{type}':
     post:
       summary: ''
-      operationId: postApiResetPasswordType
+      operationId: postApiVerifyOtpType
       description: ''
       parameters: []
       responses: {  }
@@ -158,14 +158,47 @@ paths:
                   description: 'Must not be greater than 6 characters.'
                   example: mqeop
                   nullable: false
-                password:
-                  type: string
-                  description: 'Must be at least 8 characters.'
-                  example: ij-e/dl4m
-                  nullable: false
               required:
                 - identity
                 - otp
+      security: []
+    parameters:
+      -
+        in: path
+        name: type
+        description: ''
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  '/api/reset-password/{type}':
+    post:
+      summary: ''
+      operationId: postApiResetPasswordType
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reset_token:
+                  type: string
+                  description: ''
+                  example: consequatur
+                  nullable: false
+                password:
+                  type: string
+                  description: 'Must be at least 8 characters.'
+                  example: '[2UZ5ij-e/dl4'
+                  nullable: false
+              required:
+                - reset_token
                 - password
       security: []
     parameters:
@@ -353,7 +386,7 @@ paths:
                 gender:
                   type: string
                   description: ''
-                  example: male
+                  example: female
                   nullable: true
                   enum:
                     - male
@@ -366,7 +399,7 @@ paths:
                 is_smoker:
                   type: boolean
                   description: ''
-                  example: false
+                  example: true
                   nullable: true
                 previous_surgeries:
                   type: boolean
