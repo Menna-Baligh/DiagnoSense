@@ -44,4 +44,7 @@ return [
         'secret' => env('VONAGE_SECRET'),
         'sms_from' => env('VONAGE_SMS_FROM'),
     ],
+    'ai' => [
+        'url' => env('AI_API_URL'),
+    ],
 ];

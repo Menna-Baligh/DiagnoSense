@@ -33,4 +33,5 @@ Route::controller(SocialAuthController::class)->group(function () {
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/patients', [PatientController::class, 'store']);
+    Route::get('/patients/{patientId}/key-info', [PatientController::class, 'getKeyInfo']);
 });

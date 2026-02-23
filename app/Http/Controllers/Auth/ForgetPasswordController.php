@@ -19,7 +19,7 @@ class ForgetPasswordController extends Controller
             ->first();
 
         if (! $user) {
-            return ApiResponse::error('Unauthorized attempt.', null, 403);
+            return ApiResponse::error('Invalid identity', null, 403);
         }
         $user->notify(new ResetPasswordNotification);
 

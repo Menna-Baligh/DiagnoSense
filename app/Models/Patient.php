@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Patient extends Model
 {
     protected $fillable = [
+        'id',
         'user_id',
         'name',
         'email',
@@ -34,5 +35,9 @@ class Patient extends Model
     public function reports()
     {
         return $this->hasMany(Report::class);
+    }
+    public function aiAnalysisResults()
+    {
+        return $this->hasMany(AiAnalysisResult::class); 
     }
 }
