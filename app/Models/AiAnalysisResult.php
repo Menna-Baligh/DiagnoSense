@@ -1,0 +1,25 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class AiAnalysisResult extends Model
+{
+    protected $fillable = [
+        'patient_id',
+        'response',
+        'ai_insight',
+        'ai_summary',
+        'status',
+    ];
+
+    protected $casts = [
+        'response' => 'array',
+    ];
+
+    public function patient()
+    {
+        return $this->belongsTo(Patient::class);
+    }
+}
