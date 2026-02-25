@@ -128,7 +128,7 @@ class PatientController extends Controller
         if($analysis->status == 'processing'){
             return ApiResponse::error('AI analysis is not completed yet.', null, 400);
         }
-        return ApiResponse::success('AI analysis retrieved successfully.', 
+        return ApiResponse::success('AI analysis retrieved successfully.',
             $analysis->response,
             200
         );
@@ -136,31 +136,32 @@ class PatientController extends Controller
 
 public function updateStatus(UpdatePatientStatusRequest $request, $patient)
     {
-        $patient = Patient::findOrFail($patient);
+        $patient = Patient::find($patient);
+        if (!$patient) {
+            return ApiResponse::error('Patient not found', null, 404);
+        }
         $patient->update(['status' => $request->status]);
 
-          return ApiResponse::success(
-            'Patient status updated successfully',
-            $patient,
-            200
-    );
+        return ApiResponse::success(
+                'Patient status updated successfully',
+                ['status' => $patient->status],
+                200
+        );
     }
     public function statusByType(string $type)
     {
         $allowedTypes = ['critical', 'stable', 'new updates', 'discharged'];
 
-         if (!in_array($type, $allowedTypes)) {
-               return ApiResponse::error('Invalid filter type', [], 400);
-         }
+        if (!in_array($type, $allowedTypes)) {
+            return ApiResponse::error('Invalid filter type', [], 400);
+        }
 
-    $patients = Patient::with('user')
-        ->where('status', $type)->latest()->paginate(9);
+        $patients = Patient::with(['user', 'aiAnalysisResults'])
+            ->where('status', $type)
+            ->latest()
+            ->paginate(9);
 
-         return ApiResponse::success(
-             'Patients retrieved successfully',
-             $patients,
-             200
-            );
+        return PatientListResource::collection($patients);
     }
 }
 
