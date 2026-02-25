@@ -136,11 +136,12 @@ class PatientController extends Controller
         );
     }
 
-public function updateStatus(UpdatePatientStatusRequest $request, $patient)
+    public function updateStatus(UpdatePatientStatusRequest $request, $patient)
     {
-        $patient = Patient::find($patient);
+        $doctor = $request->user()->doctor;
+        $patient = $doctor->patients()->find($patient);
         if (!$patient) {
-            return ApiResponse::error('Patient not found', null, 404);
+            return ApiResponse::error('Unauthorized or patient not found in your list', null, 403);
         }
         $patient->update(['status' => $request->status]);
 
