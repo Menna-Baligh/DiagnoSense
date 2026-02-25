@@ -14,14 +14,16 @@ use App\Models\Patient;
 use App\Models\Report;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class PatientController extends Controller
 {
-    public function index(){
-        $patients = Patient::with(['user','aiAnalysisResults' => function($query){
-            $query->latest()->first();
+    public function index(Request $request){
+        $doctor = $request->user()->doctor;
+        $patients = $doctor->patients()->with(['user','aiAnalysisResults'=>function($query){
+            $query->latest();
         }])->paginate(9);
         return PatientListResource::collection($patients);
     }
