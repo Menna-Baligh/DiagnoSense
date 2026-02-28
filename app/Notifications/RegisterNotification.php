@@ -27,13 +27,15 @@ class RegisterNotification extends Notification
     public function via(object $notifiable): array
     {
         $channels = [];
-        if ($notifiable->email) $channels[] = 'mail';
-        if ($notifiable->phone) $channels[] = 'vonage';
+        if ($notifiable->email) {
+            $channels[] = 'mail';
+        }
+        if ($notifiable->phone) {
+            $channels[] = 'vonage';
+        }
 
         return $channels;
     }
-
-
 
     /**
      * Get the mail representation of the notification.
@@ -49,7 +51,7 @@ class RegisterNotification extends Notification
 
     public function toVonage($notifiable)
     {
-        return (new VonageMessage())
+        return (new VonageMessage)
             ->content("Welcome to DiagnoSense 💙. Hello {$notifiable->name}, We are excited to have you on board.");
     }
 

@@ -30,8 +30,12 @@ class EmailVerificationNotification extends Notification
     public function via(object $notifiable): array
     {
         $channels = [];
-        if ($notifiable->email) $channels[] = 'mail';
-        if ($notifiable->phone) $channels[] = 'vonage';
+        if ($notifiable->email) {
+            $channels[] = 'mail';
+        }
+        if ($notifiable->phone) {
+            $channels[] = 'vonage';
+        }
 
         return $channels;
     }
@@ -55,7 +59,7 @@ class EmailVerificationNotification extends Notification
     {
         $otp = $this->otp->generate($notifiable->phone, 'numeric', 6, 10);
 
-        return (new VonageMessage())
+        return (new VonageMessage)
             ->content("Hello {$notifiable->name}, Your OTP for email verification is: {$otp->token}. This OTP will expire in 10 minutes.");
     }
 

@@ -23,9 +23,9 @@ class ForgetPasswordController extends Controller
         }
         $user->notify(new ResetPasswordNotification);
 
-        $sentTo = $user->phone ? "phone number" : "email address";
+        $sentTo = $user->phone ? 'phone number' : 'email address';
 
-        return ApiResponse::success('An OTP has been sent to your '. $sentTo .' for password reset. Please check your inbox.', null, 200);
+        return ApiResponse::success('An OTP has been sent to your '.$sentTo.' for password reset. Please check your inbox.', null, 200);
 
     }
 }

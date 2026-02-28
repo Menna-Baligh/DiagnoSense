@@ -28,6 +28,7 @@ class ForgetPasswordRequest extends FormRequest
             'identity' => 'required|string',
         ];
     }
+
     public function messages(): array
     {
         return [

@@ -60,13 +60,13 @@ return [
             'report' => false,
         ],
         'azure' => [
-            'driver'    => 'azure',
-            'name'      => env('AZURE_STORAGE_NAME'),
-            'key'       => env('AZURE_STORAGE_KEY'),
+            'driver' => 'azure',
+            'name' => env('AZURE_STORAGE_NAME'),
+            'key' => env('AZURE_STORAGE_KEY'),
             'container' => env('AZURE_STORAGE_CONTAINER'),
             'connection_string' => env('AZURE_STORAGE_CONNECTION_STRING'),
-            'url'       => env('AZURE_STORAGE_URL'),
-            'prefix'    => null,
+            'url' => env('AZURE_STORAGE_URL'),
+            'prefix' => null,
         ],
 
     ],

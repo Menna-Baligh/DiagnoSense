@@ -36,8 +36,14 @@ class Patient extends Model
     {
         return $this->hasMany(Report::class);
     }
+
     public function aiAnalysisResults()
     {
-        return $this->hasMany(AiAnalysisResult::class); 
+        return $this->hasMany(AiAnalysisResult::class);
+    }
+
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
     }
 }
