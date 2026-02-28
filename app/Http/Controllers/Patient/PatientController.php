@@ -16,6 +16,7 @@ use App\Models\MedicalHistory;
 use App\Models\Patient;
 use App\Models\Report;
 use App\Models\User;
+use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -23,6 +24,7 @@ use Illuminate\Support\Str;
 
 class PatientController extends Controller
 {
+
     public function index(Request $request)
     {
         $doctor = $request->user()->doctor;
@@ -186,5 +188,41 @@ class PatientController extends Controller
         return ApiResponse::success('Patient retrieved successfully.', [
             new PatientOverviewResource($patient),
         ], 200);
+    }
+    public function activityHistory($patientId)
+    {
+    $patient = Patient::find($patientId);
+
+    if (!$patient) {
+        return ApiResponse::error(
+            'Patient not found',
+            [],
+            404
+        );
+    }
+
+    $logs = ActivityLog::where('model_type', 'Patient')
+        ->where('model_id', $patientId)
+        ->with('doctor.user')
+        ->orderByDesc('created_at')->get()
+        ->map(function ($log) {
+            return [
+                'id' => $log->id,
+                'type' => $log->action,
+                'message' => $log->description,
+                'doctor' => [
+                    'id' => $log->doctor?->id,
+                    'name' => $log->doctor?->user?->name,
+                ],
+                'created_at' => $log->created_at,
+                'time_ago' => $log->created_at->diffForHumans(),
+            ];
+        });
+
+    return ApiResponse::success(
+        'Activity history retrieved successfully',
+        $logs,
+        200
+    );
     }
 }
