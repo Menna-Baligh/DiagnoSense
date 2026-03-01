@@ -22,4 +22,9 @@ class AiAnalysisResult extends Model
     {
         return $this->belongsTo(Patient::class);
     }
+
+    public function keyPoints()
+    {
+        return $this->hasMany(KeyPoint::class);
+    }
 }

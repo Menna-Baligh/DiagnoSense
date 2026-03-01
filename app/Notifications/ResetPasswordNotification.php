@@ -31,8 +31,12 @@ class ResetPasswordNotification extends Notification implements ShouldQueue
     public function via(object $notifiable): array
     {
         $channels = [];
-        if ($notifiable->email) $channels[] = 'mail';
-        if ($notifiable->phone) $channels[] = 'vonage';
+        if ($notifiable->email) {
+            $channels[] = 'mail';
+        }
+        if ($notifiable->phone) {
+            $channels[] = 'vonage';
+        }
 
         return $channels;
     }
@@ -53,12 +57,11 @@ class ResetPasswordNotification extends Notification implements ShouldQueue
             ->line('If you did not request a password reset, please ignore this email.');
     }
 
-
     public function toVonage($notifiable)
     {
         $otp = $this->otp->generate($notifiable->phone, 'numeric', 6, 10);
 
-        return (new VonageMessage())
+        return (new VonageMessage)
             ->content("Your DiagnoSense password reset OTP is: {$otp->token}. It will expire in 10 minutes. If you did not request this, please ignore.");
     }
 

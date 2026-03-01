@@ -15,6 +15,7 @@ class EventServiceProvider extends ServiceProvider
             SendWelcomeEmail::class,
         ],
     ];
+
     /**
      * Register services.
      */

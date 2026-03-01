@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\Patient\PatientController;
+use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('check-user-type')->group(function () {
@@ -32,6 +33,10 @@ Route::controller(SocialAuthController::class)->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/patients', [PatientController::class, 'index']);
     Route::post('/patients', [PatientController::class, 'store']);
     Route::get('/patients/{patientId}/key-info', [PatientController::class, 'getKeyInfo']);
+    Route::patch('/patients/{patient}/status', [PatientController::class, 'updateStatus']);
+    Route::get('/patients/status/{type}', [PatientController::class, 'statusByType']);
+    Route::get('/search', SearchController::class);
 });

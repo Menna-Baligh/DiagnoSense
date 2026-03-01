@@ -33,15 +33,15 @@ class ResetPasswordController extends Controller
         $token = Str::random(64);
 
         DB::table('password_reset_tokens')->updateOrInsert(
-        ['identity' => $validated['identity']],
-        [
-            'token' => $token,
-            'created_at' => now()
-        ]
+            ['identity' => $validated['identity']],
+            [
+                'token' => $token,
+                'created_at' => now(),
+            ]
         );
 
         return ApiResponse::success('OTP verified. Use this token to reset password.', [
-        'reset_token' => $token
+            'reset_token' => $token,
         ], 200);
     }
 
@@ -50,10 +50,10 @@ class ResetPasswordController extends Controller
         $validated = $request->validated();
 
         $resetData = DB::table('password_reset_tokens')
-        ->where('token', $validated['reset_token'])
-        ->first();
+            ->where('token', $validated['reset_token'])
+            ->first();
 
-        if (!$resetData || now()->subHours(1) > $resetData->created_at) {
+        if (! $resetData || now()->subHours(1) > $resetData->created_at) {
             return ApiResponse::error('Invalid or expired token.', null, 403);
         }
 

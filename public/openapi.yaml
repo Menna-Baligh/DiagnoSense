@@ -317,11 +317,11 @@ paths:
               schema:
                 type: object
                 example:
-                  url: 'https://accounts.google.com/o/oauth2/auth?client_id=1070705461335-kuvjl2bc2oaovka7fp3t8onv97qaotlj.apps.googleusercontent.com&redirect_uri=http%3A%2F%2F127.0.0.1%3A8000%2Fapi%2Fgoogle%2Fcallback&scope=openid+profile+email&response_type=code'
+                  url: 'https://accounts.google.com/o/oauth2/auth?client_id=1070705461335-kuvjl2bc2oaovka7fp3t8onv97qaotlj.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Fnontelepathically-pamphletary-cyndi.ngrok-free.dev%2Fapi%2Fgoogle%2Fcallback&scope=openid+profile+email&response_type=code'
                 properties:
                   url:
                     type: string
-                    example: 'https://accounts.google.com/o/oauth2/auth?client_id=1070705461335-kuvjl2bc2oaovka7fp3t8onv97qaotlj.apps.googleusercontent.com&redirect_uri=http%3A%2F%2F127.0.0.1%3A8000%2Fapi%2Fgoogle%2Fcallback&scope=openid+profile+email&response_type=code'
+                    example: 'https://accounts.google.com/o/oauth2/auth?client_id=1070705461335-kuvjl2bc2oaovka7fp3t8onv97qaotlj.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Fnontelepathically-pamphletary-cyndi.ngrok-free.dev%2Fapi%2Fgoogle%2Fcallback&scope=openid+profile+email&response_type=code'
       tags:
         - Endpoints
       security: []
@@ -348,6 +348,27 @@ paths:
         - Endpoints
       security: []
   /api/patients:
+    get:
+      summary: ''
+      operationId: getApiPatients
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
     post:
       summary: ''
       operationId: postApiPatients
@@ -386,7 +407,7 @@ paths:
                 gender:
                   type: string
                   description: ''
-                  example: female
+                  example: male
                   nullable: true
                   enum:
                     - male
@@ -399,7 +420,7 @@ paths:
                 is_smoker:
                   type: boolean
                   description: ''
-                  example: false
+                  example: true
                   nullable: true
                 previous_surgeries:
                   type: boolean
@@ -485,3 +506,93 @@ paths:
         required: true
         schema:
           type: string
+  '/api/patients/{patient}/status':
+    patch:
+      summary: ''
+      operationId: patchApiPatientsPatientStatus
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  description: ''
+                  example: 'under review'
+                  nullable: false
+                  enum:
+                    - critical
+                    - stable
+                    - 'under review'
+              required:
+                - status
+      security: []
+    parameters:
+      -
+        in: path
+        name: patient
+        description: 'The patient.'
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  '/api/patients/status/{type}':
+    get:
+      summary: ''
+      operationId: getApiPatientsStatusType
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: type
+        description: ''
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  '/api/search':
+    get:
+      summary: ''
+      operationId: handleTheIncomingRequest
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []

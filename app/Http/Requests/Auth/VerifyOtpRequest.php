@@ -7,7 +7,6 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-
 class VerifyOtpRequest extends FormRequest
 {
     /**
@@ -30,6 +29,7 @@ class VerifyOtpRequest extends FormRequest
             'otp' => 'required|max:6',
         ];
     }
+
     public function messages(): array
     {
         return [
@@ -38,6 +38,7 @@ class VerifyOtpRequest extends FormRequest
             'otp.max' => 'OTP must not exceed 6 characters.',
         ];
     }
+
     public function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(
