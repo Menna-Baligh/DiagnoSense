@@ -407,7 +407,7 @@ paths:
                 gender:
                   type: string
                   description: ''
-                  example: male
+                  example: female
                   nullable: true
                   enum:
                     - male
@@ -436,9 +436,9 @@ paths:
                     type: string
                 previous_surgeries_name:
                   type: string
-                  description: ''
+                  description: 'This field is required when <code>previous_surgeries</code> is <code>true</code>.'
                   example: consequatur
-                  nullable: true
+                  nullable: false
                 medications:
                   type: string
                   description: ''
@@ -501,6 +501,39 @@ paths:
                     example: Unauthenticated.
       tags:
         - Endpoints
+      security: []
+    post:
+      summary: ''
+      operationId: postApiPatientsPatientIdKeyInfo
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                insight:
+                  type: string
+                  description: ''
+                  example: consequatur
+                  nullable: false
+                priority:
+                  type: string
+                  description: ''
+                  example: high
+                  nullable: false
+                  enum:
+                    - high
+                    - medium
+                    - low
+              required:
+                - insight
+                - priority
       security: []
     parameters:
       -
@@ -610,7 +643,7 @@ paths:
         required: true
         schema:
           type: string
-  "/api/search":
+  '/api/search':
     get:
       summary: ''
       operationId: handleTheIncomingRequest
