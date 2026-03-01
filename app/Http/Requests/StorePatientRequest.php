@@ -64,6 +64,9 @@ class StorePatientRequest extends FormRequest
             'lab.required_without_all' => 'Please upload at least one lab test result or radiology report or medical history report.',
             'radiology.required_without_all' => 'Please upload at least one lab test result or radiology report or medical history report.',
             'medical_history.required_without_all' => 'Please upload at least one lab test result or radiology report or medical history report.',
+            'lab.*.mimes' => 'Each lab file must be a PDF document.',
+            'radiology.*.mimes' => 'Each radiology report must be a PDF document.',
+            'medical_history.*.mimes' => 'Each medical history file must be a PDF document.',
         ];
     }
 }
