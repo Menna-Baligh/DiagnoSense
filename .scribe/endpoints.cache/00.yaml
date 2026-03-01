@@ -707,7 +707,7 @@ endpoints:
         name: gender
         description: ''
         required: false
-        example: female
+        example: male
         type: string
         enumValues:
           - male
@@ -731,7 +731,7 @@ endpoints:
         name: is_smoker
         description: ''
         required: false
-        example: false
+        example: true
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -742,7 +742,7 @@ endpoints:
         name: previous_surgeries
         description: ''
         required: false
-        example: true
+        example: false
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -856,10 +856,10 @@ endpoints:
       email: kunde.eloisa@example.com
       phone: hfqcoynlazghd
       age: 17
-      gender: female
+      gender: male
       national_id: mqeopfuudtdsu
-      is_smoker: false
-      previous_surgeries: true
+      is_smoker: true
+      previous_surgeries: false
       chronic_diseases:
         - consequatur
       previous_surgeries_name: consequatur
@@ -1024,7 +1024,7 @@ endpoints:
         name: status
         description: ''
         required: true
-        example: critical
+        example: 'under review'
         type: string
         enumValues:
           - critical
@@ -1034,7 +1034,7 @@ endpoints:
         nullable: false
         deprecated: false
     cleanBodyParameters:
-      status: critical
+      status: 'under review'
     fileParameters: []
     responses: []
     responseFields: []
@@ -1170,6 +1170,61 @@ endpoints:
     cleanQueryParameters: []
     bodyParameters: []
     cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PATCH
+    uri: 'api/key-points/{keyPointId}'
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      keyPointId:
+        custom: []
+        name: keyPointId
+        description: ''
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      keyPointId: consequatur
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      insight:
+        custom: []
+        name: insight
+        description: ''
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      insight: consequatur
     fileParameters: []
     responses: []
     responseFields: []

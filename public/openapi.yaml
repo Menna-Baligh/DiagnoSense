@@ -642,6 +642,29 @@ paths:
       tags:
         - Endpoints
       security: []
+    patch:
+      summary: ''
+      operationId: patchApiKeyPointsKeyPointId
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                insight:
+                  type: string
+                  description: ''
+                  example: consequatur
+                  nullable: false
+              required:
+                - insight
+      security: []
     parameters:
       -
         in: path
