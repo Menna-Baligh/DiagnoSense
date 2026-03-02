@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Patient;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePatientRequest;
 use App\Http\Requests\UpdatePatientStatusRequest;
+use App\Http\Resources\DecisionSupportResource;
 use App\Http\Resources\KeyPointResource;
 use App\Http\Resources\PatientListResource;
 use App\Http\Resources\PatientOverviewResource;
@@ -191,5 +192,21 @@ class PatientController extends Controller
         return ApiResponse::success('Patient retrieved successfully.', [
             new PatientOverviewResource($patient),
         ], 200);
+    }
+
+    public function getDecisionSupport($patientId){
+        $patient = auth()->user()->doctor->patients()->findorfail($patientId);
+        $latestAnalysis = $patient->aiAnalysisResults()
+        ->where('status', 'completed')
+        ->latest()
+        ->first();
+        if (!$latestAnalysis) {
+            return ApiResponse::error('No AI analysis results found for this patient.', null, 404);
+        }
+        $decisions = $latestAnalysis->decisionSupports;
+        if ($decisions->isEmpty()) {
+            return ApiResponse::error('No decision support data available for this analysis.', null, 404);
+        }
+        return ApiResponse::success('Decision Support retrieved successfully.', DecisionSupportResource::collection($decisions), 200);
     }
 }
