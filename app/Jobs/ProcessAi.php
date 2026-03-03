@@ -60,8 +60,9 @@ class ProcessAi implements ShouldQueue
                     'medications' => $this->jobData['history']['medications'] ?? '',
                     'allergies' => $this->jobData['history']['allergies'] ?? '',
                     'family_history' => $this->jobData['history']['family_history'] ?? '',
+                    'current_complaint' => $this->jobData['history']['current_complaint'] ?? '',
                 ],
-                'decision_support' => false,
+                'decision_support' => true, //? Only For now to get both key-info and DSS i will change it after doing subscriptions
             ];
 
             $response = Http::timeout($this->timeout)->post(config('services.ai.url'), $ApiData);
@@ -72,8 +73,6 @@ class ProcessAi implements ShouldQueue
                 $insight = $data['key_information']['ai_insight'] ?? null;
                 $summary = $data['key_information']['ai_summary'] ?? null;
 
-                unset($data['key_information']['ai_insight']);
-                unset($data['key_information']['ai_summary']);
 
                 $analysisRecord->update([
                     'ai_insight' => $insight,
@@ -81,6 +80,34 @@ class ProcessAi implements ShouldQueue
                     'response' => $data,
                     'status' => 'completed',
                 ]);
+
+
+                $decisions = $data['decision_support'] ?? [];
+
+                unset($data['key_information']['ai_insight']);
+                unset($data['key_information']['ai_summary']);
+                unset($data['decision_support']);
+
+                foreach (['high_priority_alerts', 'medium_priority_alerts', 'low_priority_alerts'] as $type) {
+                    $alerts = $data['key_information'][$type] ?? [];
+                    foreach ($alerts as $item) {
+                        $analysisRecord->keyPoints()->create([
+                            'priority' => str_replace('_priority_alerts', '', $type),
+                            'title' => $item['title'],
+                            'insight' => $item['insight'],
+                            'evidence' => $item['evidence'],
+                        ]);
+                    }
+                }
+
+                foreach ($decisions as $decision) {
+                    $analysisRecord->decisionSupports()->create([
+                        'condition'          => $decision['condition'],
+                        'probability'        => $decision['probability'],
+                        'status'             => $decision['status'],
+                        'clinical_reasoning' => $decision['clinical_reasoning'],
+                    ]);
+                }
 
             } else {
                 $analysisRecord->update([
