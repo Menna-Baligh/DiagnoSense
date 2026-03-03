@@ -41,7 +41,7 @@ class StorePatientRequest extends FormRequest
             'previous_surgeries' => ['nullable', 'boolean'],
             'chronic_diseases' => ['nullable', 'array'],
             'chronic_diseases.*' => ['string'],
-            'previous_surgeries_name' => ['required_if:previous_surgeries,true','prohibited_if:previous_surgeries,false', 'string'],
+            'previous_surgeries_name' => ['required_if:previous_surgeries,true', 'prohibited_if:previous_surgeries,false', 'string'],
             'medications' => ['nullable', 'string'],
             'allergies' => ['nullable', 'string'],
             'family_history' => ['nullable', 'string'],

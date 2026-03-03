@@ -9,9 +9,9 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\KeyPointController;
 use App\Http\Controllers\Patient\PatientController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\VisitController;
 use App\Http\Controllers\VisitItemController;
-use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('check-user-type')->group(function () {

@@ -13,6 +13,7 @@ class UpdateKeyPointRequest extends FormRequest
     {
         $doctor = $this->user()->doctor;
         $keyPointId = $this->route('keyPointId');
+
         return $doctor->patients()
             ->whereHas('aiAnalysisResults.keyPoints', function ($query) use ($keyPointId) {
                 $query->where('id', $keyPointId);
@@ -30,6 +31,7 @@ class UpdateKeyPointRequest extends FormRequest
             'insight' => 'required|string',
         ];
     }
+
     public function messages(): array
     {
         return [

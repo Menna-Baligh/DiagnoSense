@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignIdFor(AiAnalysisResult::class)->constrained()->cascadeOnDelete();
             $table->string('condition');
             $table->string('probability');
-            $table->string('status'); 
+            $table->string('status');
             $table->text('clinical_reasoning');
             $table->timestamps();
         });

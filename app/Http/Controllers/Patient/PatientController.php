@@ -5,20 +5,19 @@ namespace App\Http\Controllers\Patient;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePatientRequest;
 use App\Http\Requests\UpdatePatientStatusRequest;
+use App\Http\Resources\ActivityLogResource;
 use App\Http\Resources\DecisionSupportResource;
 use App\Http\Resources\KeyPointResource;
 use App\Http\Resources\PatientListResource;
 use App\Http\Resources\PatientOverviewResource;
-use App\Http\Resources\ActivityLogResource;
 use App\Http\Responses\ApiResponse;
 use App\Jobs\ProcessAi;
+use App\Models\ActivityLog;
 use App\Models\AiAnalysisResult;
-use App\Models\KeyPoint;
 use App\Models\MedicalHistory;
 use App\Models\Patient;
 use App\Models\Report;
 use App\Models\User;
-use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -26,11 +25,11 @@ use Illuminate\Support\Str;
 
 class PatientController extends Controller
 {
-
     public function index(Request $request)
     {
         $doctor = $request->user()->doctor;
         $patients = $doctor->patients()->with(['user', 'latestAiAnalysisResult'])->paginate(12);
+
         return PatientListResource::collection($patients);
     }
 
@@ -131,9 +130,9 @@ class PatientController extends Controller
             return ApiResponse::error('Patient not found', null, 404);
         }
         $latestAnalysis = AiAnalysisResult::where('patient_id', $patientId)
-        ->latest()
-        ->first();
-        if(! $latestAnalysis || $latestAnalysis->status === 'processing') {
+            ->latest()
+            ->first();
+        if (! $latestAnalysis || $latestAnalysis->status === 'processing') {
             return ApiResponse::error('AI analysis is processing now', null, 404);
         }
         if ($latestAnalysis->status === 'failed') {
@@ -146,7 +145,6 @@ class PatientController extends Controller
         $keyPoints = $latestAnalysis->keyPoints()
             ->orderBy('created_at', 'desc')
             ->get();
-
 
         return ApiResponse::success('Key Points retrieved successfully.', [
             'high' => KeyPointResource::collection($keyPoints->where('priority', 'high')),
@@ -171,7 +169,7 @@ class PatientController extends Controller
         );
     }
 
-    public function statusByType(Request $request ,string $type)
+    public function statusByType(Request $request, string $type)
     {
         $allowedTypes = ['critical', 'stable', 'under review'];
 
@@ -182,63 +180,68 @@ class PatientController extends Controller
         $doctor = $request->user()->doctor;
 
         $patients = $doctor->patients()
-        ->with(['user', 'latestAiAnalysisResult'])
-        ->where('status', $type)
-        ->paginate(12);
+            ->with(['user', 'latestAiAnalysisResult'])
+            ->where('status', $type)
+            ->paginate(12);
 
         return PatientListResource::collection($patients);
     }
 
-    public function overview(Request $request, $patientId){
+    public function overview(Request $request, $patientId)
+    {
         $doctor = $request->user()->doctor;
         $patient = $doctor->patients()->with([
-                    'user',
-                    'medicalHistory',
-                    'latestAiAnalysisResult',
-                ])->find($patientId);
+            'user',
+            'medicalHistory',
+            'latestAiAnalysisResult',
+        ])->find($patientId);
         if (! $patient) {
             return ApiResponse::error('Unauthorized or patient not found in your list', null, 403);
         }
+
         return ApiResponse::success('Patient retrieved successfully.', [
             new PatientOverviewResource($patient),
         ], 200);
     }
 
-
-    public function activityHistory(Request $request,$patientId)
+    public function activityHistory(Request $request, $patientId)
     {
         $doctor = $request->user()->doctor;
-       $patient = $doctor->patients()->find($patientId);
+        $patient = $doctor->patients()->find($patientId);
 
-        if (!$patient) {
+        if (! $patient) {
             return ApiResponse::error(
-              'You are not allowed to view this patient activities',null,403);
-    }
+                'You are not allowed to view this patient activities', null, 403);
+        }
 
         $logs = ActivityLog::where('model_type', 'Patient')
-           ->where('model_id', $patientId)
-           ->with('doctor.user')
-           ->orderByDesc('created_at')
-           ->get();
-   
+            ->where('model_id', $patientId)
+            ->with('doctor.user')
+            ->orderByDesc('created_at')
+            ->get();
+
         return ApiResponse::success(
-           'Activity history retrieved successfully',
-           ActivityLogResource::collection($logs),
-           200
-    );
-    public function getDecisionSupport($patientId){
+            'Activity history retrieved successfully',
+            ActivityLogResource::collection($logs),
+            200
+        );
+    }
+
+    public function getDecisionSupport($patientId)
+    {
         $patient = auth()->user()->doctor->patients()->findorfail($patientId);
         $latestAnalysis = $patient->aiAnalysisResults()
-        ->where('status', 'completed')
-        ->latest()
-        ->first();
-        if (!$latestAnalysis) {
+            ->where('status', 'completed')
+            ->latest()
+            ->first();
+        if (! $latestAnalysis) {
             return ApiResponse::error('No AI analysis results found for this patient.', null, 404);
         }
         $decisions = $latestAnalysis->decisionSupports;
         if ($decisions->isEmpty()) {
             return ApiResponse::error('No decision support data available for this analysis.', null, 404);
         }
+
         return ApiResponse::success('Decision Support retrieved successfully.', DecisionSupportResource::collection($decisions), 200);
     }
 }

@@ -62,7 +62,7 @@ class ProcessAi implements ShouldQueue
                     'family_history' => $this->jobData['history']['family_history'] ?? '',
                     'current_complaint' => $this->jobData['history']['current_complaint'] ?? '',
                 ],
-                'decision_support' => true, //? Only For now to get both key-info and DSS i will change it after doing subscriptions
+                'decision_support' => true, // ? Only For now to get both key-info and DSS i will change it after doing subscriptions
             ];
 
             $response = Http::timeout($this->timeout)->post(config('services.ai.url'), $ApiData);
@@ -73,14 +73,12 @@ class ProcessAi implements ShouldQueue
                 $insight = $data['key_information']['ai_insight'] ?? null;
                 $summary = $data['key_information']['ai_summary'] ?? null;
 
-
                 $analysisRecord->update([
                     'ai_insight' => $insight,
                     'ai_summary' => $summary,
                     'response' => $data,
                     'status' => 'completed',
                 ]);
-
 
                 $decisions = $data['decision_support'] ?? [];
 
@@ -102,9 +100,9 @@ class ProcessAi implements ShouldQueue
 
                 foreach ($decisions as $decision) {
                     $analysisRecord->decisionSupports()->create([
-                        'condition'          => $decision['condition'],
-                        'probability'        => $decision['probability'],
-                        'status'             => $decision['status'],
+                        'condition' => $decision['condition'],
+                        'probability' => $decision['probability'],
+                        'status' => $decision['status'],
                         'clinical_reasoning' => $decision['clinical_reasoning'],
                     ]);
                 }

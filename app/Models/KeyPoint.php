@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class KeyPoint extends Model
 {
     use SoftDeletes;
+
     protected $fillable = [
         'ai_analysis_result_id',
         'priority',

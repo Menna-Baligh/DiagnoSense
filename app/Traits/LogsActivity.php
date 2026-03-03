@@ -35,7 +35,7 @@ trait LogsActivity
         foreach ($changes as $field => $newValue) {
             $filteredChanges[$field] = [
                 'old' => $original[$field] ?? null,
-                'new' => $newValue
+                'new' => $newValue,
             ];
         }
 
@@ -52,52 +52,51 @@ trait LogsActivity
     }
 
     protected function generateActivityData($event, $changes)
-{
-    $doctorName = request()->user()?->doctor?->user?->name ?? 'System';
-    $modelName = class_basename($this);
+    {
+        $doctorName = request()->user()?->doctor?->user?->name ?? 'System';
+        $modelName = class_basename($this);
 
-  
-    $displayName = $this->user?->name ?? "{$modelName} (ID: {$this->id})";
+        $displayName = $this->user?->name ?? "{$modelName} (ID: {$this->id})";
 
-    if ($event === 'created') {
-        return [
-            'type' => strtolower($modelName).'_created',
-            'message' => "Dr. {$doctorName} created new {$displayName}"
-        ];
-    }
+        if ($event === 'created') {
+            return [
+                'type' => strtolower($modelName).'_created',
+                'message' => "Dr. {$doctorName} created new {$displayName}",
+            ];
+        }
 
-    if ($event === 'deleted') {
-        return [
-            'type' => strtolower($modelName).'_deleted',
-            'message' => "Dr. {$doctorName} deleted {$displayName}"
-        ];
-    }
+        if ($event === 'deleted') {
+            return [
+                'type' => strtolower($modelName).'_deleted',
+                'message' => "Dr. {$doctorName} deleted {$displayName}",
+            ];
+        }
 
-    if ($event === 'updated' && !empty($changes)) {
+        if ($event === 'updated' && ! empty($changes)) {
 
-        $messages = [];
+            $messages = [];
 
-        foreach ($changes as $field => $values) {
+            foreach ($changes as $field => $values) {
 
-            if ($field === 'status') {
-                return [
-                    'type' => 'status_updated',
-                    'message' => "Dr. {$doctorName} changed {$displayName} status from '{$values['old']}' to '{$values['new']}'"
-                ];
+                if ($field === 'status') {
+                    return [
+                        'type' => 'status_updated',
+                        'message' => "Dr. {$doctorName} changed {$displayName} status from '{$values['old']}' to '{$values['new']}'",
+                    ];
+                }
+
+                $messages[] = "{$field} from '{$values['old']}' to '{$values['new']}'";
             }
 
-            $messages[] = "{$field} from '{$values['old']}' to '{$values['new']}'";
+            return [
+                'type' => strtolower($modelName).'_updated',
+                'message' => "Dr. {$doctorName} updated {$displayName}: ".implode(', ', $messages),
+            ];
         }
 
         return [
-            'type' => strtolower($modelName).'_updated',
-            'message' => "Dr. {$doctorName} updated {$displayName}: ".implode(', ', $messages)
+            'type' => strtolower($modelName).'_'.$event,
+            'message' => "{$modelName} {$event}",
         ];
     }
-
-    return [
-        'type' => strtolower($modelName).'_'.$event,
-        'message' => "{$modelName} {$event}"
-    ];
-}
 }
