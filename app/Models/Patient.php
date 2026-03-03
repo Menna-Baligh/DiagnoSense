@@ -43,6 +43,19 @@ class Patient extends Model
         return $this->hasMany(AiAnalysisResult::class);
     }
 
+    public function visits()
+    {
+        return $this->hasMany(Visit::class);
+    }
+
+    public function medications()
+    {
+        return $this->hasMany(Medication::class);
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
     public function latestAiAnalysisResult()
     {
         return $this->hasOne(AiAnalysisResult::class)->latest();
