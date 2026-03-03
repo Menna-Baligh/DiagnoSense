@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\KeyPoint;
+use App\Models\DecisionSupport;
 use Illuminate\Database\Eloquent\Model;
 
 class AiAnalysisResult extends Model
@@ -23,8 +23,13 @@ class AiAnalysisResult extends Model
     {
         return $this->belongsTo(Patient::class);
     }
+
     public function keyPoints()
     {
         return $this->hasMany(KeyPoint::class);
+    }
+    public function decisionSupports()
+    {
+        return $this->hasMany(DecisionSupport::class);
     }
 }

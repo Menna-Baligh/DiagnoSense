@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Patient;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePatientRequest;
 use App\Http\Requests\UpdatePatientStatusRequest;
+use App\Http\Resources\DecisionSupportResource;
 use App\Http\Resources\KeyPointResource;
 use App\Http\Resources\PatientListResource;
 use App\Http\Resources\PatientOverviewResource;
@@ -29,7 +30,7 @@ class PatientController extends Controller
     public function index(Request $request)
     {
         $doctor = $request->user()->doctor;
-        $patients = $doctor->patients()->with(['user', 'latestAiAnalysisResult'])->get();
+        $patients = $doctor->patients()->with(['user', 'latestAiAnalysisResult'])->paginate(12);
         return PatientListResource::collection($patients);
     }
 
@@ -129,15 +130,24 @@ class PatientController extends Controller
         if (! $patient) {
             return ApiResponse::error('Patient not found', null, 404);
         }
-        $keyPoints = KeyPoint::whereHas('aiAnalysisResult', function($query) use ($patientId) {
-                $query->where('patient_id', $patientId)
-                ->where('status', 'completed');})
-                ->orderBy('created_at', 'desc')
-                ->get();
-
-        if ($keyPoints->isEmpty()) {
-            return ApiResponse::error('No Key Points found for this patient.', null, 404);
+        $latestAnalysis = AiAnalysisResult::where('patient_id', $patientId)
+        ->latest()
+        ->first();
+        if(! $latestAnalysis || $latestAnalysis->status === 'processing') {
+            return ApiResponse::error('AI analysis is processing now', null, 404);
         }
+        if ($latestAnalysis->status === 'failed') {
+            return ApiResponse::error(
+                'The AI analysis process failed',
+                $latestAnalysis->response,
+                422
+            );
+        }
+        $keyPoints = $latestAnalysis->keyPoints()
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+
         return ApiResponse::success('Key Points retrieved successfully.', [
             'high' => KeyPointResource::collection($keyPoints->where('priority', 'high')),
             'medium' => KeyPointResource::collection($keyPoints->where('priority', 'medium')),
@@ -161,7 +171,7 @@ class PatientController extends Controller
         );
     }
 
-    public function statusByType(string $type)
+    public function statusByType(Request $request ,string $type)
     {
         $allowedTypes = ['critical', 'stable', 'under review'];
 
@@ -169,9 +179,12 @@ class PatientController extends Controller
             return ApiResponse::error('Invalid filter type', [], 400);
         }
 
-        $patients = Patient::with(['user', 'latestAiAnalysisResult'])
-            ->where('status', $type)
-            ->get();
+        $doctor = $request->user()->doctor;
+
+        $patients = $doctor->patients()
+        ->with(['user', 'latestAiAnalysisResult'])
+        ->where('status', $type)
+        ->paginate(12);
 
         return PatientListResource::collection($patients);
     }
@@ -213,5 +226,19 @@ class PatientController extends Controller
            ActivityLogResource::collection($logs),
            200
     );
+    public function getDecisionSupport($patientId){
+        $patient = auth()->user()->doctor->patients()->findorfail($patientId);
+        $latestAnalysis = $patient->aiAnalysisResults()
+        ->where('status', 'completed')
+        ->latest()
+        ->first();
+        if (!$latestAnalysis) {
+            return ApiResponse::error('No AI analysis results found for this patient.', null, 404);
+        }
+        $decisions = $latestAnalysis->decisionSupports;
+        if ($decisions->isEmpty()) {
+            return ApiResponse::error('No decision support data available for this analysis.', null, 404);
+        }
+        return ApiResponse::success('Decision Support retrieved successfully.', DecisionSupportResource::collection($decisions), 200);
     }
 }

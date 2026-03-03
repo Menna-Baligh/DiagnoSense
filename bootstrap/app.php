@@ -20,4 +20,15 @@ return Application::configure(basePath: dirname(__DIR__))
             'check-user-type' => \App\Http\Middleware\CheckUserType::class,
         ]);
     })
-    ->withExceptions(function (Exceptions $exceptions): void {})->create();
+    ->withExceptions(function (Exceptions $exceptions): void {
+        $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException $e, $request) {
+            if ($request->is('api/*')) {
+                return \App\Http\Responses\ApiResponse::error('Unauthorized access: You do not have permission for this action.', null, 403);
+            }
+        });
+        $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e, $request) {
+            if ($request->is('api/*')) {
+                return \App\Http\Responses\ApiResponse::error('The requested resource was not found.', null, 404);
+            }
+        });
+    })->create();
