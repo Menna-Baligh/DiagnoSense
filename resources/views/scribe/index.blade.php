@@ -116,6 +116,15 @@
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-POSTapi-visits--visit--items">
                                 <a href="#endpoints-POSTapi-visits--visit--items">POST api/visits/{visit}/items</a>
                             </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-GETapi-patients--patient--items">
+                                <a href="#endpoints-GETapi-patients--patient--items">GET api/patients/{patient}/items</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-DELETEapi-patients--patient--medications--medication-">
+                                <a href="#endpoints-DELETEapi-patients--patient--medications--medication-">DELETE api/patients/{patient}/medications/{medication}</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-DELETEapi-patients--patient--tasks--task-">
+                                <a href="#endpoints-DELETEapi-patients--patient--tasks--task-">DELETE api/patients/{patient}/tasks/{task}</a>
+                            </li>
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-GETapi-patients--patientId--overview">
                                 <a href="#endpoints-GETapi-patients--patientId--overview">GET api/patients/{patientId}/overview</a>
                             </li>
@@ -154,7 +163,7 @@
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: March 3, 2026</li>
+        <li>Last updated: March 5, 2026</li>
     </ul>
 </div>
 
@@ -1806,19 +1815,19 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "email=kunde.eloisa@example.com"\
     --form "phone=hfqcoynlazghd"\
     --form "age=17"\
-    --form "gender=female"\
+    --form "gender=male"\
     --form "national_id=mqeopfuudtdsu"\
     --form "is_smoker="\
-    --form "previous_surgeries="\
+    --form "previous_surgeries=1"\
     --form "chronic_diseases[]=consequatur"\
     --form "previous_surgeries_name=consequatur"\
     --form "medications=consequatur"\
     --form "allergies=consequatur"\
     --form "family_history=consequatur"\
     --form "current_complaint=consequatur"\
-    --form "lab[]=@C:\Users\Solo\AppData\Local\Temp\php5641.tmp" \
-    --form "radiology[]=@C:\Users\Solo\AppData\Local\Temp\php5651.tmp" \
-    --form "medical_history[]=@C:\Users\Solo\AppData\Local\Temp\php5652.tmp" </code></pre></div>
+    --form "lab[]=@C:\Users\Solo\AppData\Local\Temp\php517B.tmp" \
+    --form "radiology[]=@C:\Users\Solo\AppData\Local\Temp\php517C.tmp" \
+    --form "medical_history[]=@C:\Users\Solo\AppData\Local\Temp\php517D.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -1836,10 +1845,10 @@ body.append('name', 'vmqeopfuudtdsufvyvddq');
 body.append('email', 'kunde.eloisa@example.com');
 body.append('phone', 'hfqcoynlazghd');
 body.append('age', '17');
-body.append('gender', 'female');
+body.append('gender', 'male');
 body.append('national_id', 'mqeopfuudtdsu');
 body.append('is_smoker', '');
-body.append('previous_surgeries', '');
+body.append('previous_surgeries', '1');
 body.append('chronic_diseases[]', 'consequatur');
 body.append('previous_surgeries_name', 'consequatur');
 body.append('medications', 'consequatur');
@@ -1987,10 +1996,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="gender"                data-endpoint="POSTapi-patients"
-               value="female"
+               value="male"
                data-component="body">
     <br>
-<p>Example: <code>female</code></p>
+<p>Example: <code>male</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>male</code></li> <li><code>female</code></li></ul>
         </div>
@@ -2048,7 +2057,7 @@ Must be one of:
             <code>false</code>
         </label>
     <br>
-<p>Example: <code>false</code></p>
+<p>Example: <code>true</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>chronic_diseases</code></b>&nbsp;&nbsp;
@@ -2325,8 +2334,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --data "{
     \"patient_id\": \"consequatur\",
-    \"has_next_visit\": false,
-    \"next_visit_date\": \"2026-03-03T22:56:11\",
+    \"has_next_visit\": true,
+    \"next_visit_date\": \"2026-03-05T00:02:24\",
     \"action\": \"mqeopfuudtdsufvyvddqa\"
 }"
 </code></pre></div>
@@ -2344,8 +2353,8 @@ const headers = {
 
 let body = {
     "patient_id": "consequatur",
-    "has_next_visit": false,
-    "next_visit_date": "2026-03-03T22:56:11",
+    "has_next_visit": true,
+    "next_visit_date": "2026-03-05T00:02:24",
     "action": "mqeopfuudtdsufvyvddqa"
 };
 
@@ -2463,7 +2472,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
             <code>false</code>
         </label>
     <br>
-<p>Example: <code>false</code></p>
+<p>Example: <code>true</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>next_visit_date</code></b>&nbsp;&nbsp;
@@ -2472,10 +2481,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="next_visit_date"                data-endpoint="POSTapi-visits"
-               value="2026-03-03T22:56:11"
+               value="2026-03-05T00:02:24"
                data-component="body">
     <br>
-<p>This field is required when <code>has_next_visit</code> is <code>true</code>. Must be a valid date. Example: <code>2026-03-03T22:56:11</code></p>
+<p>This field is required when <code>has_next_visit</code> is <code>true</code>. Must be a valid date. Example: <code>2026-03-05T00:02:24</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>action</code></b>&nbsp;&nbsp;
@@ -2518,7 +2527,7 @@ Must be one of:
     \"title\": \"vazjrcnfbaqywuxhgjjmz\",
     \"description\": \"Dolores dolorum amet iste laborum eius est dolor.\",
     \"notes\": \"consequatur\",
-    \"next_visit_date\": \"2026-03-03T22:56:11\",
+    \"next_visit_date\": \"2026-03-05T00:02:24\",
     \"action\": \"mqeopfuudtdsufvyvddqa\"
 }"
 </code></pre></div>
@@ -2543,7 +2552,7 @@ let body = {
     "title": "vazjrcnfbaqywuxhgjjmz",
     "description": "Dolores dolorum amet iste laborum eius est dolor.",
     "notes": "consequatur",
-    "next_visit_date": "2026-03-03T22:56:11",
+    "next_visit_date": "2026-03-05T00:02:24",
     "action": "mqeopfuudtdsufvyvddqa"
 };
 
@@ -2747,10 +2756,10 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="next_visit_date"                data-endpoint="POSTapi-visits--visit--items"
-               value="2026-03-03T22:56:11"
+               value="2026-03-05T00:02:24"
                data-component="body">
     <br>
-<p>Must be a valid date. Example: <code>2026-03-03T22:56:11</code></p>
+<p>Must be a valid date. Example: <code>2026-03-05T00:02:24</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>action</code></b>&nbsp;&nbsp;
@@ -2767,6 +2776,415 @@ Must be one of:
 <ul style="list-style-type: square;"><li><code>save</code></li> <li><code>save_and_create_another</code></li></ul>
         </div>
         </form>
+
+                    <h2 id="endpoints-GETapi-patients--patient--items">GET api/patients/{patient}/items</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-GETapi-patients--patient--items">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://localhost:8000/api/patients/consequatur/items" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost:8000/api/patients/consequatur/items"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-patients--patient--items">
+            <blockquote>
+            <p>Example response (401):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary style="cursor: pointer;">
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+access-control-allow-origin: *
+ </code></pre></details>         <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Unauthenticated.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-patients--patient--items" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-patients--patient--items"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-patients--patient--items"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-patients--patient--items" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-patients--patient--items">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-patients--patient--items" data-method="GET"
+      data-path="api/patients/{patient}/items"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-patients--patient--items', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-patients--patient--items"
+                    onclick="tryItOut('GETapi-patients--patient--items');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-patients--patient--items"
+                    onclick="cancelTryOut('GETapi-patients--patient--items');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-patients--patient--items"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/patients/{patient}/items</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-patients--patient--items"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-patients--patient--items"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>patient</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="patient"                data-endpoint="GETapi-patients--patient--items"
+               value="consequatur"
+               data-component="url">
+    <br>
+<p>The patient. Example: <code>consequatur</code></p>
+            </div>
+                    </form>
+
+                    <h2 id="endpoints-DELETEapi-patients--patient--medications--medication-">DELETE api/patients/{patient}/medications/{medication}</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-DELETEapi-patients--patient--medications--medication-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request DELETE \
+    "http://localhost:8000/api/patients/consequatur/medications/consequatur" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost:8000/api/patients/consequatur/medications/consequatur"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "DELETE",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-DELETEapi-patients--patient--medications--medication-">
+</span>
+<span id="execution-results-DELETEapi-patients--patient--medications--medication-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-DELETEapi-patients--patient--medications--medication-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-DELETEapi-patients--patient--medications--medication-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-DELETEapi-patients--patient--medications--medication-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-DELETEapi-patients--patient--medications--medication-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-DELETEapi-patients--patient--medications--medication-" data-method="DELETE"
+      data-path="api/patients/{patient}/medications/{medication}"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('DELETEapi-patients--patient--medications--medication-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-DELETEapi-patients--patient--medications--medication-"
+                    onclick="tryItOut('DELETEapi-patients--patient--medications--medication-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-DELETEapi-patients--patient--medications--medication-"
+                    onclick="cancelTryOut('DELETEapi-patients--patient--medications--medication-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-DELETEapi-patients--patient--medications--medication-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-red">DELETE</small>
+            <b><code>api/patients/{patient}/medications/{medication}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="DELETEapi-patients--patient--medications--medication-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="DELETEapi-patients--patient--medications--medication-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>patient</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="patient"                data-endpoint="DELETEapi-patients--patient--medications--medication-"
+               value="consequatur"
+               data-component="url">
+    <br>
+<p>The patient. Example: <code>consequatur</code></p>
+            </div>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>medication</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="medication"                data-endpoint="DELETEapi-patients--patient--medications--medication-"
+               value="consequatur"
+               data-component="url">
+    <br>
+<p>The medication. Example: <code>consequatur</code></p>
+            </div>
+                    </form>
+
+                    <h2 id="endpoints-DELETEapi-patients--patient--tasks--task-">DELETE api/patients/{patient}/tasks/{task}</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-DELETEapi-patients--patient--tasks--task-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request DELETE \
+    "http://localhost:8000/api/patients/consequatur/tasks/consequatur" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost:8000/api/patients/consequatur/tasks/consequatur"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "DELETE",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-DELETEapi-patients--patient--tasks--task-">
+</span>
+<span id="execution-results-DELETEapi-patients--patient--tasks--task-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-DELETEapi-patients--patient--tasks--task-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-DELETEapi-patients--patient--tasks--task-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-DELETEapi-patients--patient--tasks--task-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-DELETEapi-patients--patient--tasks--task-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-DELETEapi-patients--patient--tasks--task-" data-method="DELETE"
+      data-path="api/patients/{patient}/tasks/{task}"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('DELETEapi-patients--patient--tasks--task-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-DELETEapi-patients--patient--tasks--task-"
+                    onclick="tryItOut('DELETEapi-patients--patient--tasks--task-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-DELETEapi-patients--patient--tasks--task-"
+                    onclick="cancelTryOut('DELETEapi-patients--patient--tasks--task-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-DELETEapi-patients--patient--tasks--task-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-red">DELETE</small>
+            <b><code>api/patients/{patient}/tasks/{task}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="DELETEapi-patients--patient--tasks--task-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="DELETEapi-patients--patient--tasks--task-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>patient</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="patient"                data-endpoint="DELETEapi-patients--patient--tasks--task-"
+               value="consequatur"
+               data-component="url">
+    <br>
+<p>The patient. Example: <code>consequatur</code></p>
+            </div>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>task</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="task"                data-endpoint="DELETEapi-patients--patient--tasks--task-"
+               value="consequatur"
+               data-component="url">
+    <br>
+<p>The task. Example: <code>consequatur</code></p>
+            </div>
+                    </form>
 
                     <h2 id="endpoints-GETapi-patients--patientId--overview">GET api/patients/{patientId}/overview</h2>
 
