@@ -81,7 +81,13 @@ trait LogsActivity
         $doctorName = request()->user()?->doctor?->user?->name ?? 'System';
         $modelName = class_basename($this);
 
-        $displayName = $this->user?->name ?? "{$modelName} (ID: {$this->id})";
+        $displayName = match(true) {
+            $this instanceof \App\Models\Patient => $this->user?->name,
+
+            $this instanceof \App\Models\KeyPoint => "Key Point: '{$this->insight}'",
+
+            default => "{$modelName} (ID: {$this->id})"
+        };
 
         if ($event === 'created') {
             return "Dr. {$doctorName} created {$displayName}";
