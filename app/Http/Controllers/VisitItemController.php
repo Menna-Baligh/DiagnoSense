@@ -21,9 +21,15 @@ class VisitItemController extends Controller
         }
         $tasks = $patient->tasks()->with('visit')->get();
         $medications = $patient->medications()->with('visit')->get();
+        $latestVisit = $patient->visits()->latest()->first();
+        if ($latestVisit && $latestVisit->next_visit_date) {
+            $formattedDate = \Carbon\Carbon::parse($latestVisit->next_visit_date)
+                ->format('D, F j, Y');
+        }
         $data = [
             'tasks' => TaskResource::collection($tasks),
             'medications' => MedicationResource::collection($medications),
+            'next_visit_date' => $formattedDate ?? null,
         ];
 
         return ApiResponse::success(
