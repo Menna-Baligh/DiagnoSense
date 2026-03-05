@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Report extends Model
 {
-    use LogsActivity;
+    // use LogsActivity;
 
     protected $fillable = [
         'patient_id',

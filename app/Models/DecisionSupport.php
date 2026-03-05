@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class DecisionSupport extends Model
 {
-    use LogsActivity;
+    // use LogsActivity;
 
     protected $fillable = ['condition', 'probability', 'status', 'clinical_reasoning', 'ai_analysis_result_id'];
 

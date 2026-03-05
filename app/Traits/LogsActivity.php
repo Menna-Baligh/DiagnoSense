@@ -9,15 +9,24 @@ trait LogsActivity
     protected static function bootLogsActivity()
     {
         static::created(function ($model) {
-            $model->logActivity('created');
+            $modelName = class_basename($model);
+            if ($modelName === 'KeyPoint' && $model->is_manual) {
+                $model->logActivity('created');
+            }
         });
 
         static::updated(function ($model) {
-            $model->logActivity('updated');
+            $modelName = class_basename($model);
+            if (in_array($modelName, ['Patient', 'KeyPoint'])) {
+                $model->logActivity('updated');
+            }
         });
 
         static::deleted(function ($model) {
-            $model->logActivity('deleted');
+            $modelName = class_basename($model);
+            if ($modelName === 'KeyPoint') {
+                $model->logActivity('deleted');
+            }
         });
     }
 
@@ -80,7 +89,7 @@ trait LogsActivity
         $displayName = match (true) {
             $this instanceof \App\Models\Patient => $this->user?->name,
 
-            $this instanceof \App\Models\KeyPoint => "Key Point: '{$this->insight}'",
+            $this instanceof \App\Models\KeyPoint => ($this->is_manual ? "Doctor Note" : "Key Point") . ": '{$this->insight}'",
 
             default => "{$modelName} (ID: {$this->id})"
         };
