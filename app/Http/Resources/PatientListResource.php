@@ -14,6 +14,9 @@ class PatientListResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $latestVisit = $this->visits()->latest()->first();
+        $formattedDate = $latestVisit && $latestVisit->next_visit_date ? $latestVisit->next_visit_date->format('M d, Y') : null;
+
         return [
             'id' => $this->id,
             'name' => $this->user->name,
@@ -21,7 +24,7 @@ class PatientListResource extends JsonResource
             'status' => $this->status,
             'ai_insight' => $this->latestAiAnalysisResult->ai_insight ?? 'No analysis available yet',
             'last_visit' => $this->created_at->format('M d, Y'),
-            'next_appointment' => 'Feb 2,2026',
+            'next_appointment' => $formattedDate ?? 'No appointment scheduled',
         ];
     }
 }
