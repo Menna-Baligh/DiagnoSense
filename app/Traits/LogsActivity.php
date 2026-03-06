@@ -90,7 +90,7 @@ trait LogsActivity
 
         $displayName = match (true) {
             $this instanceof \App\Models\Patient => $this->user?->name,
-            $this instanceof \App\Models\KeyPoint => ($this->is_manual ? "Doctor Note" : "Key Point") . ": '{$this->insight}'",
+            $this instanceof \App\Models\KeyPoint => ($this->is_manual ? "Doctor Note" : "Key Point") ,
             $this instanceof \App\Models\Task => "Task: '{$this->title}'",
             $this instanceof \App\Models\Medication => "Medication: '{$this->name}'",
             default => "{$modelName} (ID: {$this->id})"
@@ -105,14 +105,24 @@ trait LogsActivity
         }
 
         if ($event === 'updated') {
-
+            if (isset($changes['last_visit_date'])) {
+                unset($changes['last_visit_date']);
+            }
             $messages = [];
 
             foreach ($changes as $field => $values) {
-                $messages[] = "{$field} changed from '{$values['old']}' to '{$values['new']}'";
+                if(($this instanceof \App\Models\Patient && $field === 'status') || $this instanceof \App\Models\KeyPoint ) {
+                    $messages[] = "{$field} changed from '{$values['old']}' to '{$values['new']}'";
+                } else {
+                    if($field === 'next_visit_date'){
+                        $values['new'] = \Carbon\Carbon::parse($values['new'])->format('D, F j, Y');
+                        $field = 'next visit date';
+                    }
+                    $messages[] = "updated {$field} to '{$values['new']}'";
+                }
             }
 
-            return "Dr. {$doctorName} updated {$displayName}: ".implode(', ', $messages);
+            return "Dr. {$doctorName}: ".implode(', ', $messages);
         }
 
         return "{$modelName} {$event}";
