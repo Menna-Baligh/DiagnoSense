@@ -19,6 +19,13 @@ class Patient extends Model
         'gender',
         'national_id',
         'status',
+        'last_visit_date',
+        'next_visit_date',
+    ];
+
+    protected $casts = [
+        'last_visit_date' => 'date',
+        'next_visit_date' => 'date',
     ];
 
     public function user()
@@ -69,5 +76,14 @@ class Patient extends Model
     public function activities()
     {
         return $this->morphMany(ActivityLog::class, 'model');
+    }
+    public function refreshVisitDates($newDate)
+    {
+        if ($newDate && $this->next_visit_date != $newDate) {
+            $this->update([
+                'last_visit_date' => $this->next_visit_date ?? $this->last_visit_date,
+                'next_visit_date' => $newDate,
+            ]);
+        }
     }
 }

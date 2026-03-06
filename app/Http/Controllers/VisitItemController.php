@@ -21,15 +21,11 @@ class VisitItemController extends Controller
         }
         $tasks = $patient->tasks()->with('visit')->get();
         $medications = $patient->medications()->with('visit')->get();
-        $latestVisit = $patient->visits()->latest()->first();
-        if ($latestVisit && $latestVisit->next_visit_date) {
-            $formattedDate = \Carbon\Carbon::parse($latestVisit->next_visit_date)
-                ->format('D, F j, Y');
-        }
         $data = [
             'tasks' => TaskResource::collection($tasks),
             'medications' => MedicationResource::collection($medications),
-            'next_visit_date' => $formattedDate ?? null,
+            'next_visit_date' => $patient->next_visit_date ?
+            \Carbon\Carbon::parse($patient->next_visit_date)->format('D, F j, Y') : null,
         ];
 
         return ApiResponse::success(
@@ -48,6 +44,10 @@ class VisitItemController extends Controller
             }
             $date = $request->next_visit_date;
             $visit->update(['next_visit_date' => $date]);
+        }
+        if ($request->next_visit_date) {
+            $visit->update(['next_visit_date' => $request->next_visit_date]);
+            $visit->patient->refreshVisitDates($request->next_visit_date);
         }
         if ($request->action == 'save') {
             $visit->update(['status' => 'completed']);

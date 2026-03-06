@@ -10,18 +10,15 @@ class VisitController extends Controller
 {
     public function store(StoreNextVisitRequest $request)
     {
-        if ($request->action == 'save') {
-            $visit = auth()->user()->doctor->visits()->create([
-                'patient_id' => $request->patient_id,
-                'next_visit_date' => $request->has_next_visit ? $request->next_visit_date : null,
-                'status' => 'completed',
-            ]);
-        } else {
-            $visit = auth()->user()->doctor->visits()->create([
-                'patient_id' => $request->patient_id,
-                'next_visit_date' => $request->next_visit_date ? $request->next_visit_date : null,
-                'status' => 'draft',
-            ]);
+        $status = ($request->action == 'save') ? 'completed' : 'draft';
+        $nextVisitDate = $request->next_visit_date ?? null;
+        $visit = auth()->user()->doctor->visits()->create([
+            'patient_id' => $request->patient_id,
+            'next_visit_date' => $nextVisitDate,
+            'status' => $status,
+        ]);
+        if ($nextVisitDate) {
+            $visit->patient->refreshVisitDates($nextVisitDate);
         }
 
         return ApiResponse::success(message: 'Visit created successfully', data: new NextVisitResource($visit), statusCode: 200);
