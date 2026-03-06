@@ -961,4 +961,22 @@ paths:
         required: true
         schema:
           type: string
-
+  '/api/patients/{patientId}':
+    delete:
+      summary: 'Delete a Patient'
+      operationId: deleteApiPatientsPatientId
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: patientId
+        description: ''
+        example: consequatur
+        required: true
+        schema:
+          type: string

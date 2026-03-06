@@ -693,25 +693,25 @@ endpoints:
         custom: []
         name: age
         description: ''
-        required: false
+        required: true
         example: 17
         type: integer
         enumValues: []
         exampleWasSpecified: false
-        nullable: true
+        nullable: false
         deprecated: false
       gender:
         custom: []
         name: gender
         description: ''
-        required: false
+        required: true
         example: male
         type: string
         enumValues:
           - male
           - female
         exampleWasSpecified: false
-        nullable: true
+        nullable: false
         deprecated: false
       national_id:
         custom: []
@@ -740,7 +740,7 @@ endpoints:
         name: previous_surgeries
         description: ''
         required: false
-        example: true
+        example: false
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -857,7 +857,7 @@ endpoints:
       gender: male
       national_id: mqeopfuudtdsu
       is_smoker: false
-      previous_surgeries: true
+      previous_surgeries: false
       chronic_diseases:
         - consequatur
       previous_surgeries_name: consequatur
@@ -969,7 +969,7 @@ endpoints:
         name: has_next_visit
         description: ''
         required: true
-        example: true
+        example: false
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -980,7 +980,7 @@ endpoints:
         name: next_visit_date
         description: 'This field is required when <code>has_next_visit</code> is <code>true</code>. Must be a valid date.'
         required: false
-        example: '2026-03-05T00:02:24'
+        example: '2026-03-06T04:43:21'
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -1001,8 +1001,8 @@ endpoints:
         deprecated: false
     cleanBodyParameters:
       patient_id: consequatur
-      has_next_visit: true
-      next_visit_date: '2026-03-05T00:02:24'
+      has_next_visit: false
+      next_visit_date: '2026-03-06T04:43:21'
       action: mqeopfuudtdsufvyvddqa
     fileParameters: []
     responses: []
@@ -1141,7 +1141,7 @@ endpoints:
         name: next_visit_date
         description: 'Must be a valid date.'
         required: false
-        example: '2026-03-05T00:02:24'
+        example: '2026-03-06T04:43:21'
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -1169,7 +1169,7 @@ endpoints:
       title: vazjrcnfbaqywuxhgjjmz
       description: 'Dolores dolorum amet iste laborum eius est dolor.'
       notes: consequatur
-      next_visit_date: '2026-03-05T00:02:24'
+      next_visit_date: '2026-03-06T04:43:21'
       action: mqeopfuudtdsufvyvddqa
     fileParameters: []
     responses: []
@@ -1432,7 +1432,7 @@ endpoints:
         name: status
         description: ''
         required: true
-        example: stable
+        example: 'under review'
         type: string
         enumValues:
           - critical
@@ -1442,7 +1442,7 @@ endpoints:
         nullable: false
         deprecated: false
     cleanBodyParameters:
-      status: stable
+      status: 'under review'
     fileParameters: []
     responses: []
     responseFields: []
@@ -1743,7 +1743,7 @@ endpoints:
         name: priority
         description: ''
         required: true
-        example: low
+        example: high
         type: string
         enumValues:
           - high
@@ -1754,7 +1754,7 @@ endpoints:
         deprecated: false
     cleanBodyParameters:
       insight: consequatur
-      priority: low
+      priority: high
     fileParameters: []
     responses: []
     responseFields: []
@@ -1809,6 +1809,49 @@ endpoints:
           content-type: application/json
           access-control-allow-origin: '*'
         description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - DELETE
+    uri: 'api/patients/{patientId}'
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      patientId:
+        custom: []
+        name: patientId
+        description: ''
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      patientId: consequatur
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
     responseFields: []
     auth: []
     controller: null
