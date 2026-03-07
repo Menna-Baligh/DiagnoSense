@@ -15,43 +15,56 @@ class DashboardController extends Controller
 
    public function summary(Request $request)
    {
-    $doctor = $request->user()->doctor;
+        $doctor = $request->user()->doctor;
+        if (!$doctor) {
+             return ApiResponse::error('Unauthorized',null,403);
+        }
 
-    if (!$doctor) {
-        return ApiResponse::error(
-            'Unauthorized',
-            null,
-            403
-        );
-    }
-
-    $activePatients = $doctor->patients()->count();
-    $todayVisits = Patient::whereHas('doctors', function ($q) use ($doctor) {
+        $activePatients = $doctor->patients()->count();
+        $todayVisits = Patient::whereHas('doctors', function ($q) use ($doctor) {
             $q->where('doctor_id', $doctor->id);
         })
         ->whereDate('next_visit_date', today())
         ->count();
 
-    $reportsAnalyzed = AiAnalysisResult::whereHas('patient', function ($query) use ($doctor) {
+        $reportsAnalyzed = AiAnalysisResult::whereHas('patient', function ($query) use ($doctor) {
             $query->whereHas('doctors', function ($q) use ($doctor) {
                 $q->where('doctor_id', $doctor->id);
             });
-        })
-        ->where('status', 'completed')
-        ->count();
+            })->where('status', 'completed')
+              ->count();
 
-    return ApiResponse::success(
-        'Dashboard summary retrieved successfully',
-        [
+        $currentMonthPatients = Patient::whereHas('doctors', function ($q) use ($doctor) {
+            $q->where('doctor_id', $doctor->id);
+        })->whereBetween('created_at', [now()->startOfMonth(),now()->endOfMonth()
+        ])->count();
+
+        $lastMonthPatients = Patient::whereHas('doctors', function ($q) use ($doctor) {
+            $q->where('doctor_id', $doctor->id);
+        })
+        ->whereBetween('created_at', [
+            now()->subMonth()->startOfMonth(),
+            now()->subMonth()->endOfMonth()
+        ])->count();
+
+        if ($lastMonthPatients > 0) {
+           $percentageChange = (($currentMonthPatients - $lastMonthPatients) / $lastMonthPatients) * 100;
+        } else {$percentageChange = $currentMonthPatients > 0 ? 100 : 0;
+        }
+
+        return ApiResponse::success(
+          'Dashboard summary retrieved successfully',
+          [
             "name" => $request->user()->name,
             'active_patients' => $activePatients,
             'today_visits' => $todayVisits,
-            'reports_analyzed' => $reportsAnalyzed
-        ],
-        200
-    );
+            'reports_analyzed' => $reportsAnalyzed,
+            'patients_this_month' => $currentMonthPatients,
+            'patients_last_month' => $lastMonthPatients,
+            'patients_percentage' => round($percentageChange, 2)
+        ],200
+        );
     }
-
 
    public function statusDistribution(Request $request)
   {
