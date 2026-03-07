@@ -47,4 +47,10 @@ return [
     'ai' => [
         'url' => env('AI_API_URL'),
     ],
+
+    'stripe' => [
+        'key' => env('STRIPE_KEY'),
+        'secret' => env('STRIPE_SECRET'),
+        'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
+    ]
 ];
