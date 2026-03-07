@@ -13,6 +13,7 @@ class Transactions extends Model
         'source_type',
         'description',
         'doctor_id',
+        'payment_id',
     ];
 
     public function doctor()

@@ -27,7 +27,11 @@ class StripeWebhookController
             $doctorId = $session->metadata->doctor_id;
             $amount = $session->metadata->amount;
 
-            DB::transaction(function () use ($doctorId, $amount) {
+            DB::transaction(function () use ($doctorId, $amount, $session) {
+                $transactionExists = Transactions::query()->where('payment_id', $session->id)->exists();
+                if ($transactionExists) {
+                    return response()->json(['message' => 'Already processed']);
+                }
                 $wallet = Wallet::query()->firstOrCreate(['doctor_id' => $doctorId]);
                 $wallet->increment('balance', $amount);
                 Transactions::query()->create([
@@ -35,6 +39,7 @@ class StripeWebhookController
                     'type' => 'charge',
                     'source_type' => Wallet::class,
                     'source_id' => $wallet->id,
+                    'payment_id' => $session->id,
                     'description' => 'Wallet charge via Stripe',
                     'doctor_id' => $doctorId,
                 ]);
