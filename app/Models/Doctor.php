@@ -62,4 +62,18 @@ class Doctor extends Model
     {
         return $this->hasMany(Usage::class);
     }
+
+    public function activeSubscription()
+    {
+        return $this->hasOne(Subscriptions::class)->where('status', 'active');
+    }
+
+    public function hasFeature(string $featureName): bool
+    {
+        if ($this->billing_mode === 'pay_per_use') return true;
+        $sub = $this->activeSubscription;
+        if (!$sub) return false;
+        $features = is_string($sub->plan->features) ? json_decode($sub->plan->features, true) : $sub->plan->features;
+        return in_array($featureName, $features ?? []);
+    }
 }

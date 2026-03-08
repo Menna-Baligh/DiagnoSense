@@ -100,11 +100,17 @@ class PatientController extends Controller
                 'status' => 'processing',
             ]);
 
+            $doctor = $request->user()->doctor;
+
             $jobData = [
+                'doctor_id' => $doctor->id,
                 'age' => $patient->age,
                 'gender' => $patient->gender,
                 'history' => $medicalHistory->toArray(),
                 'file_paths' => $pathsForAI,
+                'features' => [
+                    'decision_support' => $doctor->hasFeature('Decision Support'),
+                ]
             ];
 
             DB::commit();

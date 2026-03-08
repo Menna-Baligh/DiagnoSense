@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'check-user-type' => \App\Http\Middleware\CheckUserType::class,
+            'check-ai-access' => \App\Http\Middleware\CheckAiAccess::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

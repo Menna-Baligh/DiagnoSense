@@ -3,6 +3,8 @@
 namespace App\Jobs;
 
 use App\Models\AiAnalysisResult;
+use App\Models\Doctor;
+use App\Models\Plan;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
@@ -62,7 +64,7 @@ class ProcessAi implements ShouldQueue
                     'family_history' => $this->jobData['history']['family_history'] ?? '',
                     'current_complaint' => $this->jobData['history']['current_complaint'] ?? '',
                 ],
-                'decision_support' => true, // ? Only For now to get both key-info and DSS i will change it after doing subscriptions
+                'decision_support' => (bool) ($this->jobData['features']['decision_support'] ?? false),
             ];
 
             $response = Http::timeout($this->timeout)->post(config('services.ai.url'), $ApiData);
@@ -80,11 +82,23 @@ class ProcessAi implements ShouldQueue
                     'status' => 'completed',
                 ]);
 
-                $decisions = $data['decision_support'] ?? [];
+
+                if($this->jobData['features']['decision_support']) {
+                    $decisions = $data['decision_support'] ?? [];
+                    unset($data['decision_support']);
+                    foreach ($decisions as $decision) {
+                        $analysisRecord->decisionSupports()->create([
+                            'condition' => $decision['condition'],
+                            'probability' => $decision['probability'],
+                            'status' => $decision['status'],
+                            'clinical_reasoning' => $decision['clinical_reasoning'],
+                        ]);
+                    }
+                }
+
 
                 unset($data['key_information']['ai_insight']);
                 unset($data['key_information']['ai_summary']);
-                unset($data['decision_support']);
 
                 foreach (['high_priority_alerts', 'medium_priority_alerts', 'low_priority_alerts'] as $type) {
                     $alerts = $data['key_information'][$type] ?? [];
@@ -98,13 +112,23 @@ class ProcessAi implements ShouldQueue
                     }
                 }
 
-                foreach ($decisions as $decision) {
-                    $analysisRecord->decisionSupports()->create([
-                        'condition' => $decision['condition'],
-                        'probability' => $decision['probability'],
-                        'status' => $decision['status'],
-                        'clinical_reasoning' => $decision['clinical_reasoning'],
-                    ]);
+
+
+                $doctor = Doctor::with(['activeSubscription', 'wallet'])->find($this->jobData['doctor_id']);
+                if ($doctor) {
+                    if ($doctor->billing_mode === 'subscription' && $doctor->activeSubscription) {
+                        $doctor->activeSubscription->increment('used_summaries');
+                    } else {
+                        $doctor->wallet->decrement('balance', Plan::PAY_PER_USE_PRICE);
+                        $doctor->transactions()->create([
+                            'amount' => Plan::PAY_PER_USE_PRICE,
+                            'type' => 'usage',
+                            'status' => 'completed',
+                            'description' => "Pay-per-use Analysis File",
+                            'source_type' => get_class($analysisRecord),
+                            'source_id' => $analysisRecord->id,
+                        ]);
+                    }
                 }
 
             } else {

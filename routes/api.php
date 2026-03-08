@@ -40,7 +40,7 @@ Route::controller(SocialAuthController::class)->group(function () {
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/patients', [PatientController::class, 'index']);
-    Route::post('/patients', [PatientController::class, 'store']);
+    Route::post('/patients', [PatientController::class, 'store'])->middleware('check-ai-access');
     Route::get('/patients/{patientId}/key-info', [PatientController::class, 'getKeyInfo']);
     Route::post('/visits', [VisitController::class, 'store']);
     Route::post('/visits/{visit}/items', [VisitItemController::class, 'store']);
@@ -62,7 +62,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/subscription/subscribe', [SubscriptionController::class, 'subscribe']);
     Route::post('/subscription/pay-per-use', [SubscriptionController::class, 'switchToPayPerUse']);
     Route::get('/subscription/plans', [SubscriptionController::class, 'index']);
-    Route::get('/subscription/current', [SubscriptionController::class, 'current']); 
+    Route::get('/subscription/current', [SubscriptionController::class, 'current']);
 });
 
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);
