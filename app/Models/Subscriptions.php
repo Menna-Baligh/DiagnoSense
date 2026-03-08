@@ -34,4 +34,19 @@ class Subscriptions extends Model
     {
         return $this->hasMany(Transactions::class);
     }
+
+    public function getIsExpiredAttribute(): bool
+    {
+        return $this->expires_at->isPast();
+    }
+
+    protected static function booted()
+    {
+        static::retrieved(function ($subscription) {
+            if ($subscription->status === 'active' && $subscription->is_expired) {
+                $subscription->status = 'expired';
+                $subscription->save();
+            }
+        });
+    }
 }
