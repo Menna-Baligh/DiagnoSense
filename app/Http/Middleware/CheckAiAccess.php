@@ -18,6 +18,9 @@ class CheckAiAccess
     public function handle(Request $request, Closure $next): Response
     {
         $doctor = $request->user()->doctor->load(['wallet', 'activeSubscription.plan']);
+        if($doctor->billing_mode === null){
+            return ApiResponse::error("No active subscription found. Please subscribe to a plan.", null, 403);
+        }
         if ($doctor->billing_mode === 'pay_per_use') {
             if (!$doctor->wallet || $doctor->wallet->balance < Plan::PAY_PER_USE_PRICE) {
                 return ApiResponse::error("Insufficient credits. Please recharge to use Pay-Per-Use (E£ 25/file).", null, 403);

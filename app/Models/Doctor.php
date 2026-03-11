@@ -68,7 +68,10 @@ class Doctor extends Model
     {
         return $this->hasOne(Subscriptions::class)
                     ->whereIn('status', ['active', 'cancelled'])
-                    ->where('expires_at', '>', now());
+                    ->where('expires_at', '>', now())
+                    ->whereHas('plan', function ($query) {
+                        $query->whereColumn('subscriptions.used_summaries', '<', 'plans.summaries_limit');
+                    });
     }
 
     public function latestSubscription()

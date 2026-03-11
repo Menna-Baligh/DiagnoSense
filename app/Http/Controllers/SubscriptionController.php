@@ -81,19 +81,31 @@ class SubscriptionController extends Controller
     public function cancel(Request $request)
     {
         $doctor = $request->user()->doctor;
+        $mode = $doctor->billing_mode;
+        
+        if ($mode === 'pay_per_use') {
+            $doctor->update(['billing_mode' => null]);
+            return ApiResponse::success("Pay-Per-Use mode has been disabled. Please subscribe to a plan to continue.", null, 200);
+        }
+
         $subscription = $doctor->activeSubscription;
 
-        if (!$subscription) {
-            return ApiResponse::error("No active subscription to cancel.", null, 404);
+        if (!$subscription || $mode === null) {
+            return ApiResponse::error("No active subscription or billing mode found to cancel.", null, 404);
         }
+
+        $limitReached = $subscription->used_summaries >= $subscription->plan->summaries_limit;
 
         $subscription->update(['status' => 'cancelled']);
 
-        return ApiResponse::success(
-            "Subscription cancelled. You can still use your remaining summaries until " . $subscription->expires_at->format('D, F j, Y'),
-            null,
-            200
-        );
+        if ($limitReached) {
+            $message = "Subscription cancelled. Note: You have already reached your limit of {$subscription->plan->summaries_limit} summaries.";
+        } else {
+            $remaining = $subscription->plan->summaries_limit - $subscription->used_summaries;
+            $message = "Subscription cancelled. You can still use your remaining {$remaining} summaries until " . $subscription->expires_at->format('D, F j, Y');
+        }
+
+        return ApiResponse::success($message, null, 200);
     }
 
 }
