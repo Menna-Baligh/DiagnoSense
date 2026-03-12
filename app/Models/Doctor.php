@@ -5,10 +5,11 @@ namespace App\Models;
 use App\Models\Subscriptions;
 use App\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class Doctor extends Model
 {
-    use LogsActivity;
+    use LogsActivity , Notifiable;
 
     protected $fillable = [
         'user_id',
