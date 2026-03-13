@@ -7,6 +7,7 @@ use App\Http\Resources\CurrentSubscriptionResource;
 use App\Http\Resources\PlanResource;
 use App\Http\Responses\ApiResponse;
 use App\Models\Plan;
+use App\Notifications\CreditsExhausted;
 use App\Notifications\PayPerUseActivated;
 use App\Notifications\PlanSubscribed;
 use App\Services\SubscriptionService;
@@ -51,7 +52,11 @@ class SubscriptionController extends Controller
         if (! $subscription) {
             return ApiResponse::error('Failed to process the subscription. Please try again later.', null, 500);
         }
+        $doctor->wallet->refresh();
         $request->user()->notify(new PlanSubscribed($subscription->plan->name));
+        if ($doctor->wallet->balance <= 0) {
+            $doctor->user->notify(new CreditsExhausted());
+        }
         return ApiResponse::success(
             'Successfully subscribed to the plan!',
             null,

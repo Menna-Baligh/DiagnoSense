@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Models\AiAnalysisResult;
 use App\Models\Doctor;
 use App\Models\Plan;
+use App\Notifications\CreditsExhausted;
 use App\Notifications\UsageExhausted;
 use App\Notifications\UsageThresholdReached;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -116,6 +117,7 @@ class ProcessAi implements ShouldQueue
                 if ($doctor) {
                     if ($doctor->billing_mode === 'subscription' && $doctor->activeSubscription) {
                         $doctor->activeSubscription->increment('used_summaries');
+                        $doctor->activeSubscription->refresh();
                         $subscription = $doctor->activeSubscription;
                         $totalLimit = $subscription->plan->summaries_limit;
                         $usagePercentage = ($subscription->used_summaries / $totalLimit) * 100;
@@ -128,6 +130,10 @@ class ProcessAi implements ShouldQueue
                         }
                     } else {
                         $doctor->wallet->decrement('balance', Plan::PAY_PER_USE_PRICE);
+                        $doctor->wallet->refresh();
+                        if ($doctor->wallet->balance <= 0) {
+                            $doctor->user->notify(new CreditsExhausted());
+                        }
                         $doctor->transactions()->create([
                             'amount' => Plan::PAY_PER_USE_PRICE,
                             'type' => 'usage',
