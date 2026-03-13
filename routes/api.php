@@ -69,6 +69,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/subscription/cancel', [SubscriptionController::class, 'cancel']);
     Route::get('/notifications', [NotificationController::class, 'index']);
     Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount']);
+    Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
 });
 
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);

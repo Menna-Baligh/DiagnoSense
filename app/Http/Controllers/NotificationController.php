@@ -21,4 +21,10 @@ class NotificationController extends Controller
             'unread_count' => $request->user()->unreadNotifications()->count(),
         ],200);
     }
+    public function markAsRead(Request $request, $id)
+    {
+        $notification = $request->user()->notifications()->findOrFail($id);
+        $notification->markAsRead();
+        return ApiResponse::success("Notification marked as read", null, 200);
+    }
 }
