@@ -32,4 +32,9 @@ class NotificationController extends Controller
         $request->user()->unreadNotifications->markAsRead();
         return ApiResponse::success("All notifications marked as read", null, 200);
     }
+    public function clearAll(Request $request)
+    {
+        $request->user()->notifications()->delete();
+        return ApiResponse::success("All notifications deleted", null, 200);
+    }
 }
