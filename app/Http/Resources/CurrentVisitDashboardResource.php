@@ -16,12 +16,12 @@ class CurrentVisitDashboardResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'               => $this->id,
-            'name'             => $this->user->name,
-            'age'              => $this->age . ' y/o',
-            'gender'           => ucfirst($this->gender),
+            'id' => $this->id,
+            'name' => $this->user->name,
+            'age' => $this->age.' y/o',
+            'gender' => ucfirst($this->gender),
             'appointment_time' => Carbon::parse($this->next_visit_date)->format('h:i A'),
-            'ai_insight'       => [
+            'ai_insight' => [
                 'summary' => $this->latestAiAnalysisResult?->ai_insight ?? 'No AI insight found for this patient.',
             ],
         ];

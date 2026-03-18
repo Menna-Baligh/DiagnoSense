@@ -18,12 +18,12 @@ class QueueDashboardResource extends JsonResource
         $currentId = $request->input('current_id');
 
         return [
-            'id'               => $this->id,
-            'name'             => $this->user->name,
-            'age'              => $this->age,
-            'gender'           => ucfirst($this->gender),
+            'id' => $this->id,
+            'name' => $this->user->name,
+            'age' => $this->age,
+            'gender' => ucfirst($this->gender),
             'appointment_time' => Carbon::parse($this->next_visit_date)->format('h:i A'),
-            'status_tag'       => $this->id == $currentId ? 'Now' : 'Waiting',
+            'status_tag' => $this->id == $currentId ? 'Now' : 'Waiting',
         ];
     }
 }

@@ -28,6 +28,7 @@ class CreditsExhausted extends Notification implements ShouldBroadcast
     {
         return ['database', 'broadcast'];
     }
+
     public function toDatabase($notifiable): array
     {
         return [
@@ -36,7 +37,7 @@ class CreditsExhausted extends Notification implements ShouldBroadcast
         ];
     }
 
-    public function toBroadcast($notifiable):BroadcastMessage
+    public function toBroadcast($notifiable): BroadcastMessage
     {
         return new BroadcastMessage([
             'title' => 'Out of Credits!',

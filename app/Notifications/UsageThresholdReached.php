@@ -12,6 +12,7 @@ class UsageThresholdReached extends Notification implements ShouldBroadcast
     use Queueable;
 
     protected $percentage;
+
     public function __construct($percentage = 80)
     {
         $this->percentage = $percentage;

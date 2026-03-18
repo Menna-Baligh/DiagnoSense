@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\SocialAuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KeyPointController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Patient\PatientController;
@@ -17,8 +18,6 @@ use App\Http\Controllers\VisitController;
 use App\Http\Controllers\VisitItemController;
 use App\Http\Controllers\WalletController;
 use Illuminate\Support\Facades\Broadcast;
-use Illuminate\Support\Facades\Redirect;
-use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('check-user-type')->group(function () {
@@ -82,4 +81,3 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);
 Broadcast::routes(['middleware' => ['auth:sanctum']]);
-
