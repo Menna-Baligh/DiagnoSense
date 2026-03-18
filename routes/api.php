@@ -18,6 +18,7 @@ use App\Http\Controllers\VisitItemController;
 use App\Http\Controllers\WalletController;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Redirect;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('check-user-type')->group(function () {
@@ -76,3 +77,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);
 Broadcast::routes(['middleware' => ['auth:sanctum']]);
+
+
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::get('/dashboard/summary', [DashboardController::class, 'summary']);
+    Route::get('/dashboard/status-distribution', [DashboardController::class, 'statusDistribution']);
+    Route::get('/dashboard/top-diseases', [DashboardController::class, 'topDiseases']);
+    Route::get('/dashboard/today-visits', [DashboardController::class, 'todayVisits']);
+});
