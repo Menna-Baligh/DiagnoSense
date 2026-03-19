@@ -206,6 +206,12 @@
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-PATCHapi-dashboard--patientId--attend">
                                 <a href="#endpoints-PATCHapi-dashboard--patientId--attend">PATCH api/dashboard/{patientId}/attend</a>
                             </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-GETapi-patients--patientId-">
+                                <a href="#endpoints-GETapi-patients--patientId-">GET api/patients/{patientId}</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-PUTapi-patients--patientId-">
+                                <a href="#endpoints-PUTapi-patients--patientId-">PUT api/patients/{patientId}</a>
+                            </li>
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-POSTapi-stripe-webhook">
                                 <a href="#endpoints-POSTapi-stripe-webhook">POST api/stripe/webhook</a>
                             </li>
@@ -1880,7 +1886,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "email=kunde.eloisa@example.com"\
     --form "phone=hfqcoynlazghd"\
     --form "age=17"\
-    --form "gender=female"\
+    --form "gender=male"\
     --form "national_id=mqeopfuudtdsu"\
     --form "is_smoker=1"\
     --form "previous_surgeries="\
@@ -1890,9 +1896,9 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "allergies=consequatur"\
     --form "family_history=consequatur"\
     --form "current_complaint=consequatur"\
-    --form "lab[]=@C:\Users\Solo\AppData\Local\Temp\phpEA73.tmp" \
-    --form "radiology[]=@C:\Users\Solo\AppData\Local\Temp\phpEA74.tmp" \
-    --form "medical_history[]=@C:\Users\Solo\AppData\Local\Temp\phpEA85.tmp" </code></pre></div>
+    --form "lab[]=@C:\Users\Solo\AppData\Local\Temp\php18FC.tmp" \
+    --form "radiology[]=@C:\Users\Solo\AppData\Local\Temp\php18FD.tmp" \
+    --form "medical_history[]=@C:\Users\Solo\AppData\Local\Temp\php18FE.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -1910,7 +1916,7 @@ body.append('name', 'vmqeopfuudtdsufvyvddq');
 body.append('email', 'kunde.eloisa@example.com');
 body.append('phone', 'hfqcoynlazghd');
 body.append('age', '17');
-body.append('gender', 'female');
+body.append('gender', 'male');
 body.append('national_id', 'mqeopfuudtdsu');
 body.append('is_smoker', '1');
 body.append('previous_surgeries', '');
@@ -2061,10 +2067,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="gender"                data-endpoint="POSTapi-patients"
-               value="female"
+               value="male"
                data-component="body">
     <br>
-<p>Example: <code>female</code></p>
+<p>Example: <code>male</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>male</code></li> <li><code>female</code></li></ul>
         </div>
@@ -2400,8 +2406,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --data "{
     \"patient_id\": \"consequatur\",
-    \"has_next_visit\": false,
-    \"next_visit_date\": \"2026-03-19T00:43:30\",
+    \"has_next_visit\": true,
+    \"next_visit_date\": \"2026-03-19T06:09:12\",
     \"action\": \"mqeopfuudtdsufvyvddqa\"
 }"
 </code></pre></div>
@@ -2419,8 +2425,8 @@ const headers = {
 
 let body = {
     "patient_id": "consequatur",
-    "has_next_visit": false,
-    "next_visit_date": "2026-03-19T00:43:30",
+    "has_next_visit": true,
+    "next_visit_date": "2026-03-19T06:09:12",
     "action": "mqeopfuudtdsufvyvddqa"
 };
 
@@ -2538,7 +2544,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
             <code>false</code>
         </label>
     <br>
-<p>Example: <code>false</code></p>
+<p>Example: <code>true</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>next_visit_date</code></b>&nbsp;&nbsp;
@@ -2547,10 +2553,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="next_visit_date"                data-endpoint="POSTapi-visits"
-               value="2026-03-19T00:43:30"
+               value="2026-03-19T06:09:12"
                data-component="body">
     <br>
-<p>This field is required when <code>has_next_visit</code> is <code>true</code>. Must be a valid date. Example: <code>2026-03-19T00:43:30</code></p>
+<p>This field is required when <code>has_next_visit</code> is <code>true</code>. Must be a valid date. Example: <code>2026-03-19T06:09:12</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>action</code></b>&nbsp;&nbsp;
@@ -2593,7 +2599,7 @@ Must be one of:
     \"title\": \"vazjrcnfbaqywuxhgjjmz\",
     \"description\": \"Dolores dolorum amet iste laborum eius est dolor.\",
     \"notes\": \"consequatur\",
-    \"next_visit_date\": \"2026-03-19T00:43:30\",
+    \"next_visit_date\": \"2026-03-19T06:09:12\",
     \"action\": \"mqeopfuudtdsufvyvddqa\"
 }"
 </code></pre></div>
@@ -2618,7 +2624,7 @@ let body = {
     "title": "vazjrcnfbaqywuxhgjjmz",
     "description": "Dolores dolorum amet iste laborum eius est dolor.",
     "notes": "consequatur",
-    "next_visit_date": "2026-03-19T00:43:30",
+    "next_visit_date": "2026-03-19T06:09:12",
     "action": "mqeopfuudtdsufvyvddqa"
 };
 
@@ -2822,10 +2828,10 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="next_visit_date"                data-endpoint="POSTapi-visits--visit--items"
-               value="2026-03-19T00:43:30"
+               value="2026-03-19T06:09:12"
                data-component="body">
     <br>
-<p>Must be a valid date. Example: <code>2026-03-19T00:43:30</code></p>
+<p>Must be a valid date. Example: <code>2026-03-19T06:09:12</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>action</code></b>&nbsp;&nbsp;
@@ -3412,7 +3418,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"status\": \"under review\"
+    \"status\": \"stable\"
 }"
 </code></pre></div>
 
@@ -3428,7 +3434,7 @@ const headers = {
 };
 
 let body = {
-    "status": "under review"
+    "status": "stable"
 };
 
 fetch(url, {
@@ -3533,10 +3539,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="status"                data-endpoint="PATCHapi-patients--patient--status"
-               value="under review"
+               value="stable"
                data-component="body">
     <br>
-<p>Example: <code>under review</code></p>
+<p>Example: <code>stable</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>critical</code></li> <li><code>stable</code></li> <li><code>under review</code></li></ul>
         </div>
@@ -4236,7 +4242,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --data "{
     \"insight\": \"consequatur\",
-    \"priority\": \"high\"
+    \"priority\": \"low\"
 }"
 </code></pre></div>
 
@@ -4253,7 +4259,7 @@ const headers = {
 
 let body = {
     "insight": "consequatur",
-    "priority": "high"
+    "priority": "low"
 };
 
 fetch(url, {
@@ -4370,10 +4376,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="priority"                data-endpoint="POSTapi-patients--patientId--key-info"
-               value="high"
+               value="low"
                data-component="body">
     <br>
-<p>Example: <code>high</code></p>
+<p>Example: <code>low</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>high</code></li> <li><code>medium</code></li> <li><code>low</code></li></ul>
         </div>
@@ -6741,6 +6747,541 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <p>Example: <code>consequatur</code></p>
             </div>
                     </form>
+
+                    <h2 id="endpoints-GETapi-patients--patientId-">GET api/patients/{patientId}</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-GETapi-patients--patientId-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://localhost:8000/api/patients/consequatur" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost:8000/api/patients/consequatur"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-patients--patientId-">
+            <blockquote>
+            <p>Example response (401):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary style="cursor: pointer;">
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+vary: Origin
+ </code></pre></details>         <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Unauthenticated.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-patients--patientId-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-patients--patientId-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-patients--patientId-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-patients--patientId-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-patients--patientId-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-patients--patientId-" data-method="GET"
+      data-path="api/patients/{patientId}"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-patients--patientId-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-patients--patientId-"
+                    onclick="tryItOut('GETapi-patients--patientId-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-patients--patientId-"
+                    onclick="cancelTryOut('GETapi-patients--patientId-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-patients--patientId-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/patients/{patientId}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-patients--patientId-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-patients--patientId-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>patientId</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="patientId"                data-endpoint="GETapi-patients--patientId-"
+               value="consequatur"
+               data-component="url">
+    <br>
+<p>Example: <code>consequatur</code></p>
+            </div>
+                    </form>
+
+                    <h2 id="endpoints-PUTapi-patients--patientId-">PUT api/patients/{patientId}</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-PUTapi-patients--patientId-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request PUT \
+    "http://localhost:8000/api/patients/consequatur" \
+    --header "Content-Type: multipart/form-data" \
+    --header "Accept: application/json" \
+    --form "name=vmqeopfuudtdsufvyvddq"\
+    --form "email=kunde.eloisa@example.com"\
+    --form "phone=hfqcoynlazghd"\
+    --form "age=17"\
+    --form "gender=female"\
+    --form "national_id=consequatur"\
+    --form "is_smoker=1"\
+    --form "previous_surgeries=1"\
+    --form "chronic_diseases[]=consequatur"\
+    --form "previous_surgeries_name=consequatur"\
+    --form "medications=consequatur"\
+    --form "allergies=consequatur"\
+    --form "family_history=consequatur"\
+    --form "current_complaint=consequatur"\
+    --form "lab[]=@C:\Users\Solo\AppData\Local\Temp\php1AB4.tmp" \
+    --form "radiology[]=@C:\Users\Solo\AppData\Local\Temp\php1AB5.tmp" \
+    --form "medical_history[]=@C:\Users\Solo\AppData\Local\Temp\php1AC6.tmp" </code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost:8000/api/patients/consequatur"
+);
+
+const headers = {
+    "Content-Type": "multipart/form-data",
+    "Accept": "application/json",
+};
+
+const body = new FormData();
+body.append('name', 'vmqeopfuudtdsufvyvddq');
+body.append('email', 'kunde.eloisa@example.com');
+body.append('phone', 'hfqcoynlazghd');
+body.append('age', '17');
+body.append('gender', 'female');
+body.append('national_id', 'consequatur');
+body.append('is_smoker', '1');
+body.append('previous_surgeries', '1');
+body.append('chronic_diseases[]', 'consequatur');
+body.append('previous_surgeries_name', 'consequatur');
+body.append('medications', 'consequatur');
+body.append('allergies', 'consequatur');
+body.append('family_history', 'consequatur');
+body.append('current_complaint', 'consequatur');
+body.append('lab[]', document.querySelector('input[name="lab[]"]').files[0]);
+body.append('radiology[]', document.querySelector('input[name="radiology[]"]').files[0]);
+body.append('medical_history[]', document.querySelector('input[name="medical_history[]"]').files[0]);
+
+fetch(url, {
+    method: "PUT",
+    headers,
+    body,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-PUTapi-patients--patientId-">
+</span>
+<span id="execution-results-PUTapi-patients--patientId-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-PUTapi-patients--patientId-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-PUTapi-patients--patientId-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-PUTapi-patients--patientId-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-PUTapi-patients--patientId-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-PUTapi-patients--patientId-" data-method="PUT"
+      data-path="api/patients/{patientId}"
+      data-authed="0"
+      data-hasfiles="1"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('PUTapi-patients--patientId-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-PUTapi-patients--patientId-"
+                    onclick="tryItOut('PUTapi-patients--patientId-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-PUTapi-patients--patientId-"
+                    onclick="cancelTryOut('PUTapi-patients--patientId-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-PUTapi-patients--patientId-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-darkblue">PUT</small>
+            <b><code>api/patients/{patientId}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="PUTapi-patients--patientId-"
+               value="multipart/form-data"
+               data-component="header">
+    <br>
+<p>Example: <code>multipart/form-data</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="PUTapi-patients--patientId-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>patientId</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="patientId"                data-endpoint="PUTapi-patients--patientId-"
+               value="consequatur"
+               data-component="url">
+    <br>
+<p>Example: <code>consequatur</code></p>
+            </div>
+                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="name"                data-endpoint="PUTapi-patients--patientId-"
+               value="vmqeopfuudtdsufvyvddq"
+               data-component="body">
+    <br>
+<p>Must not be greater than 255 characters. Example: <code>vmqeopfuudtdsufvyvddq</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>email</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="email"                data-endpoint="PUTapi-patients--patientId-"
+               value="kunde.eloisa@example.com"
+               data-component="body">
+    <br>
+<p>This field is required when <code>phone</code> is not present. Must be a valid email address. Must not be greater than 255 characters. Example: <code>kunde.eloisa@example.com</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>phone</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="phone"                data-endpoint="PUTapi-patients--patientId-"
+               value="hfqcoynlazghd"
+               data-component="body">
+    <br>
+<p>This field is required when <code>email</code> is not present. Must not be greater than 15 characters. Example: <code>hfqcoynlazghd</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>age</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="age"                data-endpoint="PUTapi-patients--patientId-"
+               value="17"
+               data-component="body">
+    <br>
+<p>Example: <code>17</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>gender</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="gender"                data-endpoint="PUTapi-patients--patientId-"
+               value="female"
+               data-component="body">
+    <br>
+<p>Example: <code>female</code></p>
+Must be one of:
+<ul style="list-style-type: square;"><li><code>male</code></li> <li><code>female</code></li></ul>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>national_id</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="national_id"                data-endpoint="PUTapi-patients--patientId-"
+               value="consequatur"
+               data-component="body">
+    <br>
+<p>Example: <code>consequatur</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>is_smoker</code></b>&nbsp;&nbsp;
+<small>boolean</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <label data-endpoint="PUTapi-patients--patientId-" style="display: none">
+            <input type="radio" name="is_smoker"
+                   value="true"
+                   data-endpoint="PUTapi-patients--patientId-"
+                   data-component="body"             >
+            <code>true</code>
+        </label>
+        <label data-endpoint="PUTapi-patients--patientId-" style="display: none">
+            <input type="radio" name="is_smoker"
+                   value="false"
+                   data-endpoint="PUTapi-patients--patientId-"
+                   data-component="body"             >
+            <code>false</code>
+        </label>
+    <br>
+<p>Example: <code>true</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>previous_surgeries</code></b>&nbsp;&nbsp;
+<small>boolean</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <label data-endpoint="PUTapi-patients--patientId-" style="display: none">
+            <input type="radio" name="previous_surgeries"
+                   value="true"
+                   data-endpoint="PUTapi-patients--patientId-"
+                   data-component="body"             >
+            <code>true</code>
+        </label>
+        <label data-endpoint="PUTapi-patients--patientId-" style="display: none">
+            <input type="radio" name="previous_surgeries"
+                   value="false"
+                   data-endpoint="PUTapi-patients--patientId-"
+                   data-component="body"             >
+            <code>false</code>
+        </label>
+    <br>
+<p>Example: <code>true</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>chronic_diseases</code></b>&nbsp;&nbsp;
+<small>string[]</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="chronic_diseases[0]"                data-endpoint="PUTapi-patients--patientId-"
+               data-component="body">
+        <input type="text" style="display: none"
+               name="chronic_diseases[1]"                data-endpoint="PUTapi-patients--patientId-"
+               data-component="body">
+    <br>
+
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>previous_surgeries_name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="previous_surgeries_name"                data-endpoint="PUTapi-patients--patientId-"
+               value="consequatur"
+               data-component="body">
+    <br>
+<p>This field is required when <code>previous_surgeries</code> is <code>true</code>. Example: <code>consequatur</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>medications</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="medications"                data-endpoint="PUTapi-patients--patientId-"
+               value="consequatur"
+               data-component="body">
+    <br>
+<p>Example: <code>consequatur</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>allergies</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="allergies"                data-endpoint="PUTapi-patients--patientId-"
+               value="consequatur"
+               data-component="body">
+    <br>
+<p>Example: <code>consequatur</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>family_history</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="family_history"                data-endpoint="PUTapi-patients--patientId-"
+               value="consequatur"
+               data-component="body">
+    <br>
+<p>Example: <code>consequatur</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>current_complaint</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="current_complaint"                data-endpoint="PUTapi-patients--patientId-"
+               value="consequatur"
+               data-component="body">
+    <br>
+<p>Example: <code>consequatur</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>lab</code></b>&nbsp;&nbsp;
+<small>file[]</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="file" style="display: none"
+                              name="lab[0]"                data-endpoint="PUTapi-patients--patientId-"
+               data-component="body">
+        <input type="file" style="display: none"
+               name="lab[1]"                data-endpoint="PUTapi-patients--patientId-"
+               data-component="body">
+    <br>
+<p>Must be a file. Must not be greater than 10240 kilobytes.</p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>radiology</code></b>&nbsp;&nbsp;
+<small>file[]</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="file" style="display: none"
+                              name="radiology[0]"                data-endpoint="PUTapi-patients--patientId-"
+               data-component="body">
+        <input type="file" style="display: none"
+               name="radiology[1]"                data-endpoint="PUTapi-patients--patientId-"
+               data-component="body">
+    <br>
+<p>Must be a file. Must not be greater than 10240 kilobytes.</p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>medical_history</code></b>&nbsp;&nbsp;
+<small>file[]</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="file" style="display: none"
+                              name="medical_history[0]"                data-endpoint="PUTapi-patients--patientId-"
+               data-component="body">
+        <input type="file" style="display: none"
+               name="medical_history[1]"                data-endpoint="PUTapi-patients--patientId-"
+               data-component="body">
+    <br>
+<p>Must be a file. Must not be greater than 10240 kilobytes.</p>
+        </div>
+        </form>
 
                     <h2 id="endpoints-POSTapi-stripe-webhook">POST api/stripe/webhook</h2>
 

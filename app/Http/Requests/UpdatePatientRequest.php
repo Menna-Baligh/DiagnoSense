@@ -28,21 +28,22 @@ class UpdatePatientRequest extends FormRequest
     public function rules(): array
     {
         $patientId = $this->route('patientId');
-        $patient = auth()->user()->doctor->patients()->findOrFail($patientId);
+        $user = auth()->user();
+        $patient = $user ? $user->doctor->patients()->find($patientId) : null;
 
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => [
                 'required_without:phone', 'string', 'email', 'max:255',
-                Rule::unique('users')->ignore($patient->user_id)->where(fn ($q) => $q->where('type', 'patient')),
+                Rule::unique('users')->ignore($patient?->user_id)->where(fn ($q) => $q->where('type', 'patient')),
             ],
             'phone' => [
                 'required_without:email', 'string', 'max:15',
-                Rule::unique('users')->ignore($patient->user_id)->where(fn ($q) => $q->where('type', 'patient')),
+                Rule::unique('users')->ignore($patient?->user_id)->where(fn ($q) => $q->where('type', 'patient')),
             ],
             'age' => ['required', 'integer'],
             'gender' => ['required', 'string', 'in:male,female'],
-            'national_id' => ['nullable', 'string', Rule::unique('patients')->ignore($patient->id)],
+            'national_id' => ['nullable', 'string', Rule::unique('patients')->ignore($patient?->id)],
             'is_smoker' => ['nullable', 'boolean'],
             'previous_surgeries' => ['nullable', 'boolean'],
             'chronic_diseases' => ['nullable', 'array'],

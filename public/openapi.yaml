@@ -980,15 +980,98 @@ paths:
       tags:
         - Patients List
       security: []
-    parameters:
-      -
-        in: path
-        name: patientId
-        description: ''
-        example: consequatur
+    get:
+      summary: 'Get Pre-Filled Patient Data for Editing'
+      operationId: getApiPatientsPatientId
+      description: 'Returns all patient details, including personal info, medical history, and existing file links to pre-fill the edit form.'
+      tags:
+        - Patient Profile
+      security:
+        - sanctum: [] # Added because this is sensitive data
+      parameters:
+        - in: path
+          name: patientId
+          required: true
+          schema:
+            type: integer
+          example: 48
+      responses:
+        200:
+          description: 'Patient data retrieved successfully'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: "Data retrieved successfully"
+                  data:
+                    id: 48
+                    personal_info:
+                      name: "Menna Baligh"
+                      email: "manona@gmail.com"
+                      phone: "01019018138"
+                      age: 22
+                      gender: "female"
+                      national_id: "7863877"
+                    medical_history:
+                      current_complaint: "Persistent chest discomfort for the past 3 days..."
+                      is_smoker: true
+                      previous_surgeries: true
+                      chronic_diseases: ["hypertension", "thyroid", "heart"]
+                      previous_surgeries_name: "Appendectomy – 1998, Left knee arthroscopy – 2015"
+                      medications: "Metformin 1000 mg, Amlodipine 5 mg..."
+                      allergies: "Penicillin (rash), Shrimp..."
+                      family_history: "Father had Type 2 Diabetes..."
+                    existing_files:
+                      - id: 55
+                        type: "medical_history"
+                        name: "Lab (3)_compressed.pdf"
+                        url: "https://diagnosensestorage.blob.core.windows.net/..."
+        401:
+          $ref: '#/components/responses/Unauthorized'
+
+    put:
+      summary: 'Update Patient Data'
+      operationId: putApiPatientsPatientId
+      description: 'Updates patient information and allows uploading new medical files (Lab, Radiology, etc.).'
+      tags:
+        - Patient Profile
+      security:
+        - sanctum: []
+      parameters:
+        - in: path
+          name: patientId
+          required: true
+          schema:
+            type: integer
+          example: 48
+      requestBody:
         required: true
-        schema:
-          type: string
+        content:
+          multipart/form-data: # Essential for file uploads
+            schema:
+              type: object
+              properties:
+                name: { type: string, example: "Menna Baligh" }
+                age: { type: integer, example: 22 }
+                gender: { type: string, enum: [male, female], example: "female" }
+                lab:
+                  type: array
+                  items: { type: string, format: binary }
+                # ... (Other properties stay the same)
+      responses:
+        200:
+          description: 'Patient updated successfully'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: "Patient file updated successfully"
+        401:
+          $ref: '#/components/responses/Unauthorized'
   /api/wallet/charge:
     post:
       summary: 'Charge Credits'
