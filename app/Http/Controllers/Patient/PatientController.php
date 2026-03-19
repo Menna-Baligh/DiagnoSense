@@ -24,6 +24,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use function PHPUnit\Framework\isNull;
 
 class PatientController extends Controller
 {
@@ -321,14 +322,18 @@ class PatientController extends Controller
             $complaintChanged = $request->has('current_complaint') && $request->current_complaint !== $oldComplaint;
 
             if ($hasNewFiles || $complaintChanged) {
+                if(!$doctor->billing_mode){
+                    throw new \Exception('No billing mode found you can not access AI features.');
+                }
 
-                if ($doctor->user->billing_mode == 'pay-per-use' && $doctor->wallet->balance < config('app.pay_per_use_cost')) {
+                if ($doctor->billing_mode == 'pay_per_use' && $doctor->wallet->balance < config('app.pay_per_use_cost')) {
                     throw new \Exception('Insufficient balance for AI analysis. Please recharge your wallet.');
                 }
 
-                if ($doctor->user->billing_mode != 'pay-per-use' && ! $doctor->activeSubscription) {
+                if ($doctor->billing_mode == 'subscription' && !$doctor->activeSubscription) {
                     throw new \Exception('No active subscription found. Please subscribe to a plan to access AI features.');
                 }
+
 
                 $analysis = AiAnalysisResult::create([
                     'patient_id' => $patient->id,
