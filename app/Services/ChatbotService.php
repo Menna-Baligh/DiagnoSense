@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Jobs\IngestPatientJob;
 use App\Models\Patient;
 use App\Models\PatientIngestion;
-use Illuminate\Support\Facades\Storage;
 
 class ChatbotService
 {
@@ -19,16 +18,7 @@ class ChatbotService
         $reports = $patient->reports;
         $hash = hash('sha256', $reports->pluck('file_path')->sort()->implode(','));
         if (! $this->isIngested($patientId, $hash)) {
-            $filesData = $reports->groupBy('type')->map(function ($reportsInGroup, $type) {
-                return [
-                    'type' => $type,
-                    'urls' => $reportsInGroup->pluck('file_path')->map(function ($path) {
-                        return Storage::disk('azure')->temporaryUrl($path, now()->addMinutes(60));
-                    }),
-                ];
-            })->values()->toArray();
-
-            dispatch(new IngestPatientJob($patientId, auth()->user()->doctor->id, $filesData, $hash, $question));
+            dispatch(new IngestPatientJob($patientId, auth()->user()->doctor->id, $hash, $question));
 
             return [
                 'message' => 'Preparing patient data...',

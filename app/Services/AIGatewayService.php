@@ -16,7 +16,7 @@ class AIGatewayService
 
     public function answer($patientId, $question)
     {
-        $answer = Http::timeout(config('services.ai.answer_timeout'))->post(config('services.ai.url').'ingest/query', [
+        $answer = Http::timeout(config('services.ai.answer_timeout'))->post(config('services.ai.url').'/query', [
             'patient_id' => $patientId,
             'question' => $question,
         ])->throw();
