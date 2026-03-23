@@ -16,6 +16,8 @@ use App\Http\Controllers\VisitController;
 use App\Http\Controllers\VisitItemController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\MedicalFileController;
+
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('check-user-type')->group(function () {
@@ -85,3 +87,12 @@ Route::get('/payment-success', function () {
 Route::get('/payment-cancel', function () {
     return response()->json(['message' => 'Payment cancelled.']);
 })->name('payment.cancel');
+
+
+Route::middleware('auth:sanctum')->group(function () {
+
+ Route::get('/patient/medical-history', [MedicalFileController::class, 'medicalHistoryFiles']);
+ Route::get('/patient/lab-reports', [MedicalFileController::class, 'labReports']);
+ Route::get('/patient/radiology-reports', [MedicalFileController::class, 'radiologyReports']);
+
+ });
