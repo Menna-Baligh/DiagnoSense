@@ -7,7 +7,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Notification;
 
-class PlanSubscribed extends Notification implements ShouldBroadcast
+class SubscriptionCancelled extends Notification implements ShouldBroadcast
 {
     use Queueable;
 
@@ -31,16 +31,16 @@ class PlanSubscribed extends Notification implements ShouldBroadcast
     public function toDatabase(object $notifiable): array
     {
         return [
-            'title' => 'New Subscription',
-            'message' => "Welcome to the {$this->planName} plan! Enjoy your new features.",
+            'title' => 'Subscription Cancelled',
+            'message' => "Your subscription to the {$this->planName} plan has been cancelled successfully.",
         ];
     }
 
     public function toBroadcast(object $notifiable): BroadcastMessage
     {
         return new BroadcastMessage([
-            'title' => 'New Subscription',
-            'message' => "Welcome to the {$this->planName} plan! Enjoy your new features.",
+            'title' => 'Subscription Cancelled',
+            'message' => "Your subscription to the {$this->planName} plan has been cancelled successfully.",
         ]);
     }
 }

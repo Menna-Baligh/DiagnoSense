@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Patient;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePatientRequest;
+use App\Http\Requests\UpdatePatientRequest;
 use App\Http\Requests\UpdatePatientStatusRequest;
 use App\Http\Resources\ActivityLogResource;
 use App\Http\Resources\DecisionSupportResource;
 use App\Http\Resources\KeyPointResource;
+use App\Http\Resources\PatientEditResource;
 use App\Http\Resources\PatientListResource;
 use App\Http\Resources\PatientOverviewResource;
 use App\Http\Responses\ApiResponse;
@@ -22,6 +24,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use function PHPUnit\Framework\isNull;
 
 class PatientController extends Controller
 {
@@ -260,5 +263,103 @@ class PatientController extends Controller
         $patient->delete();
 
         return ApiResponse::success('Patient deleted successfully.', null, 200);
+    }
+
+    public function show($patientId)
+    {
+        $doctor = auth()->user()->doctor;
+        $patient = $doctor->patients()->findOrFail($patientId);
+        $patient->load(['user', 'medicalHistory', 'reports']);
+
+        return ApiResponse::success('Data retrieved successfully', new PatientEditResource($patient), 200);
+    }
+
+    public function update(UpdatePatientRequest $request, $patientId)
+    {
+        $request->validated();
+        DB::beginTransaction();
+        $doctor = auth()->user()->doctor;
+        $patient = $doctor->patients()->findOrFail($patientId);
+        try {
+            $doctor = auth()->user()->doctor;
+            $patient = $doctor->patients()->with(['user', 'medicalHistory'])->findOrFail($patientId);
+
+            $patient->user->update($request->only(['name', 'email', 'phone']));
+
+            $patient->update($request->only(['age', 'gender', 'national_id']));
+
+            $oldComplaint = $patient->medicalHistory->current_complaint;
+
+            $patient->medicalHistory->update($request->only([
+                'is_smoker', 'previous_surgeries', 'chronic_diseases',
+                'previous_surgeries_name', 'medications', 'allergies',
+                'family_history', 'current_complaint',
+            ]));
+
+            $reportsTypes = ['lab', 'radiology', 'medical_history'];
+            $newPathsForAI = [];
+            $hasNewFiles = false;
+
+            foreach ($reportsTypes as $type) {
+                if ($request->hasFile($type)) {
+                    $hasNewFiles = true;
+                    foreach ($request->file($type) as $file) {
+                        $uniqueName = time().'_'.Str::random(5).'.'.$file->getClientOriginalExtension();
+                        $filePath = Storage::disk('azure')->putFileAs($type, $file, $uniqueName);
+
+                        Report::create([
+                            'patient_id' => $patient->id,
+                            'type' => $type,
+                            'file_name' => $file->getClientOriginalName(),
+                            'file_path' => $filePath,
+                            'mime_type' => $file->getMimeType(),
+                        ]);
+                        $newPathsForAI[$type][] = $filePath;
+                    }
+                }
+            }
+
+            $complaintChanged = $request->has('current_complaint') && $request->current_complaint !== $oldComplaint;
+
+            if ($hasNewFiles || $complaintChanged) {
+                if(!$doctor->billing_mode){
+                    throw new \Exception('No billing mode found you can not access AI features.');
+                }
+
+                if ($doctor->billing_mode == 'pay_per_use' && $doctor->wallet->balance < config('app.pay_per_use_cost')) {
+                    throw new \Exception('Insufficient balance for AI analysis. Please recharge your wallet.');
+                }
+
+                if ($doctor->billing_mode == 'subscription' && !$doctor->activeSubscription) {
+                    throw new \Exception('No active subscription found. Please subscribe to a plan to access AI features.');
+                }
+
+
+                $analysis = AiAnalysisResult::create([
+                    'patient_id' => $patient->id,
+                    'status' => 'processing',
+                ]);
+
+                $jobData = [
+                    'doctor_id' => $doctor->id,
+                    'age' => $patient->age,
+                    'gender' => $patient->gender,
+                    'history' => $patient->medicalHistory->fresh()->toArray(),
+                    'file_paths' => $newPathsForAI,
+                    'features' => ['decision_support' => $doctor->hasFeature('Decision Support')],
+                ];
+
+                ProcessAi::dispatch($analysis->id, $jobData);
+            }
+
+            DB::commit();
+
+            return ApiResponse::success('Patient file updated successfully', null, 200);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return ApiResponse::error('Update failed: '.$e->getMessage(), null, 500);
+        }
     }
 }

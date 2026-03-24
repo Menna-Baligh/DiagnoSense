@@ -7,9 +7,18 @@ servers:
   -
     url: 'http://localhost:8000'
 tags:
-  -
-    name: Endpoints
-    description: ''
+  - name: Auth
+    description: 'Operations related to User Authentication (Login, Register, OTP, etc.)'
+  - name: Patients List
+    description: 'Operations related to the list of patients (viewing, filtering, searching, etc.)'
+  - name: Patient Profile
+    description: 'Operations related to a specific patient (viewing profile, adding notes, updating status, etc.)'
+  - name: Subscriptions
+    description: 'Operations related to subscription plans and transactions.'
+  - name: Notifications
+    description: 'Operations related to user notifications.'
+  - name: Dashboard
+    description: 'Operations related to dashboard data and summaries.'
 paths:
   '/api/register/{type}':
     post:
@@ -19,7 +28,7 @@ paths:
       parameters: []
       responses: {  }
       tags:
-        - Endpoints
+        - Auth
       requestBody:
         required: true
         content:
@@ -68,7 +77,7 @@ paths:
       parameters: []
       responses: {  }
       tags:
-        - Endpoints
+        - Auth
       requestBody:
         required: true
         content:
@@ -107,7 +116,7 @@ paths:
       parameters: []
       responses: {  }
       tags:
-        - Endpoints
+        - Auth
       requestBody:
         required: true
         content:
@@ -140,7 +149,7 @@ paths:
       parameters: []
       responses: {  }
       tags:
-        - Endpoints
+        - Auth
       requestBody:
         required: true
         content:
@@ -179,7 +188,7 @@ paths:
       parameters: []
       responses: {  }
       tags:
-        - Endpoints
+        - Auth
       requestBody:
         required: true
         content:
@@ -218,7 +227,7 @@ paths:
       parameters: []
       responses: {  }
       tags:
-        - Endpoints
+        - Auth
       security: []
     parameters:
       -
@@ -237,7 +246,7 @@ paths:
       parameters: []
       responses: {  }
       tags:
-        - Endpoints
+        - Auth
       requestBody:
         required: true
         content:
@@ -292,7 +301,7 @@ paths:
                     type: string
                     example: 'Invalid user type.'
       tags:
-        - Endpoints
+        - Auth
       security: []
     parameters:
       -
@@ -323,7 +332,7 @@ paths:
                     type: string
                     example: 'https://accounts.google.com/o/oauth2/auth?client_id=1070705461335-kuvjl2bc2oaovka7fp3t8onv97qaotlj.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Fnontelepathically-pamphletary-cyndi.ngrok-free.dev%2Fapi%2Fgoogle%2Fcallback&scope=openid+profile+email&response_type=code'
       tags:
-        - Endpoints
+        - Auth
       security: []
   /api/patients:
     get:
@@ -345,7 +354,7 @@ paths:
                     type: string
                     example: Unauthenticated.
       tags:
-        - Endpoints
+        - Patients List
       security: []
     post:
       summary: 'Upload Patient Data'
@@ -354,7 +363,7 @@ paths:
       parameters: []
       responses: {  }
       tags:
-        - Endpoints
+        - Patients List
       requestBody:
         required: true
         content:
@@ -478,7 +487,7 @@ paths:
                     type: string
                     example: Unauthenticated.
       tags:
-        - Endpoints
+        - Patient Profile
       security: []
     post:
       summary: 'Add New Note'
@@ -487,7 +496,7 @@ paths:
       parameters: []
       responses: {  }
       tags:
-        - Endpoints
+        - Patient Profile
       requestBody:
         required: true
         content:
@@ -542,7 +551,7 @@ paths:
                     type: string
                     example: Unauthenticated.
       tags:
-        - Endpoints
+        - Patient Profile
       security: []
     parameters:
       -
@@ -561,7 +570,7 @@ paths:
       parameters: []
       responses: {  }
       tags:
-        - Endpoints
+        - Patient Profile
       requestBody:
         required: true
         content:
@@ -610,7 +619,7 @@ paths:
                     type: string
                     example: Unauthenticated.
       tags:
-        - Endpoints
+        - Patients List
       security: []
     parameters:
       -
@@ -641,7 +650,7 @@ paths:
                     type: string
                     example: Unauthenticated.
       tags:
-        - Endpoints
+        - Patients List
       security: []
   '/api/key-points/{keyPointId}':
     delete:
@@ -651,7 +660,7 @@ paths:
       parameters: []
       responses: {  }
       tags:
-        - Endpoints
+        - Patient Profile
       security: []
     patch:
       summary: 'Edit Key Point'
@@ -660,7 +669,7 @@ paths:
       parameters: []
       responses: {  }
       tags:
-        - Endpoints
+        - Patient Profile
       requestBody:
         required: true
         content:
@@ -705,7 +714,7 @@ paths:
                     type: string
                     example: Unauthenticated.
       tags:
-        - Endpoints
+        - Patient Profile
       security: []
     parameters:
       -
@@ -724,7 +733,7 @@ paths:
       parameters: []
       responses: {  }
       tags:
-        - Endpoints
+        - Patient Profile
       requestBody:
         required: true
         content:
@@ -768,7 +777,7 @@ paths:
       parameters: []
       responses: {  }
       tags:
-        - Endpoints
+        - Patient Profile
       requestBody:
         required: true
         content:
@@ -865,7 +874,7 @@ paths:
                     type: string
                     example: Unauthenticated.
       tags:
-        - Endpoints
+        - Patient Profile
       security: []
     parameters:
       -
@@ -884,7 +893,7 @@ paths:
       parameters: []
       responses: {  }
       tags:
-        - Endpoints
+        - Patient Profile
       security: []
     parameters:
       -
@@ -911,7 +920,7 @@ paths:
       parameters: []
       responses: {  }
       tags:
-        - Endpoints
+        - Patient Profile
       security: []
     parameters:
       -
@@ -950,7 +959,7 @@ paths:
                     type: string
                     example: Unauthenticated.
       tags:
-        - Endpoints
+        - Patient Profile
       security: []
     parameters:
       -
@@ -969,17 +978,100 @@ paths:
       parameters: []
       responses: {  }
       tags:
-        - Endpoints
+        - Patients List
       security: []
-    parameters:
-      -
-        in: path
-        name: patientId
-        description: ''
-        example: consequatur
+    get:
+      summary: 'Get Pre-Filled Patient Data for Editing'
+      operationId: getApiPatientsPatientId
+      description: 'Returns all patient details, including personal info, medical history, and existing file links to pre-fill the edit form.'
+      tags:
+        - Patient Profile
+      security:
+        - sanctum: [] # Added because this is sensitive data
+      parameters:
+        - in: path
+          name: patientId
+          required: true
+          schema:
+            type: integer
+          example: 48
+      responses:
+        200:
+          description: 'Patient data retrieved successfully'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: "Data retrieved successfully"
+                  data:
+                    id: 48
+                    personal_info:
+                      name: "Menna Baligh"
+                      email: "manona@gmail.com"
+                      phone: "01019018138"
+                      age: 22
+                      gender: "female"
+                      national_id: "7863877"
+                    medical_history:
+                      current_complaint: "Persistent chest discomfort for the past 3 days..."
+                      is_smoker: true
+                      previous_surgeries: true
+                      chronic_diseases: ["hypertension", "thyroid", "heart"]
+                      previous_surgeries_name: "Appendectomy – 1998, Left knee arthroscopy – 2015"
+                      medications: "Metformin 1000 mg, Amlodipine 5 mg..."
+                      allergies: "Penicillin (rash), Shrimp..."
+                      family_history: "Father had Type 2 Diabetes..."
+                    existing_files:
+                      - id: 55
+                        type: "medical_history"
+                        name: "Lab (3)_compressed.pdf"
+                        url: "https://diagnosensestorage.blob.core.windows.net/..."
+        401:
+          $ref: '#/components/responses/Unauthorized'
+
+    put:
+      summary: 'Update Patient Data'
+      operationId: putApiPatientsPatientId
+      description: 'Updates patient information and allows uploading new medical files (Lab, Radiology, etc.).'
+      tags:
+        - Patient Profile
+      security:
+        - sanctum: []
+      parameters:
+        - in: path
+          name: patientId
+          required: true
+          schema:
+            type: integer
+          example: 48
+      requestBody:
         required: true
-        schema:
-          type: string
+        content:
+          multipart/form-data: # Essential for file uploads
+            schema:
+              type: object
+              properties:
+                name: { type: string, example: "Menna Baligh" }
+                age: { type: integer, example: 22 }
+                gender: { type: string, enum: [male, female], example: "female" }
+                lab:
+                  type: array
+                  items: { type: string, format: binary }
+                # ... (Other properties stay the same)
+      responses:
+        200:
+          description: 'Patient updated successfully'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: "Patient file updated successfully"
+        401:
+          $ref: '#/components/responses/Unauthorized'
   /api/wallet/charge:
     post:
       summary: 'Charge Credits'
@@ -988,7 +1080,7 @@ paths:
       parameters: []
       responses: {  }
       tags:
-        - Endpoints
+        - Subscriptions
       requestBody:
         required: true
         content:
@@ -1023,7 +1115,7 @@ paths:
                     type: string
                     example: Unauthenticated.
       tags:
-        - Endpoints
+        - Subscriptions
       security: []
   /api/subscription/subscribe:
     post:
@@ -1033,7 +1125,7 @@ paths:
       parameters: []
       responses: {  }
       tags:
-        - Endpoints
+        - Subscriptions
       requestBody:
         required: true
         content:
@@ -1056,7 +1148,7 @@ paths:
       parameters: []
       responses: {  }
       tags:
-        - Endpoints
+        - Subscriptions
       security: []
   /api/subscription/plans:
     get:
@@ -1078,7 +1170,7 @@ paths:
                     type: string
                     example: Unauthenticated.
       tags:
-        - Endpoints
+        - Subscriptions
       security: []
   /api/subscription/current:
     get:
@@ -1100,7 +1192,7 @@ paths:
                     type: string
                     example: Unauthenticated.
       tags:
-        - Endpoints
+        - Subscriptions
       security: []
   /api/subscription/cancel:
     post:
@@ -1110,7 +1202,7 @@ paths:
       parameters: []
       responses: {  }
       tags:
-        - Endpoints
+        - Subscriptions
       security: []
   /api/notifications:
     get:
@@ -1132,7 +1224,7 @@ paths:
                     type: string
                     example: Unauthenticated.
       tags:
-        - Endpoints
+        - Notifications
       security: []
   /api/notifications/unread-count:
     get:
@@ -1154,7 +1246,7 @@ paths:
                     type: string
                     example: Unauthenticated.
       tags:
-        - Endpoints
+        - Notifications
       security: []
   '/api/notifications/{id}/read':
     patch:
@@ -1164,7 +1256,7 @@ paths:
       parameters: []
       responses: {  }
       tags:
-        - Endpoints
+        - Notifications
       security: []
     parameters:
       -
@@ -1183,7 +1275,7 @@ paths:
       parameters: []
       responses: {  }
       tags:
-        - Endpoints
+        - Notifications
       security: []
   /api/notifications/clear-all:
     delete:
@@ -1193,7 +1285,7 @@ paths:
       parameters: []
       responses: {  }
       tags:
-        - Endpoints
+        - Notifications
       security: []
   /api/broadcasting/auth:
     get:
@@ -1215,5 +1307,164 @@ paths:
                     type: string
                     example: Unauthenticated.
       tags:
-        - Endpoints
+        - Notifications
       security: []
+  /api/dashboard/summary:
+    get:
+      summary: 'Retrieve Dashboard Widgets Summary'
+      operationId: getApiDashboardSummary
+      description: 'Fetches core doctor statistics including total patients, today’s appointments, and monthly growth metrics for the top cards.'
+      tags:
+        - Dashboard
+      security:
+        - sanctum: []
+      responses:
+        200:
+          description: 'Dashboard stats retrieved successfully'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: "Dashboard summary retrieved successfully"
+                  data:
+                    doctor_name: "Dr. Layla"
+                    widgets:
+                      total_patients: "248"
+                      today_appointments: 8
+                      reports_analyzed: "1,340"
+                      monthly_growth:
+                        details:
+                          last_month: 34
+                          this_month: 45
+                          difference: "+11"
+                          growth_rate: "32.35%"
+                          trend: "up"
+        401:
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/dashboard/status-distribution:
+    get:
+      summary: 'Retrieve Status Distribution (Pie Chart)'
+      operationId: getApiDashboardStatusDistribution
+      description: 'Returns the count and percentage of patients by status (Critical, Stable, Under Review).'
+      tags:
+        - Dashboard
+      security:
+        - sanctum: []
+      responses:
+        200:
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  data:
+                    total_registered_patients: 248
+                    pie-chart_data:
+                      - { status: "stable", value: 150, percentage: 60 }
+                      - { status: "critical", value: 62, percentage: 25 }
+                      - { status: "under review", value: 36, percentage: 15 }
+        401:
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/dashboard/top-diseases:
+    get:
+      summary: 'Retrieve Top 5 Chronic Diseases (Bar Chart)'
+      operationId: getApiDashboardTopDiseases
+      description: 'Aggregates patient medical history to find the most prevalent chronic conditions.'
+      tags:
+        - Dashboard
+      security:
+        - sanctum: []
+      responses:
+        200:
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                example:
+                  success: true
+                  data:
+                    - { label: "Hypertension", value: 156 }
+                    - { label: "Diabetes", value: 142 }
+                    - { label: "Heart Disease", value: 98 }
+        401:
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/dashboard/today-visits:
+    get:
+      summary: 'Retrieve Daily Appointment Queue'
+      operationId: getApiDashboardTodayVisits
+      description: 'Lists today’s queue, highlighting the patient currently being attended and their AI-generated diagnostic insights.'
+      tags:
+        - Dashboard
+      security:
+        - sanctum: []
+      responses:
+        200:
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  data:
+                    current_attending:
+                      id: 1
+                      name: "Ahmed Mohamed"
+                      age: "52 y/o"
+                      gender: "Male"
+                      appointment_time: "09:00 AM"
+                      ai_insight:
+                        summary: "AI detected potential cardiac anomaly. Elevated troponin levels observed."
+                    full_queue_list:
+                      - { id: 1, name: "Ahmed Mohamed", age: 52, gender: "Male", appointment_time: "09:00 AM", status_tag: "Now" }
+                      - { id: 2, name: "Sarah Kamal", age: 38, gender: "Female", appointment_time: "10:00 AM", status_tag: "Waiting" }
+                    remaining_count_label: "4 remaining"
+        401:
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/dashboard/{patientId}/attend:
+    patch:
+      summary: 'Mark Patient as Attended'
+      operationId: patchApiDashboardPatientIdAttend
+      tags:
+        - Dashboard
+      parameters:
+        - in: path
+          name: patientId
+          required: true
+          schema:
+            type: integer
+      security:
+        - sanctum: []
+      responses:
+        200:
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: "Patient marked as attended and queue updated successfully."
+
+components:
+  responses:
+    Unauthorized:
+      description: 'Unauthenticated'
+      content:
+        application/json:
+          schema:
+            type: object
+            example:
+              message: "Unauthenticated."
+

@@ -10,6 +10,7 @@ use App\Models\Plan;
 use App\Notifications\CreditsExhausted;
 use App\Notifications\PayPerUseActivated;
 use App\Notifications\PlanSubscribed;
+use App\Notifications\SubscriptionCancelled;
 use App\Services\SubscriptionService;
 use Illuminate\Http\Request;
 
@@ -134,6 +135,7 @@ class SubscriptionController extends Controller
             $remaining = $subscription->plan->summaries_limit - $subscription->used_summaries;
             $message = "Subscription cancelled. You can still use your remaining {$remaining} summaries until ".$subscription->expires_at->format('D, F j, Y');
         }
+        $doctor->user->notify(new SubscriptionCancelled($subscription->plan->name));
 
         return ApiResponse::success($message, null, 200);
     }
