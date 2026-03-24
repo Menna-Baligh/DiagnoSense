@@ -104,7 +104,7 @@ class DashboardController extends Controller
             'Status distribution retrieved successfully',
             [
                 'total_registered_patients' => $totalPatients,
-                'pie-chart_data' => $result,
+                'pie_chart_data' => $result,
             ],
             200
         );
