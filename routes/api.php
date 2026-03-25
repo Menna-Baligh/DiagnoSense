@@ -86,6 +86,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/support', [SupportController::class, 'store']);
     Route::get('/doctors/{doctorId}', [DoctorController::class, 'edit']);
     Route::put('/doctors/{doctorId}', [DoctorController::class, 'update']);
+    Route::patch('/change-password', [DoctorController::class, 'changePassword']);
 });
 
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);

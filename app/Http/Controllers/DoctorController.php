@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ChangeDoctorPasswordRequest;
 use App\Http\Requests\GetDoctorInformationRequest;
 use App\Http\Requests\UpdateDoctorInformationRequest;
 use App\Http\Resources\DoctorResource;
@@ -28,5 +29,14 @@ class DoctorController extends Controller
         ]) : null;
 
         return ApiResponse::success('Doctor Information Updated Successfully', null, 200);
+    }
+
+    public function changePassword(ChangeDoctorPasswordRequest $request)
+    {
+        auth()->user()->update([
+            'password' => $request->new_password,
+        ]);
+
+        return ApiResponse::success('Password Changed Successfully', null, 200);
     }
 }
