@@ -215,6 +215,9 @@
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-PUTapi-patients--patientId-">
                                 <a href="#endpoints-PUTapi-patients--patientId-">PUT api/patients/{patientId}</a>
                             </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-POSTapi-support">
+                                <a href="#endpoints-POSTapi-support">POST api/support</a>
+                            </li>
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-POSTapi-stripe-webhook">
                                 <a href="#endpoints-POSTapi-stripe-webhook">POST api/stripe/webhook</a>
                             </li>
@@ -232,7 +235,7 @@
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: March 24, 2026</li>
+        <li>Last updated: March 25, 2026</li>
     </ul>
 </div>
 
@@ -1891,17 +1894,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "age=17"\
     --form "gender=female"\
     --form "national_id=mqeopfuudtdsu"\
-    --form "is_smoker=1"\
-    --form "previous_surgeries=1"\
+    --form "is_smoker="\
+    --form "previous_surgeries="\
     --form "chronic_diseases[]=consequatur"\
     --form "previous_surgeries_name=consequatur"\
     --form "medications=consequatur"\
     --form "allergies=consequatur"\
     --form "family_history=consequatur"\
     --form "current_complaint=consequatur"\
-    --form "lab[]=@C:\Users\Solo\AppData\Local\Temp\php1F2F.tmp" \
-    --form "radiology[]=@C:\Users\Solo\AppData\Local\Temp\php1F30.tmp" \
-    --form "medical_history[]=@C:\Users\Solo\AppData\Local\Temp\php1F31.tmp" </code></pre></div>
+    --form "lab[]=@C:\Users\Solo\AppData\Local\Temp\php6DB7.tmp" \
+    --form "radiology[]=@C:\Users\Solo\AppData\Local\Temp\php6DB8.tmp" \
+    --form "medical_history[]=@C:\Users\Solo\AppData\Local\Temp\php6DB9.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -1921,8 +1924,8 @@ body.append('phone', 'hfqcoynlazghd');
 body.append('age', '17');
 body.append('gender', 'female');
 body.append('national_id', 'mqeopfuudtdsu');
-body.append('is_smoker', '1');
-body.append('previous_surgeries', '1');
+body.append('is_smoker', '');
+body.append('previous_surgeries', '');
 body.append('chronic_diseases[]', 'consequatur');
 body.append('previous_surgeries_name', 'consequatur');
 body.append('medications', 'consequatur');
@@ -2109,7 +2112,7 @@ Must be one of:
             <code>false</code>
         </label>
     <br>
-<p>Example: <code>true</code></p>
+<p>Example: <code>false</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>previous_surgeries</code></b>&nbsp;&nbsp;
@@ -2131,7 +2134,7 @@ Must be one of:
             <code>false</code>
         </label>
     <br>
-<p>Example: <code>true</code></p>
+<p>Example: <code>false</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>chronic_diseases</code></b>&nbsp;&nbsp;
@@ -2409,8 +2412,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --data "{
     \"patient_id\": \"consequatur\",
-    \"has_next_visit\": true,
-    \"next_visit_date\": \"2026-03-24T20:08:19\",
+    \"has_next_visit\": false,
+    \"next_visit_date\": \"2026-03-25T03:49:36\",
     \"action\": \"mqeopfuudtdsufvyvddqa\"
 }"
 </code></pre></div>
@@ -2428,8 +2431,8 @@ const headers = {
 
 let body = {
     "patient_id": "consequatur",
-    "has_next_visit": true,
-    "next_visit_date": "2026-03-24T20:08:19",
+    "has_next_visit": false,
+    "next_visit_date": "2026-03-25T03:49:36",
     "action": "mqeopfuudtdsufvyvddqa"
 };
 
@@ -2547,7 +2550,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
             <code>false</code>
         </label>
     <br>
-<p>Example: <code>true</code></p>
+<p>Example: <code>false</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>next_visit_date</code></b>&nbsp;&nbsp;
@@ -2556,10 +2559,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="next_visit_date"                data-endpoint="POSTapi-visits"
-               value="2026-03-24T20:08:19"
+               value="2026-03-25T03:49:36"
                data-component="body">
     <br>
-<p>This field is required when <code>has_next_visit</code> is <code>true</code>. Must be a valid date. Example: <code>2026-03-24T20:08:19</code></p>
+<p>This field is required when <code>has_next_visit</code> is <code>true</code>. Must be a valid date. Example: <code>2026-03-25T03:49:36</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>action</code></b>&nbsp;&nbsp;
@@ -2602,7 +2605,7 @@ Must be one of:
     \"title\": \"vazjrcnfbaqywuxhgjjmz\",
     \"description\": \"Dolores dolorum amet iste laborum eius est dolor.\",
     \"notes\": \"consequatur\",
-    \"next_visit_date\": \"2026-03-24T20:08:19\",
+    \"next_visit_date\": \"2026-03-25T03:49:36\",
     \"action\": \"mqeopfuudtdsufvyvddqa\"
 }"
 </code></pre></div>
@@ -2627,7 +2630,7 @@ let body = {
     "title": "vazjrcnfbaqywuxhgjjmz",
     "description": "Dolores dolorum amet iste laborum eius est dolor.",
     "notes": "consequatur",
-    "next_visit_date": "2026-03-24T20:08:19",
+    "next_visit_date": "2026-03-25T03:49:36",
     "action": "mqeopfuudtdsufvyvddqa"
 };
 
@@ -2831,10 +2834,10 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="next_visit_date"                data-endpoint="POSTapi-visits--visit--items"
-               value="2026-03-24T20:08:19"
+               value="2026-03-25T03:49:36"
                data-component="body">
     <br>
-<p>Must be a valid date. Example: <code>2026-03-24T20:08:19</code></p>
+<p>Must be a valid date. Example: <code>2026-03-25T03:49:36</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>action</code></b>&nbsp;&nbsp;
@@ -3421,7 +3424,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"status\": \"critical\"
+    \"status\": \"under review\"
 }"
 </code></pre></div>
 
@@ -3437,7 +3440,7 @@ const headers = {
 };
 
 let body = {
-    "status": "critical"
+    "status": "under review"
 };
 
 fetch(url, {
@@ -3542,10 +3545,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="status"                data-endpoint="PATCHapi-patients--patient--status"
-               value="critical"
+               value="under review"
                data-component="body">
     <br>
-<p>Example: <code>critical</code></p>
+<p>Example: <code>under review</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>critical</code></li> <li><code>stable</code></li> <li><code>under review</code></li></ul>
         </div>
@@ -4245,7 +4248,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --data "{
     \"insight\": \"consequatur\",
-    \"priority\": \"low\"
+    \"priority\": \"high\"
 }"
 </code></pre></div>
 
@@ -4262,7 +4265,7 @@ const headers = {
 
 let body = {
     "insight": "consequatur",
-    "priority": "low"
+    "priority": "high"
 };
 
 fetch(url, {
@@ -4379,10 +4382,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="priority"                data-endpoint="POSTapi-patients--patientId--key-info"
-               value="low"
+               value="high"
                data-component="body">
     <br>
-<p>Example: <code>low</code></p>
+<p>Example: <code>high</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>high</code></li> <li><code>medium</code></li> <li><code>low</code></li></ul>
         </div>
@@ -7056,9 +7059,9 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "email=kunde.eloisa@example.com"\
     --form "phone=hfqcoynlazghd"\
     --form "age=17"\
-    --form "gender=female"\
+    --form "gender=male"\
     --form "national_id=consequatur"\
-    --form "is_smoker="\
+    --form "is_smoker=1"\
     --form "previous_surgeries=1"\
     --form "chronic_diseases[]=consequatur"\
     --form "previous_surgeries_name=consequatur"\
@@ -7066,9 +7069,9 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "allergies=consequatur"\
     --form "family_history=consequatur"\
     --form "current_complaint=consequatur"\
-    --form "lab[]=@C:\Users\Solo\AppData\Local\Temp\php2126.tmp" \
-    --form "radiology[]=@C:\Users\Solo\AppData\Local\Temp\php2127.tmp" \
-    --form "medical_history[]=@C:\Users\Solo\AppData\Local\Temp\php2128.tmp" </code></pre></div>
+    --form "lab[]=@C:\Users\Solo\AppData\Local\Temp\php73C5.tmp" \
+    --form "radiology[]=@C:\Users\Solo\AppData\Local\Temp\php73C6.tmp" \
+    --form "medical_history[]=@C:\Users\Solo\AppData\Local\Temp\php73C7.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -7086,9 +7089,9 @@ body.append('name', 'vmqeopfuudtdsufvyvddq');
 body.append('email', 'kunde.eloisa@example.com');
 body.append('phone', 'hfqcoynlazghd');
 body.append('age', '17');
-body.append('gender', 'female');
+body.append('gender', 'male');
 body.append('national_id', 'consequatur');
-body.append('is_smoker', '');
+body.append('is_smoker', '1');
 body.append('previous_surgeries', '1');
 body.append('chronic_diseases[]', 'consequatur');
 body.append('previous_surgeries_name', 'consequatur');
@@ -7250,10 +7253,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="gender"                data-endpoint="PUTapi-patients--patientId-"
-               value="female"
+               value="male"
                data-component="body">
     <br>
-<p>Example: <code>female</code></p>
+<p>Example: <code>male</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>male</code></li> <li><code>female</code></li></ul>
         </div>
@@ -7289,7 +7292,7 @@ Must be one of:
             <code>false</code>
         </label>
     <br>
-<p>Example: <code>false</code></p>
+<p>Example: <code>true</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>previous_surgeries</code></b>&nbsp;&nbsp;
@@ -7428,6 +7431,194 @@ Must be one of:
                data-component="body">
     <br>
 <p>Must be a file. Must not be greater than 10240 kilobytes.</p>
+        </div>
+        </form>
+
+                    <h2 id="endpoints-POSTapi-support">POST api/support</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-POSTapi-support">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://localhost:8000/api/support" \
+    --header "Content-Type: multipart/form-data" \
+    --header "Accept: application/json" \
+    --form "name=vmqeopfuudtdsufvyvddq"\
+    --form "category=technical"\
+    --form "urgency=high"\
+    --form "message=consequatur"\
+    --form "attachment=@C:\Users\Solo\AppData\Local\Temp\php73E8.tmp" </code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost:8000/api/support"
+);
+
+const headers = {
+    "Content-Type": "multipart/form-data",
+    "Accept": "application/json",
+};
+
+const body = new FormData();
+body.append('name', 'vmqeopfuudtdsufvyvddq');
+body.append('category', 'technical');
+body.append('urgency', 'high');
+body.append('message', 'consequatur');
+body.append('attachment', document.querySelector('input[name="attachment"]').files[0]);
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-support">
+</span>
+<span id="execution-results-POSTapi-support" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-support"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-support"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-support" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-support">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-support" data-method="POST"
+      data-path="api/support"
+      data-authed="0"
+      data-hasfiles="1"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-support', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-support"
+                    onclick="tryItOut('POSTapi-support');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-support"
+                    onclick="cancelTryOut('POSTapi-support');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-support"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/support</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-support"
+               value="multipart/form-data"
+               data-component="header">
+    <br>
+<p>Example: <code>multipart/form-data</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-support"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="name"                data-endpoint="POSTapi-support"
+               value="vmqeopfuudtdsufvyvddq"
+               data-component="body">
+    <br>
+<p>Must not be greater than 255 characters. Example: <code>vmqeopfuudtdsufvyvddq</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>category</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="category"                data-endpoint="POSTapi-support"
+               value="technical"
+               data-component="body">
+    <br>
+<p>Example: <code>technical</code></p>
+Must be one of:
+<ul style="list-style-type: square;"><li><code>technical</code></li> <li><code>billing</code></li> <li><code>general</code></li></ul>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>urgency</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="urgency"                data-endpoint="POSTapi-support"
+               value="high"
+               data-component="body">
+    <br>
+<p>Example: <code>high</code></p>
+Must be one of:
+<ul style="list-style-type: square;"><li><code>low</code></li> <li><code>medium</code></li> <li><code>high</code></li></ul>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>message</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="message"                data-endpoint="POSTapi-support"
+               value="consequatur"
+               data-component="body">
+    <br>
+<p>Example: <code>consequatur</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>attachment</code></b>&nbsp;&nbsp;
+<small>file</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="file" style="display: none"
+                              name="attachment"                data-endpoint="POSTapi-support"
+               value=""
+               data-component="body">
+    <br>
+<p>Must be a file. Must not be greater than 10240 kilobytes. Example: <code>C:\Users\Solo\AppData\Local\Temp\php73E8.tmp</code></p>
         </div>
         </form>
 

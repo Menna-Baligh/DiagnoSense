@@ -1531,6 +1531,82 @@ paths:
                   example:
                     success: false
                     message: "Failed to get answer from chatbot"
+  '/api/support':
+      post:
+        summary: 'Send Support Request'
+        operationId: postApiSupport
+        description: 'Allows doctors to submit support requests (technical, billing, or general) with optional attachments.'
+        tags:
+          - Support & Help
+        security:
+          - sanctum: []
+        requestBody:
+          required: true
+          content:
+            multipart/form-data:
+              schema:
+                type: object
+                required:
+                  - category
+                  - urgency
+                  - message
+                properties:
+                  name:
+                    type: string
+                    maxLength: 255
+                    description: 'Optional name. Defaults to user name if null.'
+                    example: "Dr. Layla"
+                    nullable: true
+                  category:
+                    type: string
+                    enum: [technical, billing, general]
+                    example: "technical"
+                  urgency:
+                    type: string
+                    enum: [low, medium, high]
+                    example: "high"
+                  message:
+                    type: string
+                    example: "I am unable to see the latest AI analysis for patient #48."
+                  attachment:
+                    type: string
+                    format: binary
+                    description: 'Optional file (jpg, png, pdf). Max size: 10MB.'
+                    nullable: true
+        responses:
+          201:
+            description: 'Support message submitted successfully'
+            content:
+              application/json:
+                schema:
+                  type: object
+                  example:
+                    success: true
+                    message: "Support message submitted successfully we will get back to you shortly."
+                    data: null
+          403:
+            description: 'Forbidden - User is not a doctor'
+            content:
+              application/json:
+                schema:
+                  type: object
+                  example:
+                    success: false
+                    message: "Unauthorized"
+          422:
+            description: 'Validation Error'
+          401:
+            $ref: '#/components/responses/Unauthorized'
+          500:
+            description: 'Server Error'
+            content:
+              application/json:
+                schema:
+                  type: object
+                  example:
+                    success: false
+                    message: "Failed to submit message: [Error details]"
+
 
 components:
   responses:
