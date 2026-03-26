@@ -16,6 +16,9 @@ class ChatbotController extends Controller
     {
         $question = $request->question;
         try {
+            if (! auth()->user()->doctor->hasFeature('DiagnoBot')) {
+                return ApiResponse::error('You need to upgrade to Premium to use the chatbot', null, 403);
+            }
             $result = $this->chatbotService->ask($question, $patientId);
 
             return ApiResponse::success('Answer from chatbot', $result['message'], $result['status']);
