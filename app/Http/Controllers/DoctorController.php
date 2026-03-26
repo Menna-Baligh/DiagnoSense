@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ChangeDoctorPasswordRequest;
+use App\Http\Requests\DeleteDoctorAccountRequest;
 use App\Http\Requests\GetDoctorInformationRequest;
 use App\Http\Requests\UpdateDoctorInformationRequest;
 use App\Http\Resources\DoctorResource;
@@ -38,5 +39,15 @@ class DoctorController extends Controller
         ]);
 
         return ApiResponse::success('Password Changed Successfully', null, 200);
+    }
+
+    public function destroy(DeleteDoctorAccountRequest $request)
+    {
+        $currentUser = auth()->user();
+        $currentUser->doctor()->delete();
+        $currentUser->tokens()->delete();
+        $currentUser->delete();
+
+        return ApiResponse::success('Account Deleted Successfully', null, 200);
     }
 }
