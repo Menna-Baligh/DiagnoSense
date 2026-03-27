@@ -1688,7 +1688,58 @@ paths:
                     data: null
           422:
             description: 'Validation Error'
-
+      delete:
+        summary: 'Delete Doctor Account'
+        operationId: deleteApiDoctorsDoctorId
+        description: 'Permanently deletes the doctor profile, user account, and revokes all active tokens. Requires password confirmation.'
+        tags:
+          - Doctor Profile
+        security:
+          - sanctum: []
+        parameters:
+          - in: path
+            name: doctorId
+            required: true
+            schema:
+              type: integer
+            example: 12
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - password
+                  - password_confirmation
+                properties:
+                  password:
+                    type: string
+                    format: password
+                    example: 'secure_password_123'
+                    description: 'The current account password.'
+                  password_confirmation:
+                    type: string
+                    format: password
+                    example: 'secure_password_123'
+                    description: 'Must match the password field.'
+        responses:
+          200:
+            description: 'Account deleted successfully'
+            content:
+              application/json:
+                schema:
+                  type: object
+                  example:
+                    success: true
+                    message: "Account Deleted Successfully"
+                    data: null
+          403:
+            description: 'Forbidden - You can only delete your own account'
+          422:
+            description: 'Validation Error - Wrong password or confirmation mismatch'
+          401:
+            $ref: '#/components/responses/Unauthorized'
   '/api/change-password':
       patch:
         summary: 'Change Password'
