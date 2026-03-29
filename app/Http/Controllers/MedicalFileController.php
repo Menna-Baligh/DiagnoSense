@@ -17,71 +17,79 @@ class MedicalFileController extends Controller
      * Medical History Files
      */
     public function medicalHistoryFiles(Request $request)
-    {
-        $user = $request->user();
+{
+    $user = $request->user();
 
-        if (!$user->patient) {
-            return response()->json([
-                'message' => 'Unauthorized'
-            ], 403);
-        }
-
-        $patient = $user->patient;
-
-        $files = $patient->reports()
-            ->where('type', 'medical_history')
-            ->latest()
-            ->get();
-
-        return MedicalFileResource::collection($files);
+    if (!$user->patient) {
+        return response()->json(['message' => 'Unauthorized'], 403);
     }
 
+    $patient = $user->patient;
+
+    $search = $request->query('search');
+
+    $files = $patient->reports()
+        ->where('type', 'medical_history')
+        ->when($search, function ($query) use ($search) {
+            $query->where('file_name', 'like', "%{$search}%");
+        })
+        ->latest()
+        ->get();
+
+      return MedicalFileResource::collection($files);
+   }
     /**
      * Lab Reports
      */
     public function labReports(Request $request)
-    {
-        $user = $request->user();
+{
+    $user = $request->user();
 
-        if (!$user->patient) {
-            return response()->json([
-                'message' => 'Unauthorized'
-            ], 403);
-        }
-
-        $patient = $user->patient;
-
-        $reports = $patient->reports()
-            ->where('type', 'lab') 
-            ->with(['patient.visits.doctor.user']) 
-            ->latest()
-            ->get();
-
-        return LabReportResource::collection($reports);
+    if (!$user->patient) {
+        return response()->json(['message' => 'Unauthorized'], 403);
     }
+
+    $patient = $user->patient;
+
+    $search = $request->query('search');
+
+    $reports = $patient->reports()
+        ->where('type', 'lab')
+        ->when($search, function ($query) use ($search) {
+            $query->where('file_name', 'like', "%{$search}%");
+        })
+        ->with(['patient.visits.doctor.user'])
+        ->latest()
+        ->get();
+
+    return LabReportResource::collection($reports);
+}
 
      /**
      * Radiology Reports
      */
-    public function radiologyReports(Request $request)
-   {
-       $user = $request->user();
+public function radiologyReports(Request $request)
+{
+    $user = $request->user();
 
-       if (!$user->patient) {
-          return response()->json([
-             'message' => 'Unauthorized'
-           ], 403);
-        }
+    if (!$user->patient) {
+        return response()->json(['message' => 'Unauthorized'], 403);
+    }
 
-       $patient = $user->patient;
-       $reports = $patient->reports()
-        ->where('type', 'radiology') 
+    $patient = $user->patient;
+
+    $search = $request->query('search');
+
+    $reports = $patient->reports()
+        ->where('type', 'radiology')
+        ->when($search, function ($query) use ($search) {
+            $query->where('file_name', 'like', "%{$search}%");
+        })
         ->latest()
         ->get();
 
-      return RadiologyReportResource::collection($reports);
-    }
-
+    return RadiologyReportResource::collection($reports);
+}
 
      /**
      * Medications
