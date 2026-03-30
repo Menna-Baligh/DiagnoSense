@@ -369,7 +369,13 @@ class PatientController extends Controller
                     'features' => ['decision_support' => $doctorHasDS],
                 ];
 
-                ProcessAi::dispatch($analysis->id, $jobData);
+                $chain = [
+                    new ProcessAi($analysis->id, $jobData)
+                ];
+                if (!empty($newPathsForAI['lab'])) {
+                    $chain[] = new ComparativeAnalysis($patient->id, $analysis->id);
+                }
+                Bus::chain($chain)->dispatch();
             }
 
             DB::commit();
