@@ -361,6 +361,7 @@ class PatientController extends Controller
                 ]);
 
                 $jobData = [
+                    'patient_id' => $patient->id,
                     'doctor_id' => $doctor->id,
                     'age' => $patient->age,
                     'gender' => $patient->gender,
