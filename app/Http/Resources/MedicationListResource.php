@@ -17,18 +17,26 @@ class MedicationListResource extends JsonResource
         ];
     }
 
- private function getStatus()
+private function getStatus()
 {
-    if (!$this->duration) {
+    $duration = trim(strtolower($this->dosage ?? ''));
+
+    if (!$duration) {
         return 'ACTIVE';
     }
 
-    $endDate = $this->created_at->copy()->addDays($this->duration);
+    $days = 0;
 
-    if (now()->lessThan($endDate)) {
-        return 'ACTIVE';
+    if (str_contains($duration, 'week')) {
+        $days = 7;
+    } elseif (str_contains($duration, 'month')) {
+        $days = 30;
+    } elseif (str_contains($duration, 'day')) {
+        $days = 1;
     }
 
-    return 'COMPLETED';
+    $endDate = \Carbon\Carbon::parse($this->created_at)->addDays($days);
+
+    return now()->gte($endDate) ? 'COMPLETED' : 'ACTIVE';
 }
 }
