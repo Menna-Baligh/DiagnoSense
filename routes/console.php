@@ -14,7 +14,7 @@ Artisan::command('inspire', function () {
 Schedule::command('subscriptions:update-status')->daily();
 
 Schedule::call(function () {
-    $doctors = Doctor::with('latestSubscription.user')->get();
+    $doctors = Doctor::with('latestSubscription')->get();
 
     foreach ($doctors as $doctor) {
         $sub = $doctor->latestSubscription;
@@ -22,10 +22,10 @@ Schedule::call(function () {
             continue;
         }
         if ($sub->expires_at->isToday()) {
-            $doctor->user->notify(new SubscriptionExpired);
+            $doctor->notify(new SubscriptionExpired);
         }
         if ($sub->expires_at->isSameDay(now()->addDays(3)) && ! $sub->expiring_soon_sent) {
-            $doctor->user->notify(new SubscriptionExpiringSoon);
+            $doctor->notify(new SubscriptionExpiringSoon);
             $sub->update(['expiring_soon_sent' => true]);
         }
     }

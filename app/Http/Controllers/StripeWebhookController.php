@@ -50,7 +50,7 @@ class StripeWebhookController
             });
             if ($wallet) {
                 $user = $wallet->doctor->user;
-                $user->notify(new CreditAdded($amount, $wallet->balance));
+                $user->doctor->notify(new CreditAdded($amount, $wallet->balance));
             }
 
             return response()->json(['success' => true]);

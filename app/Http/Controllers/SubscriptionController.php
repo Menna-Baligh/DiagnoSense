@@ -54,9 +54,9 @@ class SubscriptionController extends Controller
             return ApiResponse::error('Failed to process the subscription. Please try again later.', null, 500);
         }
         $doctor->wallet->refresh();
-        $request->user()->notify(new PlanSubscribed($subscription->plan->name));
+        $request->user()->doctor->notify(new PlanSubscribed($subscription->plan->name));
         if ($doctor->wallet->balance <= 0) {
-            $doctor->user->notify(new CreditsExhausted);
+            $doctor->notify(new CreditsExhausted);
         }
 
         return ApiResponse::success(
@@ -70,7 +70,7 @@ class SubscriptionController extends Controller
     public function switchToPayPerUse(Request $request)
     {
         $this->subscriptionService->setPayPerUseMode($request->user()->doctor);
-        $request->user()->notify(new PayPerUseActivated);
+        $request->user()->doctor->notify(new PayPerUseActivated);
 
         return ApiResponse::success(
             'Switched to Pay-Per-Use mode. E£ 25 will be charged per file.',
@@ -135,7 +135,7 @@ class SubscriptionController extends Controller
             $remaining = $subscription->plan->summaries_limit - $subscription->used_summaries;
             $message = "Subscription cancelled. You can still use your remaining {$remaining} summaries until ".$subscription->expires_at->format('D, F j, Y');
         }
-        $doctor->user->notify(new SubscriptionCancelled($subscription->plan->name));
+        $doctor->notify(new SubscriptionCancelled($subscription->plan->name));
 
         return ApiResponse::success($message, null, 200);
     }

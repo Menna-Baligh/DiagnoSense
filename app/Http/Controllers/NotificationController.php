@@ -10,7 +10,7 @@ class NotificationController extends Controller
 {
     public function index(Request $request)
     {
-        $notifications = $request->user()
+        $notifications = $request->user()->doctor
             ->notifications()
             ->cursorPaginate(10);
 
@@ -20,13 +20,13 @@ class NotificationController extends Controller
     public function unreadCount(Request $request)
     {
         return ApiResponse::success('Unread notifications count retrieved successfully', [
-            'unread_count' => $request->user()->unreadNotifications()->count(),
+            'unread_count' => $request->user()->doctor->unreadNotifications()->count(),
         ], 200);
     }
 
     public function markAsRead(Request $request, $id)
     {
-        $notification = $request->user()->notifications()->findOrFail($id);
+        $notification = $request->user()->doctor->notifications()->findOrFail($id);
         $notification->markAsRead();
 
         return ApiResponse::success('Notification marked as read', null, 200);
@@ -34,14 +34,14 @@ class NotificationController extends Controller
 
     public function markAllAsRead(Request $request)
     {
-        $request->user()->unreadNotifications->markAsRead();
+        $request->user()->doctor->unreadNotifications->markAsRead();
 
         return ApiResponse::success('All notifications marked as read', null, 200);
     }
 
     public function clearAll(Request $request)
     {
-        $request->user()->notifications()->delete();
+        $request->user()->doctor->notifications()->delete();
 
         return ApiResponse::success('All notifications deleted', null, 200);
     }
