@@ -24,11 +24,12 @@ use App\Models\PatientLabResult;
 use App\Models\Report;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Illuminate\Support\Collection;
+
 class PatientController extends Controller
 {
     public function index(Request $request)
@@ -123,10 +124,10 @@ class PatientController extends Controller
             DB::commit();
 
             $chain = [
-                new ProcessAi($analysisResult->id, $jobData)
+                new ProcessAi($analysisResult->id, $jobData),
             ];
 
-            if (!empty($pathsForAI['lab'])) {
+            if (! empty($pathsForAI['lab'])) {
                 $chain[] = new ComparativeAnalysis($patient->id, $analysisResult->id);
             }
 
@@ -163,11 +164,13 @@ class PatientController extends Controller
                 422
             );
         }
+        $ocrFileUrl = $latestAnalysis->ocr_file_path ? Storage::disk('azure')->temporaryUrl($latestAnalysis->ocr_file_path, now()->addMinutes(60)) : null;
         $keyPoints = $latestAnalysis->keyPoints()
             ->orderBy('created_at', 'desc')
             ->get();
 
         return ApiResponse::success('Key Points retrieved successfully.', [
+            'source_file' => $ocrFileUrl,
             'high' => KeyPointResource::collection($keyPoints->where('priority', 'high')),
             'medium' => KeyPointResource::collection($keyPoints->where('priority', 'medium')),
             'low' => KeyPointResource::collection($keyPoints->where('priority', 'low')),
@@ -371,9 +374,9 @@ class PatientController extends Controller
                 ];
 
                 $chain = [
-                    new ProcessAi($analysis->id, $jobData)
+                    new ProcessAi($analysis->id, $jobData),
                 ];
-                if (!empty($newPathsForAI['lab'])) {
+                if (! empty($newPathsForAI['lab'])) {
                     $chain[] = new ComparativeAnalysis($patient->id, $analysis->id);
                 }
                 Bus::chain($chain)->dispatch();
@@ -389,13 +392,14 @@ class PatientController extends Controller
             return ApiResponse::error('Update failed: '.$e->getMessage(), null, 500);
         }
     }
+
     public function getComparativeAnalysis($patientId)
     {
         $doctor = auth()->user()->doctor;
         $patient = $doctor->patients()->findorfail($patientId);
         $latestAnalysis = AiAnalysisResult::where('patient_id', $patientId)
-                        ->latest()
-                        ->first();
+            ->latest()
+            ->first();
         if ($latestAnalysis && $latestAnalysis->status === 'processing') {
             return ApiResponse::success(
                 'The AI is currently analyzing new reports.',
@@ -426,29 +430,33 @@ class PatientController extends Controller
                 ? round(($changeValue / $previousVal) * 100, 1)
                 : 0;
             $trend = 'stable';
-            if ($currentVal > $previousVal) $trend = 'up';
-            elseif ($currentVal < $previousVal) $trend = 'down';
-            $previousDisplay = ($count > 1) ? $previousVal: "No previous";
+            if ($currentVal > $previousVal) {
+                $trend = 'up';
+            } elseif ($currentVal < $previousVal) {
+                $trend = 'down';
+            }
+            $previousDisplay = ($count > 1) ? $previousVal : 'No previous';
+
             return [
                 'test_name' => $testName,
-                'category'  => $currentRecord->category,
-                'unit'      => $currentRecord->unit,
+                'category' => $currentRecord->category,
+                'unit' => $currentRecord->unit,
                 'comparison' => [
-                    'current_value'     => $currentVal,
-                    'previous_value'    => $previousDisplay,
-                    'change_value'      => $changeValue,
+                    'current_value' => $currentVal,
+                    'previous_value' => $previousDisplay,
+                    'change_value' => $changeValue,
                     'change_percentage' => $percentage,
-                    'trend'             => $trend,
-                    'status'            => $currentRecord->status,
+                    'trend' => $trend,
+                    'status' => $currentRecord->status,
                 ],
                 'all_points' => $testResults->map(function ($item, $index) {
                     return [
-                        'visit_label' => 'Visit #' . ($index + 1),
-                        'value'       => (float) $item->numeric_value,
-                        'status'      => $item->status,
-                        'date'        => $item->created_at->format('Y-m-d'),
+                        'visit_label' => 'Visit #'.($index + 1),
+                        'value' => (float) $item->numeric_value,
+                        'status' => $item->status,
+                        'date' => $item->created_at->format('Y-m-d'),
                     ];
-                })->values()
+                })->values(),
             ];
         })->values();
 

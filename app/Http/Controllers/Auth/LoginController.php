@@ -23,7 +23,7 @@ class LoginController extends Controller
         }
 
         $token = $user->createToken('login-token')->plainTextToken;
-        $userId = $type === "doctor" ? $user->doctor->id : $user->patient->id ;
+        $userId = $type === 'doctor' ? $user->doctor->id : $user->patient->id;
         $user = [
             'id' => $userId,
             'name' => $user->name,

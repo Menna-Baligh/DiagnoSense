@@ -25,7 +25,7 @@ class RegisterController extends Controller
             $user->save();
         }
         $token = $user->createToken('register-token')->plainTextToken;
-        $userId = $type === "doctor" ? $user->doctor->id : $user->patient->id ;
+        $userId = $type === 'doctor' ? $user->doctor->id : $user->patient->id;
         $data = [
             'user' => [
                 'id' => $userId,

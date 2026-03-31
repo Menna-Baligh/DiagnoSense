@@ -75,15 +75,16 @@ class ProcessAi implements ShouldQueue
 
             if ($response->successful()) {
                 $data = $response->json();
-
                 $insight = $data['key_information']['ai_insight'] ?? null;
                 $summary = $data['key_information']['ai_summary'] ?? null;
-                $hasLabFiles = !empty($this->jobData['file_paths']['lab']);
+                $hasLabFiles = ! empty($this->jobData['file_paths']['lab']);
+                $ocr_file_path = $data['pdf_path'] ?? null;
                 $analysisRecord->update([
                     'ai_insight' => $insight,
                     'ai_summary' => $summary,
                     'response' => $data,
-                    'status'     => $hasLabFiles ? 'processing' : 'completed',
+                    'status' => $hasLabFiles ? 'processing' : 'completed',
+                    'ocr_file_path' => $ocr_file_path,
                 ]);
 
                 if ($this->jobData['features']['decision_support']) {

@@ -16,5 +16,4 @@ class PatientLabResult extends Model
         'status',
         'created_at',
     ];
-
 }
