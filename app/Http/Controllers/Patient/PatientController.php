@@ -398,7 +398,7 @@ class PatientController extends Controller
                         ->first();
         if ($latestAnalysis && $latestAnalysis->status === 'processing') {
             return ApiResponse::success(
-                'The AI is currently analyzing new reports. Please refresh soon.',
+                'The AI is currently analyzing new reports.',
                 null,
                 202
             );
