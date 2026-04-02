@@ -471,20 +471,20 @@ class PatientController extends Controller
 
     private function fixAzureBlobProperties($blobPath)
     {
-            $connectionString = config('filesystems.disks.azure.connection_string');
-            $containerName = config('filesystems.disks.azure.container');
-            $blobClient = BlobRestProxy::createBlobService($connectionString);
-            $extension = strtolower(pathinfo($blobPath, PATHINFO_EXTENSION));
-            $mimeTypes = [
-                'pdf'  => 'application/pdf',
-                'png'  => 'image/png',
-                'jpg'  => 'image/jpeg',
-                'jpeg' => 'image/jpeg'
-            ];
-            $contentType = $mimeTypes[$extension] ?? 'application/pdf';
-            $properties = new SetBlobPropertiesOptions();
-            $properties->setContentType($contentType);
-            $properties->setContentDisposition('inline');
-            $blobClient->setBlobProperties($containerName, $blobPath, $properties);
+        $connectionString = config('filesystems.disks.azure.connection_string');
+        $containerName = config('filesystems.disks.azure.container');
+        $blobClient = BlobRestProxy::createBlobService($connectionString);
+        $extension = strtolower(pathinfo($blobPath, PATHINFO_EXTENSION));
+        $mimeTypes = [
+            'pdf' => 'application/pdf',
+            'png' => 'image/png',
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+        ];
+        $contentType = $mimeTypes[$extension] ?? 'application/pdf';
+        $properties = new SetBlobPropertiesOptions;
+        $properties->setContentType($contentType);
+        $properties->setContentDisposition('inline');
+        $blobClient->setBlobProperties($containerName, $blobPath, $properties);
     }
 }
