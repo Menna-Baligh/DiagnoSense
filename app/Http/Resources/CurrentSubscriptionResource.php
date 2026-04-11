@@ -51,6 +51,7 @@ class CurrentSubscriptionResource extends JsonResource
 
         if ($latestSub) {
             $plan = $latestSub->plan;
+
             return array_merge($data, [
                 'plan_name' => $plan->name,
                 'status' => 'expired',

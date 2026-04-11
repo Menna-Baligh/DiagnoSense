@@ -3,14 +3,15 @@
 namespace App\Models;
 
 use App\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Patient extends Model
 {
-    use LogsActivity , SoftDeletes;
     use HasFactory;
+    use LogsActivity , SoftDeletes;
+
     protected $fillable = [
         'id',
         'user_id',
@@ -29,7 +30,7 @@ class Patient extends Model
         'last_visit_date' => 'datetime',
         'next_visit_date' => 'datetime',
     ];
-    
+
     public function user()
     {
         return $this->belongsTo(User::class);

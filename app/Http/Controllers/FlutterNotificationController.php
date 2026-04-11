@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Services\NotificationService;
 use App\Http\Resources\FlutterNotificationResource;
+use App\Services\NotificationService;
+use Illuminate\Http\Request;
 
 class FlutterNotificationController extends Controller
 {
@@ -19,9 +19,9 @@ class FlutterNotificationController extends Controller
     {
         $user = $request->user();
 
-        if (!$user->patient) {
+        if (! $user->patient) {
             return response()->json([
-                'message' => 'Unauthorized'
+                'message' => 'Unauthorized',
             ], 403);
         }
 

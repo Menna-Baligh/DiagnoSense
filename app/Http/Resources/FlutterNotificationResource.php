@@ -2,8 +2,8 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Resources\Json\JsonResource;
 use Carbon\Carbon;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class FlutterNotificationResource extends JsonResource
 {
@@ -13,13 +13,13 @@ class FlutterNotificationResource extends JsonResource
             'title' => $this->getTitle(),
             'description' => $this->getDescription(),
             'time' => $this->getTime(),
-            'type' => $this->getType(), 
+            'type' => $this->getType(),
         ];
     }
 
     private function getTitle()
     {
-       
+
         if (isset($this['title'])) {
             return $this['title'];
         }
@@ -40,7 +40,7 @@ class FlutterNotificationResource extends JsonResource
 
         $description = $this->description ?? 'no description';
 
-        return "{$description} - " .
+        return "{$description} - ".
             Carbon::parse($this->created_at)->format('M d, Y');
     }
 
@@ -50,7 +50,6 @@ class FlutterNotificationResource extends JsonResource
             return $this['time'];
         }
 
-        
         return Carbon::parse($this->created_at)->diffForHumans();
     }
 

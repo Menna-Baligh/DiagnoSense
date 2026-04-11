@@ -7,14 +7,13 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class CompleteTaskRequest extends FormRequest
 {
-
     public function authorize(): bool
     {
         $task = Task::find($this->route('task'));
 
         $patient = auth()->user()->patient;
 
-        if (!$task || !$patient) {
+        if (! $task || ! $patient) {
             return false;
         }
 
@@ -25,5 +24,4 @@ class CompleteTaskRequest extends FormRequest
     {
         return [];
     }
-
 }

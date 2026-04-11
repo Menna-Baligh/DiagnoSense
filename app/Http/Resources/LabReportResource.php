@@ -11,19 +11,20 @@ class LabReportResource extends JsonResource
     {
         return [
             'name' => $this->file_name,
-             'doctor' => $this->getDoctorName(),
+            'doctor' => $this->getDoctorName(),
             'date' => $this->created_at->format('M d, Y'),
             'view_url' => Storage::url($this->file_path),
         ];
     }
-      private function getDoctorName()
+
+    private function getDoctorName()
     {
         $doctor = $this->patient?->doctors()
             ->with('user')
             ->first();
 
         return $doctor?->user?->name
-            ? 'Dr.' . $doctor->user->name
+            ? 'Dr.'.$doctor->user->name
             : 'Dr.Unknown';
     }
 }

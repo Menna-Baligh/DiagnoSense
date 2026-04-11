@@ -26,7 +26,7 @@ class UpdateExpiredSubscriptions extends Command
      */
     public function handle()
     {
-        $affected = Subscriptions::whereIn('status', ['active','cancelled'])
+        $affected = Subscriptions::whereIn('status', ['active', 'cancelled'])
             ->where('expires_at', '<', now())
             ->update(['status' => 'expired']);
 

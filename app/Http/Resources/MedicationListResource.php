@@ -3,7 +3,6 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use Carbon\Carbon;
 
 class MedicationListResource extends JsonResource
 {
@@ -17,26 +16,26 @@ class MedicationListResource extends JsonResource
         ];
     }
 
-private function getStatus()
-{
-    $duration = trim(strtolower($this->dosage ?? ''));
+    private function getStatus()
+    {
+        $duration = trim(strtolower($this->dosage ?? ''));
 
-    if (!$duration) {
-        return 'ACTIVE';
+        if (! $duration) {
+            return 'ACTIVE';
+        }
+
+        $days = 0;
+
+        if (str_contains($duration, 'week')) {
+            $days = 7;
+        } elseif (str_contains($duration, 'month')) {
+            $days = 30;
+        } elseif (str_contains($duration, 'day')) {
+            $days = 1;
+        }
+
+        $endDate = \Carbon\Carbon::parse($this->created_at)->addDays($days);
+
+        return now()->gte($endDate) ? 'COMPLETED' : 'ACTIVE';
     }
-
-    $days = 0;
-
-    if (str_contains($duration, 'week')) {
-        $days = 7;
-    } elseif (str_contains($duration, 'month')) {
-        $days = 30;
-    } elseif (str_contains($duration, 'day')) {
-        $days = 1;
-    }
-
-    $endDate = \Carbon\Carbon::parse($this->created_at)->addDays($days);
-
-    return now()->gte($endDate) ? 'COMPLETED' : 'ACTIVE';
-}
 }

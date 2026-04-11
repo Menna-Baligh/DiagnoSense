@@ -10,7 +10,7 @@ class RadiologyReportResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'type' => $this->getRadiologyType(), 
+            'type' => $this->getRadiologyType(),
             'name' => $this->file_name,
             'doctor' => $this->getDoctorName(),
             'date' => $this->created_at->format('M d, Y'),
@@ -34,7 +34,7 @@ class RadiologyReportResource extends JsonResource
             ->first();
 
         return $doctor?->user?->name
-            ? 'Ref: Dr.' . $doctor->user->name
+            ? 'Ref: Dr.'.$doctor->user->name
             : 'Ref: Dr.Unknown';
     }
 }

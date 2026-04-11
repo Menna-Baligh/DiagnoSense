@@ -3,10 +3,10 @@
 namespace App\Traits;
 
 use App\Models\ActivityLog;
-use App\Models\Patient;
 use App\Models\KeyPoint;
-use App\Models\Task;
 use App\Models\Medication;
+use App\Models\Patient;
+use App\Models\Task;
 use App\Models\Visit;
 
 trait LogsActivity
@@ -24,7 +24,7 @@ trait LogsActivity
 
         static::updated(function ($model) {
             $modelName = class_basename($model);
-           if (in_array($modelName, ['Patient', 'KeyPoint', 'Task', 'Medication', 'Visit'])) {
+            if (in_array($modelName, ['Patient', 'KeyPoint', 'Task', 'Medication', 'Visit'])) {
                 $model->logActivity('updated');
             }
         });
@@ -42,19 +42,19 @@ trait LogsActivity
         $doctor = auth()->user()?->doctor;
         $patientId = null;
 
-    if ($this instanceof Patient) {
-        $patientId = $this->id;
-    } elseif (isset($this->patient_id)) {
-        $patientId = $this->patient_id;
-    } elseif (method_exists($this, 'patient')) {
-        $patientId = $this->patient?->id;
-    } elseif (method_exists($this, 'aiAnalysisResult')) {
-       $analysis = $this->aiAnalysisResult()->first();
+        if ($this instanceof Patient) {
+            $patientId = $this->id;
+        } elseif (isset($this->patient_id)) {
+            $patientId = $this->patient_id;
+        } elseif (method_exists($this, 'patient')) {
+            $patientId = $this->patient?->id;
+        } elseif (method_exists($this, 'aiAnalysisResult')) {
+            $analysis = $this->aiAnalysisResult()->first();
 
-    if ($analysis && isset($analysis->patient_id)) {
-        $patientId = $analysis->patient_id;
-    }
-}
+            if ($analysis && isset($analysis->patient_id)) {
+                $patientId = $analysis->patient_id;
+            }
+        }
 
         $changes = [];
         $original = [];
@@ -96,8 +96,7 @@ trait LogsActivity
         $modelName = class_basename($this);
 
         $displayName = match (true) {
-            $this instanceof Visit => 
-            "Visit on " . \Carbon\Carbon::parse($this->next_visit_date)->format('M d, Y'),
+            $this instanceof Visit => 'Visit on '.\Carbon\Carbon::parse($this->next_visit_date)->format('M d, Y'),
             $this instanceof Patient => $this->user?->name,
             $this instanceof KeyPoint => ($this->is_manual ? 'Doctor Note' : 'Key Point') ,
             $this instanceof Task => "Task: '{$this->title}'",

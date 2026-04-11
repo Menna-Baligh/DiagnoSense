@@ -9,12 +9,11 @@ use App\Http\Requests\UpdatePatientStatusRequest;
 use App\Http\Resources\ActivityLogResource;
 use App\Http\Resources\DecisionSupportResource;
 use App\Http\Resources\KeyPointResource;
+use App\Http\Resources\NextVisitResource;
 use App\Http\Resources\PatientEditResource;
 use App\Http\Resources\PatientListResource;
 use App\Http\Resources\PatientOverviewResource;
 use App\Http\Responses\ApiResponse;
-use App\Http\Resources\NextVisitResource;
-use App\Models\Visit;
 use App\Jobs\ComparativeAnalysis;
 use App\Jobs\ProcessAi;
 use App\Models\ActivityLog;
@@ -25,6 +24,7 @@ use App\Models\Patient;
 use App\Models\PatientLabResult;
 use App\Models\Report;
 use App\Models\User;
+use App\Models\Visit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Bus;
@@ -287,46 +287,46 @@ class PatientController extends Controller
         return ApiResponse::success('Patient deleted successfully.', null, 200);
     }
 
-
     public function nextVisit(Request $request)
-{
-    $user = $request->user();
+    {
+        $user = $request->user();
 
-    $patient = Patient::where('user_id', $user->id)
-        ->with('doctors.user')
-        ->first();
+        $patient = Patient::where('user_id', $user->id)
+            ->with('doctors.user')
+            ->first();
 
-    if (!$patient) {
-        return ApiResponse::error(
-            'Patient not found',
-            null,
-            404
-        );
+        if (! $patient) {
+            return ApiResponse::error(
+                'Patient not found',
+                null,
+                404
+            );
+        }
+
+        if (! $patient->next_visit_date || $patient->next_visit_date < now()) {
+            return ApiResponse::success(
+                'No upcoming visit',
+                null,
+                200
+            );
+        }
+
+        $visit = Visit::where('patient_id', $patient->id)
+            ->whereDate('next_visit_date', '>=', now())
+            ->with('doctor.user')
+            ->orderBy('next_visit_date')
+            ->first();
+
+        if (! $visit) {
+            return ApiResponse::success(
+                'No upcoming visit',
+                null, 200
+            );
+        }
+
+        return ApiResponse::success('Next visit retrieved successfully', new NextVisitResource($visit), 200);
     }
 
-    if (!$patient->next_visit_date || $patient->next_visit_date < now()) {
-        return ApiResponse::success(
-            'No upcoming visit',
-            null,
-            200
-        );
-    }
-
-    $visit = Visit::where('patient_id', $patient->id)
-        ->whereDate('next_visit_date', '>=', now())
-        ->with('doctor.user')
-        ->orderBy('next_visit_date')
-        ->first();
-
-    if (!$visit) {
-         return ApiResponse::success(
-        'No upcoming visit',
-         null,200
-       );
-    }
-
-    return ApiResponse::success('Next visit retrieved successfully',new NextVisitResource($visit),200);
-}
     public function edit($patientId)
     {
         $doctor = auth()->user()->doctor;

@@ -20,30 +20,30 @@ class NotificationService
                     'description' => $item->description,
                     'time' => $item->created_at->diffForHumans(),
                     'date' => $item->created_at,
-                    'type' => 'activity'
+                    'type' => 'activity',
                 ];
             });
 
-       $visits = Visit::where('patient_id', $patientId)
-         ->whereDate('next_visit_date', Carbon::tomorrow())
-         ->with('doctor.user')
-         ->get()
-        ->unique('id') 
-        ->values();
+        $visits = Visit::where('patient_id', $patientId)
+            ->whereDate('next_visit_date', Carbon::tomorrow())
+            ->with('doctor.user')
+            ->get()
+            ->unique('id')
+            ->values();
 
-       $reminders = $visits->map(function ($visit) {
-         return [
-            'title' => 'Visit Reminder',
-            'description' => 'You have a visit tomorrow at ' .
-             $visit->next_visit_date->format('h:i A') .
-            ' with Dr. ' .
-            ($visit->doctor?->user?->name),
-           'time' => $visit->next_visit_date->diffForHumans(),
-            'date' => $visit->next_visit_date,
-           'type' => 'reminder'
-        ];
-        })->unique('description') 
-        ->values();
+        $reminders = $visits->map(function ($visit) {
+            return [
+                'title' => 'Visit Reminder',
+                'description' => 'You have a visit tomorrow at '.
+                 $visit->next_visit_date->format('h:i A').
+                ' with Dr. '.
+                ($visit->doctor?->user?->name),
+                'time' => $visit->next_visit_date->diffForHumans(),
+                'date' => $visit->next_visit_date,
+                'type' => 'reminder',
+            ];
+        })->unique('description')
+            ->values();
 
         return $activities
             ->concat($reminders)

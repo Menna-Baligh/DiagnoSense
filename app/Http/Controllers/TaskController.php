@@ -9,12 +9,11 @@ use App\Models\Task;
 
 class TaskController extends Controller
 {
-
     public function index()
     {
         $patient = auth()->user()->patient;
 
-        if (!$patient) {
+        if (! $patient) {
             return ApiResponse::error('Unauthorized', null, 403);
         }
 
@@ -34,7 +33,7 @@ class TaskController extends Controller
     {
         $patient = auth()->user()->patient;
         $task = Task::with('visit')->findOrFail($task);
-        
+
         if ($task->patient_id !== $patient->id) {
 
             return ApiResponse::error(
@@ -55,16 +54,15 @@ class TaskController extends Controller
     {
         $task = Task::findOrFail($task);
         $task->update([
-           'is_completed' => !$task->is_completed
+            'is_completed' => ! $task->is_completed,
         ]);
 
         return ApiResponse::success(
-           message: $task->is_completed 
-              ? 'Task marked as completed' 
-              : 'Task marked as uncompleted',
-           data: new TaskResource($task),
-           statusCode: 200
+            message: $task->is_completed
+               ? 'Task marked as completed'
+               : 'Task marked as uncompleted',
+            data: new TaskResource($task),
+            statusCode: 200
         );
     }
-
 }
