@@ -160,11 +160,15 @@ class PatientController extends Controller
             return ApiResponse::error('AI analysis is processing now', null, 404);
         }
         if ($latestAnalysis->status === 'failed') {
+            $hasData = $latestAnalysis->keyPoints()->exists();
+            if (!$hasData) {
             return ApiResponse::error(
-                'The AI analysis process failed',
+                'The AI analysis process failed and no information was retrieved.',
                 $latestAnalysis->response,
                 422
             );
+        }
+
         }
         if ($latestAnalysis->ocr_file_path) {
             $this->fixAzureBlobProperties($latestAnalysis->ocr_file_path);

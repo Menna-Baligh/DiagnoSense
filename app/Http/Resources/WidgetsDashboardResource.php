@@ -24,7 +24,7 @@ class WidgetsDashboardResource extends JsonResource
                     'details' => [
                         'last_month' => $this['last_month_count'],
                         'this_month' => $this['this_month_count'],
-                        'difference' => ($this['diff'] >= 0 ? '+' : '-').$this['diff'],
+                        'difference' => ($this['diff'] >= 0 ? '+' : '').$this['diff'],
                         'growth_rate' => $this['growth_percentage'].'%',
                         'trend' => $this['growth_percentage'] >= 0 ? 'up' : 'down',
                     ],
