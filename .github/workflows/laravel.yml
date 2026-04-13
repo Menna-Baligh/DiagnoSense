@@ -1,4 +1,4 @@
-name: Laravel
+name: DiagnoSense Tests CI
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ "master" ]
 
 jobs:
-  laravel-tests:
+  Test:
 
     runs-on: ubuntu-latest
 
