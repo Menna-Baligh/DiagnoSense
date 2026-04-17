@@ -88,7 +88,7 @@ class PatientController extends Controller
                 if ($request->hasFile($type)) {
                     foreach ($request->file($type) as $file) {
                         $fileName = $file->getClientOriginalName();
-                        $uniqueName = time().'_'.Str::random(5).'.'.$file->getClientOriginalExtension();
+                        $uniqueName = time().'_'.Str::random(5).'.'.$fileName;
                         $filePath = Storage::disk('azure')->putFileAs($type, $file, $uniqueName);
                         if (! $filePath) {
                             throw new \Exception("Failed to upload $fileName file to azure blob storage.");
@@ -370,7 +370,8 @@ class PatientController extends Controller
                 if ($request->hasFile($type)) {
                     $hasNewFiles = true;
                     foreach ($request->file($type) as $file) {
-                        $uniqueName = time().'_'.Str::random(5).'.'.$file->getClientOriginalExtension();
+                        $fileName = $file->getClientOriginalName();
+                        $uniqueName = time().'_'.Str::random(5).'.'.$fileName;
                         $filePath = Storage::disk('azure')->putFileAs($type, $file, $uniqueName);
 
                         Report::create([
