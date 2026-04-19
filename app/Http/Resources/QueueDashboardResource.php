@@ -23,6 +23,9 @@ class QueueDashboardResource extends JsonResource
             'age' => $this->age,
             'gender' => ucfirst($this->gender),
             'appointment_time' => Carbon::parse($this->next_visit_date)->format('h:i A'),
+            'ai_insight' => [
+                'summary' => $this->latestAiAnalysisResult?->ai_insight ?? 'No AI insight found for this patient.',
+            ],
             'status_tag' => $this->id == $currentId ? 'Now' : 'Waiting',
         ];
     }
