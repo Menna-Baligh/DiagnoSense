@@ -24,7 +24,7 @@ trait LogsActivity
 
         static::updated(function ($model) {
             $modelName = class_basename($model);
-            if (in_array($modelName, ['Patient', 'KeyPoint', 'Task', 'Medication', 'Visit'])) {
+            if (in_array($modelName, ['Patient', 'KeyPoint', 'Medication', 'Visit'])) {
                 $model->logActivity('updated');
             }
         });
