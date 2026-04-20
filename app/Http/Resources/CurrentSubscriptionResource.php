@@ -21,6 +21,7 @@ class CurrentSubscriptionResource extends JsonResource
 
         $data = [
             'billing_mode' => $mode,
+            'balance'      => (float) ($this->wallet->balance ?? 0),
         ];
 
         if ($mode === 'pay_per_use') {

@@ -92,7 +92,7 @@ class SubscriptionController extends Controller
 
     public function current(Request $request)
     {
-        $doctor = $request->user()->doctor->load(['subscriptions.plan']);
+        $doctor = $request->user()->doctor->load(['subscriptions.plan', 'wallet']);
         if (! $doctor->billing_mode) {
             return ApiResponse::error(
                 'No active subscription or billing mode found.',
