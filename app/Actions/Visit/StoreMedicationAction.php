@@ -14,7 +14,8 @@ class StoreMedicationAction extends StoreVisitRequirementAction
          $medication = $visit->medications()->create([
             'name' => $data['name'],
             'dosage' => $data['dosage'] ?? null,
-            'notes' => $data['notes'] ?? null,
+            'frequency' => $data['frequency'] ?? null,
+            'duration' => $data['duration'] ?? null,
             'visit_id' => $visit->id
         ]);
         $medication['action'] = $data['action'];
