@@ -12,6 +12,16 @@ use Illuminate\Auth\Access\Response;
 class VisitPolicy
 {
 
+    public function view(User $user, Patient $patient): Response
+    {
+        $doctor = $user->doctor;
+        if(!$doctor) {
+            return Response::deny('User is not a doctor.');
+        }
+        return $doctor->patients()->where('patients.id', $patient->id)->exists()
+            ? Response::allow()
+            : Response::deny('You do not have permission to view visit details for this patient.');
+    }
     public function store(User $user, Patient $patient): Response
     {
         $doctor = $user->doctor;
