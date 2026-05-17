@@ -5,7 +5,7 @@ namespace App\Http\Controllers\V1;
 use App\Helpers\ApiResponse;
 use App\Http\Requests\CompleteTaskRequest;
 use App\Http\Requests\DeleteTaskRequest;
-use App\Http\Requests\StoreTaskRequest;
+use App\Http\Requests\NextVisit\StoreTaskRequest;
 use App\Http\Resources\TaskResource;
 use App\Models\Task;
 use App\Models\Visit;
