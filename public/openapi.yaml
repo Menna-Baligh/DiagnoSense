@@ -4,8 +4,7 @@ info:
   description: ''
   version: 1.0.0
 servers:
-  -
-    url: 'http://localhost:8000'
+  - url: 'http://localhost:8000'
 tags:
   - name: Auth
     description: 'Operations related to User Authentication (Login, Register, OTP, etc.)'
@@ -23,6 +22,7 @@ tags:
     description: 'Operations related to customer support and help resources.'
   - name: Doctor Profile
     description: 'Operations related to doctor profile management.'
+
 paths:
   '/api/v1/auth/register':
     post:
@@ -31,7 +31,7 @@ paths:
       description: 'Creates a new doctor account using a unified contact field (Email or Phone) and returns an access token.'
       tags:
         - Auth
-      security: [] # No token needed for registration
+      security: []
       requestBody:
         required: true
         content:
@@ -99,6 +99,7 @@ paths:
                   success: false
                   message: "Failed to register user, please try again later."
                   data: null
+
   '/api/v1/auth/login/{type}':
     post:
       summary: 'Login'
@@ -173,6 +174,7 @@ paths:
                 example:
                   success: false
                   message: "Failed to login, please try again later."
+
   '/api/v1/auth/forget-password/{type}':
     post:
       summary: 'Forget Password'
@@ -273,7 +275,7 @@ paths:
       tags:
         - Auth
       security:
-        - sanctum: [] # This endpoint requires the reset_token as a Bearer token
+        - sanctum: []
       parameters:
         - in: path
           name: type
@@ -310,6 +312,7 @@ paths:
                   message: "Password has been reset successfully."
         401:
           description: 'Unauthorized - Invalid or expired reset token'
+
   '/api/v1/auth/logout/{type}':
     post:
       summary: 'Logout'
@@ -413,6 +416,7 @@ paths:
                   message: "User already verified."
         401:
           $ref: '#/components/responses/Unauthorized'
+
   '/api/v1/auth/google/redirect':
     get:
       summary: 'Login With Google'
@@ -420,7 +424,7 @@ paths:
       description: 'Generates and returns the Google OAuth2 authorization URL. The frontend should redirect the user to this URL.'
       tags:
         - Auth
-      security: [] # Public endpoint
+      security: []
       responses:
         200:
           description: 'Redirect URL generated successfully'
@@ -443,6 +447,7 @@ paths:
                   success: false
                   message: "Unable to connect to Google at the moment"
                   data: null
+
   '/api/v1/patients':
     get:
       summary: 'List + Search + Filter'
@@ -483,7 +488,7 @@ paths:
                   success: true
                   message: "Patients list retrieved successfully"
                   data:
-                    data: # This is the array from PatientResource
+                    data:
                       - id: 48
                         name: "Menna Baligh"
                         age: 22
@@ -498,12 +503,12 @@ paths:
                         ai_insight: "Abnormal cardiac rhythm detected."
                         last_visit: "May 07, 2026"
                         next_appointment: "Not scheduled"
-                    links: # Laravel Pagination Links
+                    links:
                       first: "http://localhost:8000/api/v1/patients?page=1"
                       last: "http://localhost:8000/api/v1/patients?page=5"
                       prev: null
                       next: "http://localhost:8000/api/v1/patients?page=2"
-                    meta: # Laravel Pagination Meta
+                    meta:
                       current_page: 1
                       from: 1
                       last_page: 5
@@ -516,800 +521,175 @@ paths:
         500:
           description: 'Internal Server Error'
     post:
-      summary: 'Upload Patient Data'
-      operationId: postApiPatients
-      description: ''
-      parameters: []
-      responses: {  }
+      summary: 'Create Patient & Upload Medical Files'
+      operationId: postApiV1PatientsStore
+      description: 'Creates a new patient record with their complete medical history profile and triggers simultaneous background workflows for AI Extraction and Comparative Analytics. Requires authentication and at least one uploaded document file type.'
       tags:
         - Patients List
+      security:
+        - sanctum: []
       requestBody:
         required: true
         content:
           multipart/form-data:
             schema:
               type: object
+              required:
+                - name
+                - contact
+                - date_of_birth
+                - gender
               properties:
                 name:
                   type: string
-                  description: 'Must not be greater than 255 characters.'
-                  example: vmqeopfuudtdsufvyvddq
-                  nullable: false
-                email:
+                  maxLength: 255
+                  description: 'Full name of the patient.'
+                  example: "Ahmed Mohamed"
+                contact:
                   type: string
-                  description: 'This field is required when <code>phone</code> is not present. Must be a valid email address. Must not be greater than 255 characters.'
-                  example: kunde.eloisa@example.com
-                  nullable: false
-                phone:
+                  description: 'Unique identifier contact (Must be a valid Email or Phone Number validated by ValidContactRule).'
+                  example: "ahmed.patient@example.com"
+                date_of_birth:
                   type: string
-                  description: 'This field is required when <code>email</code> is not present. Must be at least 10 characters. Must not be greater than 15 characters.'
-                  example: hfqcoynlazghd
-                  nullable: false
-                age:
-                  type: integer
-                  description: ''
-                  example: 17
-                  nullable: true
+                  format: date
+                  description: 'Patient date of birth used to dynamically calculate age.'
+                  example: "1984-05-12"
                 gender:
                   type: string
-                  description: ''
-                  example: female
-                  nullable: true
-                  enum:
-                    - male
-                    - female
+                  enum: [male, female]
+                  description: 'Biological sex designation.'
+                  example: "male"
                 national_id:
                   type: string
-                  description: 'Must not be greater than 15 characters.'
-                  example: mqeopfuudtdsu
+                  maxLength: 14
+                  description: 'Optional unique 14-digit Egyptian National ID number.'
+                  example: "28405121234567"
                   nullable: true
                 is_smoker:
                   type: boolean
-                  description: ''
-                  example: false
-                  nullable: true
-                previous_surgeries:
-                  type: boolean
-                  description: ''
+                  description: 'Indicates tobacco smoking habits status.'
                   example: false
                   nullable: true
                 chronic_diseases:
                   type: array
-                  description: ''
-                  example:
-                    - consequatur
+                  description: 'List of diagnosed chronic medical conditions.'
                   items:
                     type: string
+                  example: ["hypertension", "diabetes"]
+                  nullable: true
                 previous_surgeries_name:
                   type: string
-                  description: 'This field is required when <code>previous_surgeries</code> is <code>true</code>.'
-                  example: consequatur
-                  nullable: false
-                medications:
+                  description: 'Names and details/dates of past surgeries.'
+                  example: "Appendectomy in 2018"
+                  nullable: true
+                current_medications:
                   type: string
-                  description: ''
-                  example: consequatur
+                  description: 'Active prescriptions and daily pharmaceutical drugs currently taken.'
+                  example: "Metformin 500mg once daily"
                   nullable: true
                 allergies:
                   type: string
-                  description: ''
-                  example: consequatur
+                  description: 'Known immunological drug or substance hypersensitivities.'
+                  example: "Penicillin allergy (skin rash)"
                   nullable: true
                 family_history:
                   type: string
-                  description: ''
-                  example: consequatur
+                  description: 'Heritable ancestral genetic chronic disease records.'
+                  example: "Father had Type 2 Diabetes and Cardiovascular Disease"
+                  nullable: true
+                current_complaints:
+                  type: string
+                  description: 'Presenting active symptoms prompting the clinic visit.'
+                  example: "Persistent chest discomfort and mild shortness of breath on exertion."
                   nullable: true
                 lab:
                   type: array
-                  description: 'Must be a file. Must not be greater than 10240 kilobytes.'
+                  description: 'Array of physical lab test files (PDF or JPG). Max 10MB per file. Conditional requirement: Required if radiology and medical_history are completely empty.'
                   items:
                     type: string
                     format: binary
                 radiology:
                   type: array
-                  description: 'Must be a file. Must not be greater than 10240 kilobytes.'
+                  description: 'Array of medical imaging/radiology scan reports (PDF or JPG). Max 10MB per file. Conditional requirement: Required if lab and medical_history are completely empty.'
                   items:
                     type: string
                     format: binary
                 medical_history:
                   type: array
-                  description: 'Must be a file. Must not be greater than 10240 kilobytes.'
+                  description: 'Array of historical patient health summaries or older text files (PDF or JPG). Max 10MB per file. Conditional requirement: Required if lab and radiology are completely empty.'
                   items:
                     type: string
                     format: binary
-                current_complaint:
-                  type: string
-                  description: ''
-                  example: consequatur
-                  nullable: true
-              required:
-                - name
-      security: []
-  '/api/patients/{patientId}/key-info':
-    get:
-      summary: 'Get Patient Key Info'
-      operationId: getApiPatientsPatientIdKeyInfo
-      description: ''
-      parameters: []
       responses:
-        401:
-          description: ''
+        201:
+          description: 'Created Successfully - Patient profile created and asynchronous AI pipeline workflows initiated.'
           content:
             application/json:
               schema:
                 type: object
-                example:
-                  message: Unauthenticated.
                 properties:
+                  success:
+                    type: boolean
+                    example: true
                   message:
                     type: string
-                    example: Unauthenticated.
-      tags:
-        - Patient Profile
-      security: []
-    post:
-      summary: 'Add New Note'
-      operationId: postApiPatientsPatientIdKeyInfo
-      description: ''
-      parameters: []
-      responses: {  }
-      tags:
-        - Patient Profile
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                insight:
-                  type: string
-                  description: ''
-                  example: consequatur
-                  nullable: false
-                priority:
-                  type: string
-                  description: ''
-                  example: high
-                  nullable: false
-                  enum:
-                    - high
-                    - medium
-                    - low
-              required:
-                - insight
-                - priority
-      security: []
-    parameters:
-      -
-        in: path
-        name: patientId
-        description: ''
-        example: consequatur
-        required: true
-        schema:
-          type: string
-  '/api/patients/{patientId}/overview':
-    get:
-      summary: 'Get Patient Overview'
-      operationId: getApiPatientsPatientIdOverview
-      description: ''
-      parameters: []
-      responses:
-        401:
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  message: Unauthenticated.
-                properties:
-                  message:
-                    type: string
-                    example: Unauthenticated.
-      tags:
-        - Patient Profile
-      security: []
-    parameters:
-      -
-        in: path
-        name: patientId
-        description: ''
-        example: consequatur
-        required: true
-        schema:
-          type: string
-  '/api/patients/{patient}/status':
-    patch:
-      summary: 'Update Patient Status'
-      operationId: patchApiPatientsPatientStatus
-      description: ''
-      parameters: []
-      responses: {  }
-      tags:
-        - Patient Profile
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                status:
-                  type: string
-                  description: ''
-                  example: critical
-                  nullable: false
-                  enum:
-                    - critical
-                    - stable
-                    - 'under review'
-              required:
-                - status
-      security: []
-    parameters:
-      -
-        in: path
-        name: patient
-        description: 'The patient.'
-        example: consequatur
-        required: true
-        schema:
-          type: string
-  '/api/key-points/{keyPointId}':
-    delete:
-      summary: 'Delete Key Point'
-      operationId: deleteApiKeyPointsKeyPointId
-      description: ''
-      parameters: []
-      responses: {  }
-      tags:
-        - Patient Profile
-      security: []
-    patch:
-      summary: 'Edit Key Point'
-      operationId: patchApiKeyPointsKeyPointId
-      description: ''
-      parameters: []
-      responses: {  }
-      tags:
-        - Patient Profile
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                insight:
-                  type: string
-                  description: ''
-                  example: consequatur
-                  nullable: false
-              required:
-                - insight
-      security: []
-    parameters:
-      -
-        in: path
-        name: keyPointId
-        description: ''
-        example: consequatur
-        required: true
-        schema:
-          type: string
-  '/api/patients/{patientId}/decision-support':
-    get:
-      summary: 'Get Decision Support'
-      operationId: getApiPatientsPatientIdDecisionSupport
-      description: ''
-      parameters: []
-      responses:
-        401:
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  message: Unauthenticated.
-                properties:
-                  message:
-                    type: string
-                    example: Unauthenticated.
-      tags:
-        - Patient Profile
-      security: []
-    parameters:
-      -
-        in: path
-        name: patientId
-        description: ''
-        example: consequatur
-        required: true
-        schema:
-          type: string
-  /api/visits:
-    post:
-      summary: 'Add New Visit'
-      operationId: postApiVisits
-      description: ''
-      parameters: []
-      responses: {  }
-      tags:
-        - Patient Profile
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                patient_id:
-                  type: string
-                  description: 'The <code>id</code> of an existing record in the patients table.'
-                  example: consequatur
-                  nullable: false
-                has_next_visit:
-                  type: boolean
-                  description: ''
-                  example: false
-                  nullable: false
-                next_visit_date:
-                  type: string
-                  description: 'This field is required when <code>has_next_visit</code> is <code>true</code>. Must be a valid date.'
-                  example: '2026-03-03T22:56:11'
-                  nullable: false
-                action:
-                  type: string
-                  description: 'Must not be greater than 255 characters.'
-                  example: mqeopfuudtdsufvyvddqa
-                  nullable: false
-                  enum:
-                    - save
-                    - next
-              required:
-                - patient_id
-                - has_next_visit
-                - action
-      security: []
-  '/api/visits/{visit}/items':
-    post:
-      summary: 'Add Tasks or Medications'
-      operationId: postApiVisitsVisitItems
-      description: ''
-      parameters: []
-      responses: {  }
-      tags:
-        - Patient Profile
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                type:
-                  type: string
-                  description: 'Must not be greater than 255 characters.'
-                  example: vmqeopfuudtdsufvyvddq
-                  nullable: false
-                  enum:
-                    - medication
-                    - task
-                name:
-                  type: string
-                  description: 'This field is required when <code>type</code> is <code>medication</code>. Must not be greater than 255 characters.'
-                  example: amniihfqcoynlazghdtqt
-                  nullable: false
-                dosage:
-                  type: string
-                  description: 'This field is required when <code>type</code> is <code>medication</code>. Must not be greater than 255 characters.'
-                  example: qxbajwbpilpmufinllwlo
-                  nullable: false
-                frequency:
-                  type: string
-                  description: 'This field is required when <code>type</code> is <code>medication</code>. Must not be greater than 255 characters.'
-                  example: auydlsmsjuryvojcybzvr
-                  nullable: false
-                duration:
-                  type: string
-                  description: 'Must not be greater than 255 characters.'
-                  example: byickznkygloigmkwxphl
-                  nullable: true
-                title:
-                  type: string
-                  description: 'This field is required when <code>type</code> is <code>task</code>. Must not be greater than 255 characters.'
-                  example: vazjrcnfbaqywuxhgjjmz
-                  nullable: false
-                description:
-                  type: string
-                  description: ''
-                  example: 'Dolores dolorum amet iste laborum eius est dolor.'
-                  nullable: true
-                notes:
-                  type: string
-                  description: ''
-                  example: consequatur
-                  nullable: true
-                next_visit_date:
-                  type: string
-                  description: 'Must be a valid date.'
-                  example: '2026-03-03T22:56:11'
-                  nullable: true
-                action:
-                  type: string
-                  description: 'Must not be greater than 255 characters.'
-                  example: mqeopfuudtdsufvyvddqa
-                  nullable: false
-                  enum:
-                    - save
-                    - save_and_create_another
-              required:
-                - type
-                - action
-      security: []
-    parameters:
-      -
-        in: path
-        name: visit
-        description: 'The visit.'
-        example: consequatur
-        required: true
-        schema:
-          type: string
-  '/api/patients/{patient}/items':
-    get:
-      summary: 'Get Tasks and Medications for a Patient'
-      operationId: getApiPatientsPatientItems
-      description: ''
-      parameters: []
-      responses:
-        401:
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  message: Unauthenticated.
-                properties:
-                  message:
-                    type: string
-                    example: Unauthenticated.
-      tags:
-        - Patient Profile
-      security: []
-    parameters:
-      -
-        in: path
-        name: patient
-        description: 'The patient.'
-        example: consequatur
-        required: true
-        schema:
-          type: string
-  '/api/patients/{patient}/medications/{medication}':
-    delete:
-      summary: 'Delete a Medication for a Patient'
-      operationId: deleteApiPatientsPatientMedicationsMedication
-      description: ''
-      parameters: []
-      responses: {  }
-      tags:
-        - Patient Profile
-      security: []
-    parameters:
-      -
-        in: path
-        name: patient
-        description: 'The patient.'
-        example: consequatur
-        required: true
-        schema:
-          type: string
-      -
-        in: path
-        name: medication
-        description: 'The medication.'
-        example: consequatur
-        required: true
-        schema:
-          type: string
-  '/api/patients/{patient}/tasks/{task}':
-    delete:
-      summary: 'Delete a Task for a Patient'
-      operationId: deleteApiPatientsPatientTasksTask
-      description: ''
-      parameters: []
-      responses: {  }
-      tags:
-        - Patient Profile
-      security: []
-    parameters:
-      -
-        in: path
-        name: patient
-        description: 'The patient.'
-        example: consequatur
-        required: true
-        schema:
-          type: string
-      -
-        in: path
-        name: task
-        description: 'The task.'
-        example: consequatur
-        required: true
-        schema:
-          type: string
-  '/api/patients/{patient}/activities':
-    get:
-      summary: 'Activity Log'
-      operationId: getApiPatientsPatientActivities
-      description: ''
-      parameters: []
-      responses:
-        401:
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  message: Unauthenticated.
-                properties:
-                  message:
-                    type: string
-                    example: Unauthenticated.
-      tags:
-        - Patient Profile
-      security: []
-    parameters:
-      -
-        in: path
-        name: patient
-        description: 'The patient.'
-        example: consequatur
-        required: true
-        schema:
-          type: string
-  '/api/patients/{patientId}':
-    delete:
-      summary: 'Delete a Patient'
-      operationId: deleteApiPatientsPatientId
-      description: ''
-      parameters: []
-      responses: {  }
-      tags:
-        - Patients List
-      security: []
-    get:
-      summary: 'Get Pre-Filled Patient Data for Editing'
-      operationId: getApiPatientsPatientId
-      description: 'Returns all patient details, including personal info, medical history, and existing file links to pre-fill the edit form.'
-      tags:
-        - Patient Profile
-      security:
-        - sanctum: [] # Added because this is sensitive data
-      parameters:
-        - in: path
-          name: patientId
-          required: true
-          schema:
-            type: integer
-          example: 48
-      responses:
-        200:
-          description: 'Patient data retrieved successfully'
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  success: true
-                  message: "Data retrieved successfully"
+                    example: "Patient created successfully and AI analysis is in progress."
                   data:
-                    id: 48
-                    personal_info:
-                      name: "Menna Baligh"
-                      email: "manona@gmail.com"
-                      phone: "01019018138"
-                      age: 22
-                      gender: "female"
-                      national_id: "7863877"
-                    medical_history:
-                      current_complaint: "Persistent chest discomfort for the past 3 days..."
-                      is_smoker: true
-                      previous_surgeries: true
-                      chronic_diseases: ["hypertension", "thyroid", "heart"]
-                      previous_surgeries_name: "Appendectomy – 1998, Left knee arthroscopy – 2015"
-                      medications: "Metformin 1000 mg, Amlodipine 5 mg..."
-                      allergies: "Penicillin (rash), Shrimp..."
-                      family_history: "Father had Type 2 Diabetes..."
-                    existing_files:
-                      - id: 55
-                        type: "medical_history"
-                        name: "Lab (3)_compressed.pdf"
-                        url: "https://diagnosensestorage.blob.core.windows.net/..."
+                    type: object
+                    properties:
+                      patient_id:
+                        type: integer
+                        example: 48
+                      analysis_result_id:
+                        type: integer
+                        example: 105
         401:
           $ref: '#/components/responses/Unauthorized'
+        422:
+          description: 'Validation Error - Missing structural constraints, dynamic uniqueness conflict, or conditional file grouping rules broken.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "The given data was invalid."
+                  errors:
+                    type: object
+                    properties:
+                      contact:
+                        type: array
+                        items:
+                          type: string
+                        example: ["The contact has already been taken."]
+                      lab:
+                        type: array
+                        items:
+                          type: string
+                        example: ["Please upload at least one lab test result or radiology report or medical history report."]
+        500:
+          description: 'Internal Server Error - Operational database transaction rollback occurred during system or pipeline crash.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "An error occurred while creating patient."
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
 
-    put:
-      summary: 'Update Patient Data'
-      operationId: putApiPatientsPatientId
-      description: 'Updates patient information and allows uploading new medical files (Lab, Radiology, etc.).'
-      tags:
-        - Patient Profile
-      security:
-        - sanctum: []
-      parameters:
-        - in: path
-          name: patientId
-          required: true
-          schema:
-            type: integer
-          example: 48
-      requestBody:
-        required: true
-        content:
-          multipart/form-data: # Essential for file uploads
-            schema:
-              type: object
-              properties:
-                name: { type: string, example: "Menna Baligh" }
-                age: { type: integer, example: 22 }
-                gender: { type: string, enum: [male, female], example: "female" }
-                lab:
-                  type: array
-                  items: { type: string, format: binary }
-                # ... (Other properties stay the same)
-      responses:
-        200:
-          description: 'Patient updated successfully'
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  success: true
-                  message: "Patient file updated successfully"
-        401:
-          $ref: '#/components/responses/Unauthorized'
-  /api/wallet/charge:
-    post:
-      summary: 'Charge Credits'
-      operationId: postApiWalletCharge
-      description: ''
-      parameters: []
-      responses: {  }
-      tags:
-        - Subscriptions
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                balance:
-                  type: number
-                  description: 'Must be at least 50.'
-                  example: 83
-              required:
-                - balance
-      security: []
-  /api/transactions:
-    get:
-      summary: 'Get Transaction History'
-      operationId: getApiTransactions
-      description: ''
-      parameters: []
-      responses:
-        401:
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  message: Unauthenticated.
-                properties:
-                  message:
-                    type: string
-                    example: Unauthenticated.
-      tags:
-        - Subscriptions
-      security: []
-  /api/subscription/subscribe:
-    post:
-      summary: 'Subscribe to a Plan'
-      operationId: postApiSubscriptionSubscribe
-      description: ''
-      parameters: []
-      responses: {  }
-      tags:
-        - Subscriptions
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                plan_id:
-                  type: integer
-                  description: 'The <code>id</code> of an existing record in the plans table.'
-                  example: 17
-              required:
-                - plan_id
-      security: []
-  /api/subscription/pay-per-use:
-    post:
-      summary: 'Switch to Pay-Per-Use mode'
-      operationId: postApiSubscriptionPayPerUse
-      description: ''
-      parameters: []
-      responses: {  }
-      tags:
-        - Subscriptions
-      security: []
-  /api/subscription/plans:
-    get:
-      summary: 'Get Available Plans'
-      operationId: getApiSubscriptionPlans
-      description: ''
-      parameters: []
-      responses:
-        401:
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  message: Unauthenticated.
-                properties:
-                  message:
-                    type: string
-                    example: Unauthenticated.
-      tags:
-        - Subscriptions
-      security: []
-  /api/subscription/current:
-    get:
-      summary: 'Get Current Subscription'
-      operationId: getApiSubscriptionCurrent
-      description: ''
-      parameters: []
-      responses:
-        401:
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  message: Unauthenticated.
-                properties:
-                  message:
-                    type: string
-                    example: Unauthenticated.
-      tags:
-        - Subscriptions
-      security: []
-  /api/subscription/cancel:
-    post:
-      summary: 'Cancel Subscription'
-      operationId: postApiSubscriptionCancel
-      description: ''
-      parameters: []
-      responses: {  }
-      tags:
-        - Subscriptions
-      security: []
+
   '/api/v1/notifications':
     get:
       summary: 'Get User Notifications'
@@ -1437,7 +817,8 @@ paths:
                 example:
                   success: true
                   message: "All notifications deleted successfully"
-  /api/broadcasting/auth:
+
+  '/api/broadcasting/auth':
     get:
       summary: 'Authenticate the request for channel access.'
       operationId: authenticateTheRequestForChannelAccess
@@ -1459,228 +840,9 @@ paths:
       tags:
         - Notifications
       security: []
-  /api/dashboard/summary:
-    get:
-      summary: 'Retrieve Dashboard Widgets Summary'
-      operationId: getApiDashboardSummary
-      description: 'Fetches core doctor statistics including total patients, today’s appointments, and monthly growth metrics for the top cards.'
-      tags:
-        - Dashboard
-      security:
-        - sanctum: []
-      responses:
-        200:
-          description: 'Dashboard stats retrieved successfully'
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  success: true
-                  message: "Dashboard summary retrieved successfully"
-                  data:
-                    doctor_name: "Dr. Layla"
-                    widgets:
-                      total_patients: "248"
-                      today_appointments: 8
-                      reports_analyzed: "1,340"
-                      monthly_growth:
-                        details:
-                          last_month: 34
-                          this_month: 45
-                          difference: "+11"
-                          growth_rate: "32.35%"
-                          trend: "up"
-        401:
-          $ref: '#/components/responses/Unauthorized'
 
-  /api/dashboard/status-distribution:
-    get:
-      summary: 'Retrieve Status Distribution (Pie Chart)'
-      operationId: getApiDashboardStatusDistribution
-      description: 'Returns the count and percentage of patients by status (Critical, Stable, Under Review).'
-      tags:
-        - Dashboard
-      security:
-        - sanctum: []
-      responses:
-        200:
-          description: 'Success'
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  success: true
-                  data:
-                    total_registered_patients: 248
-                    pie-chart_data:
-                      - { status: "stable", value: 150, percentage: 60 }
-                      - { status: "critical", value: 62, percentage: 25 }
-                      - { status: "under review", value: 36, percentage: 15 }
-        401:
-          $ref: '#/components/responses/Unauthorized'
 
-  /api/dashboard/top-diseases:
-    get:
-      summary: 'Retrieve Top 5 Chronic Diseases (Bar Chart)'
-      operationId: getApiDashboardTopDiseases
-      description: 'Aggregates patient medical history to find the most prevalent chronic conditions.'
-      tags:
-        - Dashboard
-      security:
-        - sanctum: []
-      responses:
-        200:
-          description: 'Success'
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                example:
-                  success: true
-                  data:
-                    - { label: "Hypertension", value: 156 }
-                    - { label: "Diabetes", value: 142 }
-                    - { label: "Heart Disease", value: 98 }
-        401:
-          $ref: '#/components/responses/Unauthorized'
 
-  /api/dashboard/today-visits:
-    get:
-      summary: 'Retrieve Daily Appointment Queue'
-      operationId: getApiDashboardTodayVisits
-      description: 'Lists today’s queue, highlighting the patient currently being attended and their AI-generated diagnostic insights.'
-      tags:
-        - Dashboard
-      security:
-        - sanctum: []
-      responses:
-        200:
-          description: 'Success'
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  success: true
-                  data:
-                    current_attending:
-                      id: 1
-                      name: "Ahmed Mohamed"
-                      age: "52 y/o"
-                      gender: "Male"
-                      appointment_time: "09:00 AM"
-                      ai_insight:
-                        summary: "AI detected potential cardiac anomaly. Elevated troponin levels observed."
-                    full_queue_list:
-                      - { id: 1, name: "Ahmed Mohamed", age: 52, gender: "Male", appointment_time: "09:00 AM", status_tag: "Now" }
-                      - { id: 2, name: "Sarah Kamal", age: 38, gender: "Female", appointment_time: "10:00 AM", status_tag: "Waiting" }
-                    remaining_count_label: "4 remaining"
-        401:
-          $ref: '#/components/responses/Unauthorized'
-
-  /api/dashboard/{patientId}/attend:
-    patch:
-      summary: 'Mark Patient as Attended'
-      operationId: patchApiDashboardPatientIdAttend
-      tags:
-        - Dashboard
-      parameters:
-        - in: path
-          name: patientId
-          required: true
-          schema:
-            type: integer
-      security:
-        - sanctum: []
-      responses:
-        200:
-          description: 'Success'
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  success: true
-                  message: "Patient marked as attended and queue updated successfully."
-
-  '/api/chatbot/{patientId}':
-      post:
-        summary: 'Ask DiagnoBot about Patient'
-        operationId: postApiChatbotPatientId
-        description: 'Sends a medical question to the AI chatbot regarding a specific patient. If the patient data is not yet processed, it triggers an ingestion job.'
-        tags:
-          - Patient Profile
-        security:
-          - sanctum: []
-        parameters:
-          - in: path
-            name: patientId
-            required: true
-            description: 'The ID of the patient the question is about.'
-            schema:
-              type: integer
-            example: 101
-        requestBody:
-          required: true
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - question
-                properties:
-                  question:
-                    type: string
-                    minLength: 3
-                    description: 'The specific question about the patient’s medical history or reports.'
-                    example: "What are the key risks found in the latest blood test?"
-        responses:
-          200:
-            description: 'AI Answer retrieved successfully'
-            content:
-              application/json:
-                schema:
-                  type: object
-                  example:
-                    success: true
-                    message: "Answer from chatbot"
-                    data: "Based on the reports, the patient shows elevated glucose levels suggesting a risk of Type 2 Diabetes."
-          202:
-            description: 'Accepted - Data is being prepared'
-            content:
-              application/json:
-                schema:
-                  type: object
-                  example:
-                    success: true
-                    message: "Preparing patient data..."
-                    data: null
-          403:
-            description: 'Forbidden - Doctor does not own this patient record'
-            content:
-              application/json:
-                schema:
-                  type: object
-                  example:
-                    success: false
-                    message: "Unauthorized"
-          404:
-            description: 'Patient not found'
-          401:
-            $ref: '#/components/responses/Unauthorized'
-          500:
-            description: 'Internal Server Error'
-            content:
-              application/json:
-                schema:
-                  type: object
-                  example:
-                    success: false
-                    message: "Failed to get answer from chatbot"
   '/api/v1/support':
     post:
       summary: 'Submit Support Ticket'
@@ -1749,41 +911,7 @@ paths:
                   success: false
                   message: "Failed to submit message."
                   data: null
-  '/api/doctors/{doctorId}':
-      get:
-        summary: 'Get Doctor Profile Information'
-        operationId: getApiDoctorsDoctorId
-        description: 'Returns the personal and professional information of the authenticated doctor.'
-        tags:
-          - Doctor Profile
-        security:
-          - sanctum: []
-        parameters:
-          - in: path
-            name: doctorId
-            required: true
-            schema:
-              type: integer
-            example: 12
-        responses:
-          200:
-            description: 'Doctor information retrieved successfully'
-            content:
-              application/json:
-                schema:
-                  type: object
-                  example:
-                    success: true
-                    message: "Doctor Information"
-                    data:
-                      id: 12
-                      name: "Dr. Layla"
-                      identity: "layla@diagnosense.com"
-                      speciality: "Cardiology"
-          403:
-            description: 'Forbidden - You can only view your own profile'
-          401:
-            $ref: '#/components/responses/Unauthorized'
+
   '/api/v1/doctors/profile':
     patch:
       summary: 'Update Doctor Profile'
@@ -1874,11 +1002,12 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         422:
           description: 'Validation Error - Current password incorrect or confirmation mismatch'
-  '/api/patients/{patientId}/comparative-analysis':
+
+  '/api/v1/patients/{patientId}/key-info':
     get:
-      summary: 'Get Comparative Analysis'
-      operationId: getApiPatientsPatientIdComparativeAnalysis
-      description: 'Returns a detailed comparison between the latest lab results and previous ones, including historical data points for chart plotting.'
+      summary: 'Get Patient Key Info'
+      operationId: getApiV1PatientsKeyInfo
+      description: 'Retrieves categorized key medical insights and OCR file temporary URLs for a specific patient. Key points are automatically grouped by priority (high, medium, low) and display whether they were AI-generated or added manually as a Doctor Note.'
       tags:
         - Patient Profile
       security:
@@ -1887,56 +1016,530 @@ paths:
         - in: path
           name: patientId
           required: true
+          description: 'The unique ID of the patient.'
           schema:
             type: integer
           example: 48
       responses:
         200:
-          description: 'Comparative data retrieved successfully'
+          description: 'Key information retrieved successfully'
           content:
             application/json:
               schema:
                 type: object
                 example:
                   success: true
-                  message: "Comparative data retrieved successfully."
+                  message: "key points retrieved successfully."
                   data:
-                    - test_name: "Hemoglobin (Hb)"
-                      category: "CBC"
-                      unit: "g/dL"
-                      comparison:
-                        current_value: 14.5
-                        previous_value: 13.2
-                        change_value: 1.3
-                        change_percentage: 9.8
-                        trend: "up"
-                        status: "Normal"
-                      all_points:
-                        - { visit_label: "Visit #1", value: 13.2, status: "Normal", date: "2024-01-10" }
-                        - { visit_label: "Visit #2", value: 14.5, status: "Normal", date: "2024-03-20" }
-                    - test_name: "Blood Sugar"
-                      category: "Diabetes"
-                      unit: "mg/dL"
-                      comparison:
-                        current_value: 110
-                        previous_value: "No previous"
-                        change_value: 0
-                        change_percentage: 0
-                        trend: "stable"
-                        status: "Normal"
-                      all_points:
-                        - { visit_label: "Visit #1", value: 110, status: "Normal", date: "2024-03-20" }
-        404:
-          description: 'Not Found - Patient or analysis data not found'
+                    still_processing: false
+                    ocr_files:
+                      - "https://diagnosensestorage.blob.core.windows.net/patient-data/ocr/temp_result.pdf?sv=2026..."
+                    key_points:
+                      high:
+                        - id: 101
+                          priority: "high"
+                          title: "Critical Troponin Levels"
+                          insight: "Troponin I level is critically high at 0.45 ng/mL, indicating potential acute myocardial infarction."
+                          evidence: "Lab Report - Page 1"
+                          is_ai_generated: "AI Generated"
+                          date: "May 17, 2026"
+                      medium:
+                        - id: 102
+                          priority: "medium"
+                          title: "Uncontrolled Blood Pressure"
+                          insight: "Patient notes historic readings averaging 150/95 mmHg over the past two weeks."
+                          is_ai_generated: "Doctor Note"
+                          date: "May 16, 2026"
+                      low: []
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        500:
+          description: 'Internal Server Error'
           content:
             application/json:
               schema:
                 type: object
                 example:
                   success: false
-                  message: "No analysis data found."
+                  message: "An error occurred while fetching key information."
+                  data: null
+    post:
+      summary: 'Add Manual Doctor Note'
+      operationId: postApiV1PatientsKeyInfoStore
+      description: 'Allows the authenticated doctor to add a manual clinical note/insight to a specific patient profile. The note is saved as a Key Point with a selected priority and is automatically labeled as a "Doctor Note".'
+      tags:
+        - Patient Profile
+      security:
+        - sanctum: []
+      parameters:
+        - in: path
+          name: patientId
+          required: true
+          description: 'The unique ID of the patient.'
+          schema:
+            type: integer
+          example: 48
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - insight
+                - priority
+              properties:
+                insight:
+                  type: string
+                  description: 'The actual medical note or clinical insight written by the doctor.'
+                  example: "Patient needs immediate follow-up next week regarding hypertension stability."
+                priority:
+                  type: string
+                  enum: [high, medium, low]
+                  description: 'The severity or urgency level of this specific medical insight.'
+                  example: "high"
+      responses:
+        201:
+          description: 'Doctor manual key point added successfully'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: "Doctor Manual key point added successfully"
+                  data:
+                    id: 154
+                    priority: "high"
+                    insight: "Patient needs immediate follow-up next week regarding hypertension stability."
+                    is_ai_generated: "Doctor Note"
+                    date: "May 17, 2026"
         401:
           $ref: '#/components/responses/Unauthorized'
+        403:
+          description: 'Forbidden - The authenticated doctor is not authorized to manage this patient record'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: "This action is unauthorized."
+        422:
+          description: 'Validation Error - Missing fields or incorrect priority level values'
+        500:
+          description: 'Internal Server Error'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: "Error while adding manual note"
+                  data: null
+  '/api/v1/patients/{patientId}/decision-support':
+    get:
+      summary: 'Get AI Clinical Decision Support'
+      operationId: getApiV1PatientsDecisionSupport
+      description: 'Retrieves AI-generated clinical decision support warnings, potential conditions, probabilities, and medical justifications. If a new analysis is processing, it gracefully falls back to historical diagnostic decisions while setting the still_processing flag.'
+      tags:
+        - Patient Profile
+      security:
+        - sanctum: []
+      parameters:
+        - in: path
+          name: patientId
+          required: true
+          description: 'The unique ID of the patient.'
+          schema:
+            type: integer
+          example: 48
+      responses:
+        200:
+          description: 'Decision support data retrieved successfully'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: "decision support retrieved successfully."
+                  data:
+                    still_processing: false
+                    decisions:
+                      - id: 12
+                        condition: "Acute Myocardial Infarction (AMI)"
+                        status: "high risk"
+                        probability: "88%"
+                        clinical_reasoning: "AI flags critical risk due to troponin levels at 0.45 ng/mL cross-referenced with active complaints of chest tightness and shortness of breath."
+                      - id: 13
+                        condition: "Type 2 Diabetes Mellitus"
+                        status: "suspected"
+                        probability: "65%"
+                        clinical_reasoning: "Based on the elevated fasting blood sugar reading (135 mg/dL) found in the uploaded lab report records."
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        500:
+          description: 'Internal Server Error'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: "An error occurred while fetching decision support information."
+                  data: null
+
+  '/api/v1/patients/{patientId}/comparative-analysis':
+    get:
+      summary: 'Get Patient Comparative Analysis'
+      operationId: getApiV1PatientsComparativeAnalysis
+      description: 'Returns a historical trend analysis of all quantified lab tests for a specific patient. Groups results by test standard name, computes deltas (change and percentage), tracks dynamic trends (up/down/stable), and supplies chronological data coordinates optimized for plotting charts.'
+      tags:
+        - Patient Profile
+      security:
+        - sanctum: []
+      parameters:
+        - in: path
+          name: patientId
+          required: true
+          description: 'The unique numerical ID of the patient.'
+          schema:
+            type: integer
+          example: 48
+      responses:
+        200:
+          description: 'Success - Returns analytical dataset payload. Message safely updates depending on pipeline or failure flags.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Comparative analysis retrieved successfully."
+                  data:
+                    type: object
+                    nullable: true
+                    properties:
+                      still_processing:
+                        type: boolean
+                        description: 'True if a new AI report ingestion job is currently running in the background.'
+                        example: false
+                      analysis:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            test_name:
+                              type: string
+                              example: "Hemoglobin (Hb)"
+                            category:
+                              type: string
+                              example: "CBC"
+                            unit:
+                              type: string
+                              example: "g/dL"
+                            comparison:
+                              type: object
+                              properties:
+                                current_value:
+                                  type: number
+                                  example: 14.5
+                                previous_value:
+                                  type: image
+                                  oneOf:
+                                    - type: number
+                                    - type: string
+                                  description: 'Returns the numerical value of the previous visit, or string "Initial" if this is the patient first record.'
+                                  example: 13.2
+                                change_value:
+                                  type: number
+                                  example: 1.3
+                                change_percentage:
+                                  type: number
+                                  example: 9.8
+                                trend:
+                                  type: string
+                                  enum: [up, down, stable]
+                                  example: "up"
+                                status:
+                                  type: string
+                                  example: "Normal"
+                            all_points:
+                              type: array
+                              description: 'Chronological timeline points array used by charting libraries to generate graph coordinates.'
+                              items:
+                                type: object
+                                properties:
+                                  visit_label:
+                                    type: string
+                                    example: "Visit #1"
+                                  value:
+                                    type: number
+                                    example: 13.2
+                                  status:
+                                    type: string
+                                    example: "Normal"
+                                  date:
+                                    type: string
+                                    format: date
+                                    example: "2026-01-10"
+              examples:
+                SuccessWithData:
+                  summary: 'Standard Complete History Response'
+                  value:
+                    success: true
+                    message: "Comparative analysis retrieved successfully."
+                    data:
+                      still_processing: false
+                      analysis:
+                        - test_name: "Hemoglobin (Hb)"
+                          category: "CBC"
+                          unit: "g/dL"
+                          comparison:
+                            current_value: 14.5
+                            previous_value: 13.2
+                            change_value: 1.3
+                            change_percentage: 9.8
+                            trend: "up"
+                            status: "Normal"
+                          all_points:
+                            - { visit_label: "Visit #1", value: 13.2, status: "Normal", date: "2026-01-10" }
+                            - { visit_label: "Visit #2", value: 14.5, status: "Normal", date: "2026-03-20" }
+                AiProcessingFallback:
+                  summary: 'AI Processing Fallback State'
+                  value:
+                    success: true
+                    message: "Comparative analysis retrieved successfully."
+                    data:
+                      still_processing: true
+                      analysis:
+                        - test_name: "Blood Sugar"
+                          category: "Diabetes"
+                          unit: "mg/dL"
+                          comparison:
+                            current_value: 110
+                            previous_value: "Initial"
+                            change_value: 0
+                            change_percentage: 0
+                            trend: "stable"
+                            status: "Normal"
+                          all_points:
+                            - { visit_label: "Visit #1", value: 110, status: "Normal", date: "2026-03-20" }
+                AiFailedFallback:
+                  summary: 'AI Extraction Failure State'
+                  value:
+                    success: true
+                    message: "Note: The AI failed to extract data from the latest reports. Showing historical data only."
+                    data:
+                      still_processing: false
+                      analysis: []
+                EmptyHistory:
+                  summary: 'No Historical Data Found Response'
+                  value:
+                    success: true
+                    message: "No comparative analysis data available for this patient."
+                    data: null
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        500:
+          description: 'Internal Server Error'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: "An error occurred while fetching comparative analysis."
+                  data: null
+  '/api/v1/patients/{patientId}':
+    patch:
+      summary: 'Update Patient File & Upload New Reports'
+      operationId: patchApiV1PatientsUpdate
+      description: 'Updates patient personal info and medical history. If new files are uploaded or the current complaints change, a new background AI analysis job is automatically triggered.'
+      tags:
+        - Patient Profile
+      security:
+        - sanctum: []
+      parameters:
+        - in: path
+          name: patientId
+          required: true
+          description: 'The unique ID of the patient to update.'
+          schema:
+            type: integer
+          example: 48
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - name
+                - contact
+                - date_of_birth
+                - gender
+              properties:
+                name:
+                  type: string
+                  maxLength: 255
+                  example: "Ahmed Mohamed"
+                contact:
+                  type: string
+                  description: 'Patient email or phone. Unique constraint ignores current patient user ID.'
+                  example: "ahmed.new@example.com"
+                date_of_birth:
+                  type: string
+                  format: date
+                  example: "1984-05-12"
+                gender:
+                  type: string
+                  enum: [male, female]
+                  example: "male"
+                national_id:
+                  type: string
+                  maxLength: 14
+                  description: 'Unique 14-digit National ID. Validation ignores current patient record.'
+                  example: "28405121234567"
+                  nullable: true
+                is_smoker:
+                  type: boolean
+                  example: false
+                  nullable: true
+                chronic_diseases:
+                  type: array
+                  items:
+                    type: string
+                  example: ["hypertension"]
+                  nullable: true
+                previous_surgeries_name:
+                  type: string
+                  example: "Appendectomy in 2018"
+                  nullable: true
+                current_medications:
+                  type: string
+                  example: "Metformin 500mg"
+                  nullable: true
+                allergies:
+                  type: string
+                  example: "None"
+                  nullable: true
+                family_history:
+                  type: string
+                  example: "Diabetes"
+                  nullable: true
+                current_complaints:
+                  type: string
+                  description: 'Changing this field will automatically re-trigger the AI Analysis pipeline.'
+                  example: "Severe chest pain spreading to the left shoulder."
+                  nullable: true
+                lab:
+                  type: array
+                  description: 'Optional new lab files (PDF/JPG) to add to patient records. Max 10MB per file.'
+                  items:
+                    type: string
+                    format: binary
+                radiology:
+                  type: array
+                  description: 'Optional new radiology scans (PDF/JPG) to add. Max 10MB per file.'
+                  items:
+                    type: string
+                    format: binary
+                medical_history:
+                  type: array
+                  description: 'Optional new clinical history documents to add. Max 10MB per file.'
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        200:
+          description: 'Patient file updated successfully'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: "Patient file updated successfully"
+                  data: null
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          description: 'Forbidden - Doctor does not own this patient record'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: "This action is unauthorized."
+        422:
+          description: 'Validation Error - Contact or National ID already taken by another user'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: "The given data was invalid."
+                  errors:
+                    contact: ["The contact has already been taken."]
+        500:
+          description: 'Internal Server Error'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: "Update failed: [Error details]"
+                  data: null
+  '/api/v1/patients/{patientId}/re-analyze':
+    post:
+      summary: 'Trigger AI Re-Analysis'
+      operationId: postApiV1PatientsReAnalyze
+      description: 'Manually re-triggers the AI extraction and analysis pipeline for an existing patient using their already uploaded medical files. Used when upgrading a patient analysis or re-running failed jobs.'
+      tags:
+        - Patient Profile
+      security:
+        - sanctum: []
+      parameters:
+        - in: path
+          name: patientId
+          required: true
+          description: 'The unique ID of the patient.'
+          schema:
+            type: integer
+          example: 48
+      responses:
+        200:
+          description: 'AI Re-analysis triggered and processing in the background successfully'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: "AI Is Processing Now Due To Upgrade"
+                  data:
+                    analysis_id: 106
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        500:
+          description: 'Internal Server Error - Pipeline trigger failed or subscription validation errored out'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: "AI Analysis Trigger failed: No existing analysis found to upgrade."
+                  data: null
 
 components:
   responses:
@@ -1948,4 +1551,3 @@ components:
             type: object
             example:
               message: "Unauthenticated."
-
