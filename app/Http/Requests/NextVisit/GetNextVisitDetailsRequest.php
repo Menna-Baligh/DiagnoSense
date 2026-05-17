@@ -15,7 +15,7 @@ class GetNextVisitDetailsRequest extends FormRequest
     {
         $patient = $this->route('patient');
         Gate::authorize('view', [Visit::class, $patient]);
+
         return true;
     }
-
 }

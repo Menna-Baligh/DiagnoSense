@@ -8,23 +8,24 @@ use App\Models\Visit;
 
 class VisitService
 {
-    public function getVisitDetails(Patient $patient) : Visit
+    public function getVisitDetails(Patient $patient): Visit
     {
-       return Visit::with(['tasks', 'medications'])
+        return Visit::with(['tasks', 'medications'])
             ->where('patient_id', $patient->id)
             ->latest()
             ->firstOrFail();
     }
 
-    public  function store(array $data, Patient $patient, Doctor $doctor) : Visit
+    public function store(array $data, Patient $patient, Doctor $doctor): Visit
     {
         $status = $data['action'] == 'save' ? 'completed' : 'draft';
         $nextVisitDate = $data['next_visit_date'] ?? null;
         $visit = $doctor->visits()->create([
             'patient_id' => $patient->id,
             'next_visit_date' => $nextVisitDate,
-            'status' => $status
+            'status' => $status,
         ]);
+
         return $visit->load('doctor.user');
     }
 }

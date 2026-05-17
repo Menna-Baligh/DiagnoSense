@@ -89,7 +89,7 @@ describe('Verify OTP', function () {
             createOtp($contact);
 
             $response = $this->postJson(
-                VERIFY_OTP_ENDPOINT . '/' . $userType,
+                VERIFY_OTP_ENDPOINT.'/'.$userType,
                 [
                     'contact' => $contact,
                     'otp' => '123456',
@@ -114,7 +114,6 @@ describe('Verify OTP', function () {
 
     })->with('user_types');
 
-
     it('fails when otp is invalid or expired', function (string $userType) {
 
         $contacts = [
@@ -125,7 +124,7 @@ describe('Verify OTP', function () {
         foreach ($contacts as $contact) {
 
             $response = $this->postJson(
-                VERIFY_OTP_ENDPOINT . '/' . $userType,
+                VERIFY_OTP_ENDPOINT.'/'.$userType,
                 [
                     'contact' => $contact,
                     'otp' => '000000',
@@ -141,7 +140,6 @@ describe('Verify OTP', function () {
         }
 
     })->with('user_types');
-
 
     it('fails verify otp with invalid data', function (
         string $userType,
@@ -162,7 +160,7 @@ describe('Verify OTP', function () {
             ];
 
             $response = $this->postJson(
-                VERIFY_OTP_ENDPOINT . '/' . $userType,
+                VERIFY_OTP_ENDPOINT.'/'.$userType,
                 array_merge($validData, $invalidData)
             );
 

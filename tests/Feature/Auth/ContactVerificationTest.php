@@ -13,7 +13,7 @@ const RESEND_OTP_ENDPOINT = '/api/v1/auth/resend-otp';
 beforeEach(function () {
     Mail::fake();
 
-    $this->otpMock = \Mockery::mock(Otp::class);
+    $this->otpMock = Mockery::mock(Otp::class);
 
     $this->otpMock->shouldReceive('generate')
         ->andReturn((object) [

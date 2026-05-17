@@ -13,7 +13,7 @@ class CheckAiAccess
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  Closure(Request): (Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
@@ -23,7 +23,7 @@ class CheckAiAccess
         }
         if ($doctor->billing_mode === 'pay-per-use') {
             if (! $doctor->wallet || $doctor->wallet->balance < Plan::PAY_PER_USE_PRICE) {
-                return ApiResponse::error(message: 'Insufficient credits. Please recharge to use Pay-Per-Use (E£'. Plan::PAY_PER_USE_PRICE .'/file).', status: 403);
+                return ApiResponse::error(message: 'Insufficient credits. Please recharge to use Pay-Per-Use (E£'.Plan::PAY_PER_USE_PRICE.'/file).', status: 403);
             }
         } else {
             $subscription = $doctor->activeSubscription;

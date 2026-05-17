@@ -3,7 +3,9 @@
 use App\Models\Doctor;
 use App\Models\Patient;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Tests\TestCase;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,8 +18,8 @@ use Illuminate\Http\UploadedFile;
 |
 */
 
-pest()->extend(Tests\TestCase::class)
-    ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
+pest()->extend(TestCase::class)
+    ->use(RefreshDatabase::class)
     ->in('Feature');
 
 /*
@@ -73,7 +75,7 @@ function validPatientData(): array
         'contact' => fake()->unique()->safeEmail(),
         'date_of_birth' => fake()->date(),
         'gender' => fake()->randomElement(['male', 'female']),
-        'national_id' => (string)fake()->numberBetween(1000000000, 9999999999),
+        'national_id' => (string) fake()->numberBetween(1000000000, 9999999999),
         'is_smoker' => fake()->boolean(),
         'chronic_diseases' => ['diabetes', 'hypertension'],
         'previous_surgeries_name' => fake()->word(),
@@ -93,10 +95,11 @@ function createDoctorWithBilling(string $billingMode = 'pay-per-use', int $balan
     $user->doctor->billing_mode = $billingMode;
     $user->doctor->save();
     $user->doctor->wallet()->create(['balance' => $balance]);
+
     return $user;
 }
 
-function fakeAiResponse():array
+function fakeAiResponse(): array
 {
     return [
         'key_information' => [
@@ -109,8 +112,8 @@ function fakeAiResponse():array
                     'evidence' => [
                         'Evidence 1',
                         'Evidence 2',
-                    ]
-                ]
+                    ],
+                ],
             ],
             'low_priority_alerts' => [
                 [
@@ -119,8 +122,8 @@ function fakeAiResponse():array
                     'evidence' => [
                         'Evidence 1',
                         'Evidence 2',
-                    ]
-                ]
+                    ],
+                ],
             ],
             'medium_priority_alerts' => [
                 [
@@ -129,9 +132,9 @@ function fakeAiResponse():array
                     'evidence' => [
                         'Evidence 1',
                         'Evidence 2',
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ],
         'decision_support' => [
             [
@@ -145,7 +148,7 @@ function fakeAiResponse():array
                 'probability' => 0.6,
                 'status' => 'Negative',
                 'clinical_reasoning' => 'Clinical Reasons 2',
-            ]
+            ],
         ],
         'message' => 'Analysis completed successfully',
         'pdf_path' => 'path/to/ocr/report.pdf',
