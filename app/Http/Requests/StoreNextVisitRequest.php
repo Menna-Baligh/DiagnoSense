@@ -24,7 +24,7 @@ class StoreNextVisitRequest extends FormRequest
     {
         return [
             'has_next_visit' => ['required', 'boolean'],
-            'next_visit_date' => ['required_if:has_next_visit,true', 'prohibited_if:has_next_visit,false', 'date'],
+            'next_visit_date' => ['required_if:has_next_visit,true', 'prohibited_if:has_next_visit,false', 'date', 'after:now'],
             'action' => ['required', 'string', 'in:save,next'],
         ];
     }
