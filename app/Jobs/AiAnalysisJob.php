@@ -141,7 +141,7 @@ class AiAnalysisJob implements ShouldQueue
                     'title' => $item['title'],
                     'insight' => $item['insight'],
                     'evidence' => $item['evidence'],
-                    'is_ai_generated' => true,
+                    'is_ai_generated' => 1,
                 ]);
             }
         }
