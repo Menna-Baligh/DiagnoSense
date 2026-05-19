@@ -1499,6 +1499,55 @@ paths:
                   success: false
                   message: "Update failed: [Error details]"
                   data: null
+    delete:
+      summary: 'Delete Patient Record'
+      operationId: deleteApiV1PatientsDestroy
+      description: 'Permanently or soft-deletes a specific patient record from the system. Validates that the patient belongs to the authenticated doctor list before execution.'
+      tags:
+        - Patients List
+      security:
+        - sanctum: []
+      parameters:
+        - in: path
+          name: patientId
+          required: true
+          description: 'The unique database ID of the patient to delete.'
+          schema:
+            type: integer
+          example: 3
+      responses:
+        200:
+          description: 'Patient deleted successfully'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: "Patient deleted successfully."
+                  data: null
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          description: 'Not Found - Patient does not exist or does not belong to this doctor'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: "Patient not found or could not be deleted."
+                  data: null
+        500:
+          description: 'Internal Server Error - Database transaction rolled back'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: "Failed to delete patient, please try again later."
+                  data: null
   '/api/v1/patients/{patientId}/re-analyze':
     post:
       summary: 'Trigger AI Re-Analysis'
@@ -1540,6 +1589,251 @@ paths:
                   success: false
                   message: "AI Analysis Trigger failed: No existing analysis found to upgrade."
                   data: null
+  '/api/v1/patients/{patientId}/overview':
+    get:
+      summary: 'Get Patient Overview'
+      operationId: getApiV1PatientsOverview
+      description: 'Retrieves a comprehensive medical overview of a specific patient, combining core demographic data, historical medical notes, and the latest AI-generated smart summary.'
+      tags:
+        - Patient Profile
+      security:
+        - sanctum: []
+      parameters:
+        - in: path
+          name: patientId
+          required: true
+          description: 'The row database ID of the patient.'
+          schema:
+            type: integer
+          example: 58
+      responses:
+        200:
+          description: 'Patient overview data retrieved successfully'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Patient retrieved successfully."
+                  data:
+                    type: object
+                    properties:
+                      patientId:
+                        type: string
+                        description: 'Note: Maps to the patient National ID for frontend display.'
+                        example: "28405121234567"
+                      patientName:
+                        type: string
+                        example: "Menna Baligh"
+                      doctorName:
+                        type: string
+                        example: "Dr. Layla M."
+                      smart_summary:
+                        type: string
+                        example: "Patient exhibits high risk of hypertensive crisis; latest reports indicate acute lipid shifts."
+                      age:
+                        type: integer
+                        example: 22
+                      smoker:
+                        type: string
+                        enum: [Yes, No]
+                        example: "No"
+                      chronicDiseases:
+                        type: array
+                        items:
+                          type: string
+                        example: ["hypertension"]
+                      previousSurgeries:
+                        type: string
+                        example: "Appendectomy in 2018"
+                      allergies:
+                        type: string
+                        example: "Penicillin"
+                      medications:
+                        type: string
+                        example: "Metformin 500mg"
+                      familyHistory:
+                        type: string
+                        example: "Father had cardiac anomaly"
+                      status:
+                        type: string
+                        example: "stable"
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          description: 'Forbidden - Patient not found or does not belong to the logged-in doctor list'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: "Unauthorized or patient not found in your list"
+                  data: null
+        500:
+          description: 'Internal Server Error'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: "Failed to retrieve patient data."
+                  data: null
+  '/api/v1/wallets/charge':
+    post:
+      summary: 'Initiate Wallet Charge (Paymob Integration)'
+      operationId: postApiV1WalletsCharge
+      description: 'Initiates a wallet top-up request for the authenticated doctor via Paymob Gateway. Generates a temporary client secret and constructs a unified checkout URL for secure card or wallet payments.'
+      tags:
+        - Subscriptions
+      security:
+        - sanctum: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - balance
+              properties:
+                balance:
+                  type: number
+                  minimum: 50
+                  description: 'The amount in Egyptian Pounds (EGP) to charge the wallet. Must be at least 50 EGP.'
+                  example: 150
+      responses:
+        200:
+          description: 'Wallet charge transaction initiated successfully. Redirect URL generated.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Wallet charge initiated successfully"
+                  data:
+                    type: object
+                    properties:
+                      checkout_url:
+                        type: string
+                        format: uri
+                        example: "https://accept.paymob.com/unifiedcheckout/?publicKey=egy_pk_test_C6XhQPHyFpV1XlijI5ETNSKk4wtf3HnU&clientSecret=egy_csk_test_5a39a80012ebd0844559a86e2a6234a8"
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        422:
+          description: 'Validation Error - Balance field is missing, not numeric, or below 50 EGP'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: "The given data was invalid."
+                  errors:
+                    balance: ["The balance must be at least 50."]
+        500:
+          description: 'Internal Server Error - Paymob API connection or handshake failure'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: "AI Analysis Trigger failed: Failed to process payment gateway intention."
+                  data: null
+  '/api/v1/wallets/transactions':
+    get:
+      summary: 'Get Wallet Balance and Transaction History'
+      operationId: getApiV1WalletsTransactions
+      description: 'Retrieves the current available wallet credits balance along with a chronological list of all financial transactions (charges via Paymob or pay-per-use deductions) for the authenticated doctor.'
+      tags:
+        - Subscriptions
+      security:
+        - sanctum: []
+      responses:
+        200:
+          description: 'Wallet details and history retrieved successfully'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Wallet transactions retrieved successfully"
+                  data:
+                    type: object
+                    properties:
+                      credits:
+                        type: number
+                        description: 'The remaining balance in the doctor wallet.'
+                        example: 54000
+                      transactions:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 20
+                            date:
+                              type: string
+                              description: 'Formatted transaction date (Month Day, Year).'
+                              example: "May 19, 2026"
+                            description:
+                              type: string
+                              description: 'Details of the transaction (e.g., Paymob charge or pay-per-use deduction).'
+                              example: "Wallet charge via Paymob"
+                            amount:
+                              type: string
+                              description: 'The financial value of the transaction.'
+                              example: "27000.00"
+                            status:
+                              type: string
+                              example: "completed"
+              examples:
+                SuccessResponse:
+                  summary: 'Full Wallet Details Example'
+                  value:
+                    success: true
+                    message: "Wallet transactions retrieved successfully"
+                    data:
+                      credits: 54000
+                      transactions:
+                        - id: 20
+                          date: "May 19, 2026"
+                          description: "Wallet charge via Paymob"
+                          amount: "27000.00"
+                          status: "completed"
+                        - id: 19
+                          date: "May 19, 2026"
+                          description: "Wallet charge via Paymob"
+                          amount: "27000.00"
+                          status: "completed"
+                        - id: 18
+                          date: "May 16, 2026"
+                          description: "Pay-per-use Analysis File"
+                          amount: "20.00"
+                          status: "completed"
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        500:
+          description: 'Internal Server Error'
+
 
 components:
   responses:
