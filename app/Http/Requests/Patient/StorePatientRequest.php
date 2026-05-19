@@ -25,7 +25,7 @@ class StorePatientRequest extends FormRequest
             ],
             'date_of_birth' => ['required', 'date'],
             'gender' => ['required', 'string', 'in:male,female'],
-            'national_id' => ['nullable', 'string', 'max:14', 'unique:patients,national_id'],
+            'national_id' => ['nullable', 'digits:14', 'unique:patients,national_id'],
             'is_smoker' => ['nullable', 'boolean'],
             'chronic_diseases' => ['nullable', 'array'],
             'chronic_diseases.*' => ['string'],
