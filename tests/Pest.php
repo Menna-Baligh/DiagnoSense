@@ -85,7 +85,7 @@ function validPatientData(): array
         'contact' => fake()->unique()->safeEmail(),
         'date_of_birth' => fake()->date(),
         'gender' => fake()->randomElement(['male', 'female']),
-        'national_id' => (string) fake()->numberBetween(1000000000, 9999999999),
+        'national_id' => fake()->numerify('##############'),
         'is_smoker' => fake()->boolean(),
         'chronic_diseases' => ['diabetes','hypertension'],
         'previous_surgeries_name' => fake()->word(),
