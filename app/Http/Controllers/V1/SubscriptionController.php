@@ -72,21 +72,19 @@ class SubscriptionController extends Controller
         );
     }
 
-    public function current(Request $request)
+    public function current(Request $request): JsonResponse
     {
-        $doctor = $request->user()->doctor->load(['subscriptions.plan']);
+        $doctor = $request->user()->doctor->loadMissing(['activeSubscription.plan', 'latestSubscription.plan', 'wallet']);
         if (! $doctor->billing_mode) {
             return ApiResponse::error(
-                'No active subscription or billing mode found.',
-                null,
-                404
+                message:'No active subscription or billing mode found.',
+                status: 404
             );
         }
 
         return ApiResponse::success(
-            'Current billing mode retrieved successfully',
-            new CurrentSubscriptionResource($doctor),
-            200
+            message:'Current billing mode retrieved successfully',
+            data:new CurrentSubscriptionResource($doctor),
         );
     }
 
