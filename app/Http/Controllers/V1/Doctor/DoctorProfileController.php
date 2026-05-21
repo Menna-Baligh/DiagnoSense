@@ -6,6 +6,7 @@ use App\Actions\Doctor\ChangeDoctorPasswordAction;
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\V1\Controller;
 use App\Http\Requests\ChangeDoctorPasswordRequest;
+use App\Http\Requests\DeleteDoctorAccountRequest;
 use App\Http\Requests\UpdateDoctorProfileRequest;
 use App\Http\Resources\DoctorResource;
 use App\Services\DoctorService;
@@ -43,6 +44,18 @@ class DoctorProfileController extends Controller
 
             return ApiResponse::error(message: 'Failed to update profile', status: 500);
         }
+    }
+
+    public function destroy(DeleteDoctorAccountRequest $request): JsonResponse
+    {
+        try {
+            $this->doctorService->deleteDoctorAccount(auth()->user());
+            return ApiResponse::success(message: 'Account deleted successfully');
+        }catch (\Exception $e){
+            \Log::error('Doctor Profile Error: '.$e->getMessage());
+            return ApiResponse::error(message: 'Failed to fetch doctor profile', status: 500);
+        }
+
     }
 
     public function changePassword(ChangeDoctorPasswordRequest $request, ChangeDoctorPasswordAction $action): JsonResponse
