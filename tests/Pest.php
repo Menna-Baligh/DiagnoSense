@@ -3,6 +3,7 @@
 use App\Models\Doctor;
 use App\Models\Patient;
 use App\Models\User;
+use App\Models\Visit;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
@@ -154,3 +155,13 @@ function fakeAiResponse(): array
         'pdf_path' => 'path/to/ocr/report.pdf',
     ];
 }
+
+function createVisit(Doctor $doctor, Patient $patient)  {
+    return Visit::create([
+        'next_visit_date' => now()->addDays(7),
+        'doctor_id' => $doctor->id,
+        'patient_id' => $patient->id,
+        'status' => 'draft',
+    ]);
+}
+
