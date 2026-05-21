@@ -14,6 +14,7 @@ class DeleteMedicationRequest extends FormRequest
     public function authorize(): bool
     {
         Gate::authorize('deleteMedication', [Visit::class, $this->route('medication')]);
+
         return true;
     }
 }
