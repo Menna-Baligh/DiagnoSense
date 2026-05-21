@@ -82,6 +82,7 @@ Route::prefix('v1')->group(function () {
             Route::delete('/clear-all', 'clearAll')->name('clearAll');
         });
         Route::prefix('doctors')->group(function () {
+            Route::get('/profile/edit', [DoctorProfileController::class, 'edit'])->name('doctor.profile.edit');
             Route::patch('/profile', [DoctorProfileController::class, 'update'])->name('doctor.profile.update');
             Route::patch('/change-password', [DoctorProfileController::class, 'changePassword'])->name('doctor.password.update');
         });
