@@ -6,12 +6,14 @@ use App\Helpers\ApiResponse;
 use App\Http\Resources\CurrentVisitDashboardResource;
 use App\Http\Resources\DashboardStatusResource;
 use App\Http\Resources\QueueDashboardResource;
+use App\Http\Resources\TopDiseaseResource;
 use App\Http\Resources\WidgetsDashboardResource;
 use App\Models\AiAnalysisResult;
 use App\Models\MedicalHistory;
 use App\Models\Patient;
 use App\Services\DashboardService;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -78,7 +80,7 @@ class DashboardController extends Controller
         );
     }
 
-    public function statusDistribution(Request $request)
+    public function statusDistribution(Request $request): JsonResponse
     {
         try {
             $doctor = $request->user()->doctor;
@@ -98,36 +100,20 @@ class DashboardController extends Controller
         }
     }
 
-    public function topDiseases(Request $request)
+    public function topDiseases(Request $request): JsonResponse
     {
-        $doctor = $request->user()->doctor;
-        if (! $doctor) {
-            return ApiResponse::error('Unauthorized', null, 403);
+        try{
+            $doctor = $request->user()->doctor;
+            if (!$doctor) return ApiResponse::error(message: 'Doctor not found', status: 404);
+            $topDiseases = $this->dashboardService->getTopChronicDiseases($doctor);
+            return ApiResponse::success(
+                message: 'Top 5 chronic diseases retrieved successfully',
+                data: TopDiseaseResource::collection($topDiseases)
+            );
+        }catch (\Exception $e) {
+            \Log::error('Error retrieving top diseases: ' . $e->getMessage());
+            return ApiResponse::error(message: 'Failed to retrieve top diseases', status: 500);
         }
-
-        $patientIds = $doctor->patients()->pluck('patients.id');
-        $histories = MedicalHistory::whereIn('patient_id', $patientIds)
-            ->whereNotNull('chronic_diseases')
-            ->pluck('chronic_diseases');
-
-        $topDiseases = collect($histories)
-            ->flatMap(fn ($diseases) => (array) $diseases)
-            ->filter()
-            ->countBy()
-            ->sortDesc()
-            ->take(5)
-            ->map(fn ($count, $name) => [
-                'label' => $name,
-                'value' => $count,
-            ])
-            ->values();
-
-        return ApiResponse::success(
-            'Top 5 chronic diseases retrieved successfully',
-            $topDiseases,
-            200
-        );
-
     }
 
     public function todayVisits(Request $request)
