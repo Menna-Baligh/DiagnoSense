@@ -12,9 +12,10 @@ beforeEach(function () {
 });
 
 it('allow doctor to create visit successfully', function () {
+    $date = now()->addDays(7)->toDateTimeString();
     $response = $this->postJson(route('patients.visits.store', ['patient' => $this->patient->id]), [
         'has_next_visit' => true,
-        'next_visit_date' => now()->addDays(7)->toDateTimeString(),
+        'next_visit_date' => $date,
         'action' => 'save',
     ]);
     $response->assertStatus(200);
@@ -34,7 +35,7 @@ it('allow doctor to create visit successfully', function () {
     $this->assertDatabaseHas('visits', [
         'patient_id' => $this->patient->id,
         'doctor_id' => auth()->user()->doctor->id,
-        'next_visit_date' => now()->addDays(7)->toDateTimeString(),
+        'next_visit_date' => $date,
         'status' => 'completed',
     ]);
 });
