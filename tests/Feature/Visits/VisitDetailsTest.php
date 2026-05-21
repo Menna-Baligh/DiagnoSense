@@ -2,8 +2,10 @@
 
 use App\Models\Medication;
 use App\Models\Task;
+
 use function Pest\Laravel\actingAs;
-beforeEach(function (){
+
+beforeEach(function () {
     $this->user = createUserWithType('doctor', fake()->unique()->safeEmail());
     $this->patient = createUserWithType('patient', fake()->unique()->safeEmail());
     $this->user->doctor->patients()->attach($this->patient->patient->id);
@@ -29,42 +31,42 @@ it('allows doctor to view visit details', function () {
         'success',
         'message',
         'data' => [
-                'tasks' => [
-                    [
+            'tasks' => [
+                [
+                    'id',
+                    'title',
+                    'description',
+                    'notes',
+                    'is_completed',
+                    'action',
+                    'due_date',
+                    'visit' => [
                         'id',
-                        'title',
-                        'description',
-                        'notes',
-                        'is_completed',
-                        'action',
-                        'due_date',
-                        'visit' => [
-                            'id',
-                            'next_visit_date',
-                            'status',
-                            'doctor_name',
-                            'specialization',
-                            'date',
-                            'time',
-                        ],
-                        'created_at',
-                        'updated_at',
-                    ]
+                        'next_visit_date',
+                        'status',
+                        'doctor_name',
+                        'specialization',
+                        'date',
+                        'time',
+                    ],
+                    'created_at',
+                    'updated_at',
                 ],
-                'medications' => [
-                    [
-                        'id',
-                        'name',
-                        'dosage',
-                        'frequency',
-                        'duration',
-                        'action',
-                        'created_at',
-                        'updated_at',
-                    ]
-                ],
-                'next_visit_date',
             ],
+            'medications' => [
+                [
+                    'id',
+                    'name',
+                    'dosage',
+                    'frequency',
+                    'duration',
+                    'action',
+                    'created_at',
+                    'updated_at',
+                ],
+            ],
+            'next_visit_date',
+        ],
     ]);
 });
 

@@ -1,9 +1,10 @@
 <?php
 
 use App\Models\Visit;
+
 use function Pest\Laravel\actingAs;
 
-beforeEach(function (){
+beforeEach(function () {
     $this->user = createUserWithType('doctor', fake()->unique()->safeEmail());
     $this->patient = createUserWithType('patient', fake()->unique()->safeEmail());
     $this->user->doctor->patients()->attach($this->patient->patient->id);
@@ -31,7 +32,7 @@ it('allows doctor to add task to visit successfully', function () {
             'is_completed',
             'action',
             'due_date',
-            'visit'=> [
+            'visit' => [
                 'id',
                 'next_visit_date',
                 'status',
@@ -42,7 +43,7 @@ it('allows doctor to add task to visit successfully', function () {
             ],
             'created_at',
             'updated_at',
-        ]
+        ],
     ]);
     $this->assertDatabaseHas('tasks', [
         'title' => $this->task['title'],
@@ -65,7 +66,7 @@ it('denies task creation if next visit date is missing', function () {
         'next_visit_date' => null,
         'patient_id' => $this->patient->patient->id,
         'doctor_id' => $this->user->doctor->id,
-        'status' => 'draft'
+        'status' => 'draft',
     ]);
     $response = $this->post(route('visits.tasks.store', ['visit' => $otherVisit->id]), $this->task);
     $response->assertStatus(422);
@@ -82,7 +83,7 @@ it('allows doctor to delete task successfully', function () {
     $response->assertJson([
         'success' => true,
         'message' => 'Task deleted successfully',
-        'data' => null
+        'data' => null,
     ]);
     $this->assertDatabaseMissing('tasks', ['id' => $task->id]);
 });

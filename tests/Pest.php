@@ -156,7 +156,8 @@ function fakeAiResponse(): array
     ];
 }
 
-function createVisit(Doctor $doctor, Patient $patient)  {
+function createVisit(Doctor $doctor, Patient $patient)
+{
     return Visit::create([
         'next_visit_date' => now()->addDays(7),
         'doctor_id' => $doctor->id,
@@ -164,4 +165,3 @@ function createVisit(Doctor $doctor, Patient $patient)  {
         'status' => 'draft',
     ]);
 }
-

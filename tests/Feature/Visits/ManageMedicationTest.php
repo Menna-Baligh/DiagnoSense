@@ -1,9 +1,8 @@
 <?php
 
-use App\Models\Visit;
 use function Pest\Laravel\actingAs;
 
-beforeEach(function(){
+beforeEach(function () {
     $this->user = createUserWithType('doctor', fake()->unique()->safeEmail());
     $this->patient = createUserWithType('patient', fake()->unique()->safeEmail());
     $this->user->doctor->patients()->attach($this->patient->patient->id);
@@ -14,7 +13,7 @@ beforeEach(function(){
         'dosage' => '100mg',
         'frequency' => 'daily',
         'duration' => '10 days',
-        'action' => 'save'
+        'action' => 'save',
     ];
 });
 
@@ -42,7 +41,7 @@ it('allows doctor to add medication to visit successfully', function () {
             ],
             'created_at',
             'updated_at',
-        ]
+        ],
     ]);
     $this->assertDatabaseHas('medications', [
         'name' => $this->medication['name'],
@@ -67,7 +66,7 @@ it('allows doctor to delete medication successfully', function () {
     $response->assertJson([
         'success' => true,
         'message' => 'Medication deleted successfully',
-        'data' => null
+        'data' => null,
     ]);
     $this->assertDatabaseMissing('medications', ['id' => $medication->id]);
 });
