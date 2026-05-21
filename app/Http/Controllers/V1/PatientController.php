@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\V1;
 
 use App\Helpers\ApiResponse;
-use App\Http\Resources\PatientOverviewResource;
+use App\Http\Requests\DeletePatientRequest;
 use App\Http\Requests\Patient\PatientListRequest;
 use App\Http\Requests\Patient\StorePatientRequest;
+use App\Http\Requests\PatientOverviewRequest;
 use App\Http\Requests\UpdatePatientRequest;
+use App\Http\Resources\PatientOverviewResource;
 use App\Http\Resources\PatientResource;
 use App\Models\Patient;
 use App\Services\PatientService;
@@ -51,7 +53,7 @@ class PatientController extends Controller
             );
 
         } catch (\Exception $e) {
-            \Log::error('Error fetching patient overview: ' . $e->getMessage(), ['id' => $patientId]);
+            \Log::error('Error fetching patient overview: ' . $e->getMessage(), ['id' => $patient->id]);
 
             return ApiResponse::error(
                 message: 'Failed to retrieve patient data.',
@@ -105,20 +107,12 @@ class PatientController extends Controller
         try {
 
             $this->patientService->deletePatient($patient);
-
-            if (! $result) {
-                return ApiResponse::error(
-                    message: 'Patient not found or could not be deleted.',
-                    status: 404);
-            }
-
-
             return ApiResponse::success(
                 message: 'Patient deleted successfully.'
             );
 
         } catch (\Exception $e) {
-            \Log::error('Error deleting patient: '.$e->getMessage(), ['id' => $patientId]);
+            \Log::error('Error deleting patient: '.$e->getMessage(), ['id' => $patient->id]);
 
             return ApiResponse::error(
                 message: 'Failed to delete patient, please try again later.',
