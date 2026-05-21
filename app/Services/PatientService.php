@@ -43,25 +43,20 @@ class PatientService
             ->appends($params);
     }
 
-    public function getPatientOverview(Doctor $doctor, int $patientId): ?Patient
-    {
-        return $doctor->patients()->with([
-            'user',
-            'medicalHistory',
-            'latestAiAnalysisResult',
-        ])->find($patientId);
+    public function getPatientOverview(Patient $patient): Patient
+   {
+        return $patient->load([
+           'user',
+           'medicalHistory',
+           'latestAiAnalysisResult',
+        ]);
     }
 
-    public function deletePatient(Doctor $doctor, int $patientId): bool
+    public function deletePatient(Patient $patient): bool
     {
-        return DB::transaction(function () use ($doctor, $patientId) {
-            $patient = $doctor->patients()->find($patientId);
+       return DB::transaction(function () use ($patient) {
 
-            if (! $patient) {
-                return false;
-            }
-
-            return (bool) $patient->delete();
+          return (bool) $patient->delete();
         });
     }
 }

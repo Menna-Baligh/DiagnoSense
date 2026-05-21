@@ -6,7 +6,10 @@ use App\Helpers\ApiResponse;
 use App\Http\Requests\PatientListRequest;
 use App\Http\Resources\PatientOverviewResource;
 use App\Http\Resources\PatientResource;
+use App\Http\Requests\DeletePatientRequest;
+use App\Http\Requests\PatientOverviewRequest;
 use App\Services\PatientService;
+use App\Models\Patient;
 use Illuminate\Http\JsonResponse;
 
 class PatientController extends Controller
@@ -33,58 +36,45 @@ class PatientController extends Controller
         }
     }
 
-    public function overview(int $patientId): JsonResponse
-    {
-        try {
-            $doctor = auth()->user()->doctor;
-            $patient = $this->patientService->getPatientOverview($doctor, $patientId);
+   public function overview(PatientOverviewRequest $request,Patient $patient): JsonResponse {
 
-            if (! $patient) {
-                return ApiResponse::error(
-                    message: 'Unauthorized or patient not found in your list',
-                    status: 403
-                );
-            }
+    try {
 
-            return ApiResponse::success(
-                message: 'Patient retrieved successfully.',
-                data: new PatientOverviewResource($patient)
-            );
+        $patient = $this->patientService
+            ->getPatientOverview($patient);
 
-        } catch (\Exception $e) {
-            \Log::error('Error fetching patient overview: '.$e->getMessage(), ['id' => $patientId]);
+        return ApiResponse::success(
+            message: 'Patient retrieved successfully.',
+            data: new PatientOverviewResource($patient)
+        );
 
-            return ApiResponse::error(
-                message: 'Failed to retrieve patient data.',
-                status: 500
-            );
-        }
+       } catch (\Exception $e) {
+       \Log::error('Error fetching patient overview: '.$e->getMessage(), ['id' => $patient->id]);
+
+        return ApiResponse::error(
+            message: 'Failed to retrieve patient data.',
+            status: 500
+        );
+       }
     }
 
-    public function destroy(int $patientId): JsonResponse
-    {
-        try {
-            $doctor = auth()->user()->doctor;
-            $result = $this->patientService->deletePatient($doctor, $patientId);
+    public function destroy(DeletePatientRequest $request,Patient $patient): JsonResponse {
 
-            if (! $result) {
-                return ApiResponse::error(
-                    message: 'Patient not found or could not be deleted.',
-                    status: 404
-                );
-            }
+       try {
 
-            return ApiResponse::success(
-                message: 'Patient deleted successfully.'
-            );
+         $this->patientService->deletePatient($patient);
+
+          return ApiResponse::success(
+            message: 'Patient deleted successfully.'
+          );
 
         } catch (\Exception $e) {
-            \Log::error('Error deleting patient: '.$e->getMessage(), ['id' => $patientId]);
+           \Log::error('Error deleting patient: '.$e->getMessage(),  ['id' => $patient->id,]);
 
-            return ApiResponse::error(
-                message: 'Failed to delete patient, please try again later.',
-                status: 500
-            );
-        }
+        return ApiResponse::error(
+            message: 'Failed to delete patient, please try again later.',
+            status: 500
+        );
+     }
     }
 }
