@@ -7,6 +7,7 @@ use App\Helpers\ApiResponse;
 use App\Http\Controllers\V1\Controller;
 use App\Http\Requests\ChangeDoctorPasswordRequest;
 use App\Http\Requests\UpdateDoctorProfileRequest;
+use App\Http\Resources\DoctorResource;
 use App\Services\DoctorService;
 use Illuminate\Http\JsonResponse;
 
@@ -16,6 +17,17 @@ class DoctorProfileController extends Controller
         protected DoctorService $doctorService
     ) {}
 
+    public function edit(): JsonResponse
+    {
+        try{
+            $user = auth()->user();
+            $user = $this->doctorService->getDoctorProfileData($user);
+            return ApiResponse::success(message: 'Doctor Information', data: new DoctorResource($user));
+        }catch (\Exception $e){
+            \Log::error('Doctor Profile Error: '.$e->getMessage());
+            return ApiResponse::error(message: 'Failed to fetch doctor profile', status: 500);
+        }
+    }
     public function update(UpdateDoctorProfileRequest $request): JsonResponse
     {
         try {
