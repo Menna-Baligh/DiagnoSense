@@ -13,9 +13,8 @@ class AskChatbotRequest extends FormRequest
     public function authorize(): bool
     {
         $currentDoctor = auth()->user()->doctor;
-        $patient = Patient::query()->findOrFail($this->route('patientId'));
-
-        return $currentDoctor->patients()->whereKey($patient)->exists();
+        $patient = $this->route('patient');
+        return $currentDoctor->patients()->where('patients.id', $patient)->exists();
     }
 
     /**
