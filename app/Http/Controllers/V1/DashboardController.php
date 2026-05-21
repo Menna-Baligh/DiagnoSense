@@ -13,13 +13,13 @@ use App\Models\Patient;
 use App\Services\DashboardService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
     public function __construct(
         protected DashboardService $dashboardService
     ) {}
+
     public function summary(Request $request)
     {
         $doctor = $request->user()->doctor;
@@ -80,17 +80,21 @@ class DashboardController extends Controller
 
     public function statusDistribution(Request $request)
     {
-        try{
+        try {
             $doctor = $request->user()->doctor;
-            if(!$doctor) return ApiResponse::error(message:'Doctor not found', status:404);
+            if (! $doctor) {
+                return ApiResponse::error(message: 'Doctor not found', status: 404);
+            }
             $distribution = $this->dashboardService->getPatientStatusDistribution($doctor);
+
             return ApiResponse::success(
                 message: 'Status distribution retrieved successfully',
                 data: new DashboardStatusResource($distribution)
             );
         } catch (\Exception $e) {
             \Log::error('Error retrieving status distribution: '.$e->getMessage());
-            return ApiResponse::error(message:'Failed to retrieve status distribution',status: 500);
+
+            return ApiResponse::error(message: 'Failed to retrieve status distribution', status: 500);
         }
     }
 
