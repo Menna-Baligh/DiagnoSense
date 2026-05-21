@@ -9,7 +9,6 @@ use App\Models\PatientIngestion;
 use App\Services\AIGatewayService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
-use Illuminate\Support\Facades\Storage;
 
 class IngestPatientJob implements ShouldQueue
 {
@@ -19,7 +18,7 @@ class IngestPatientJob implements ShouldQueue
 
     public function __construct(
         public Patient $patient,
-        public int  $doctorId,
+        public int $doctorId,
         public string $hash,
         public string $question
     ) {}

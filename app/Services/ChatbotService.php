@@ -43,6 +43,7 @@ class ChatbotService
         if (! $lastIngestion || ! hash_equals($lastIngestion->file_hash, $hash)) {
             return false;
         }
+
         return true;
     }
 }

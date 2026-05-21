@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Patient;
 use Illuminate\Foundation\Http\FormRequest;
 
 class AskChatbotRequest extends FormRequest
@@ -14,6 +13,7 @@ class AskChatbotRequest extends FormRequest
     {
         $currentDoctor = auth()->user()->doctor;
         $patient = $this->route('patient');
+
         return $currentDoctor->patients()->where('patients.id', $patient->id)->exists();
     }
 
