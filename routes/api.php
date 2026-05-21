@@ -72,8 +72,9 @@ Route::prefix('v1')->group(function () {
     });
 
     Route::middleware('auth:sanctum')->group(function () {
-        Route::get('/patients/{patientId}/overview', [PatientController::class, 'overview'])->name('patients.overview');
-        Route::delete('/patients/{patientId}', [PatientController::class, 'destroy'])->name('patients.destroy');
+        Route::get('/patients/{patient}/overview', [PatientController::class, 'overview'])->name('patients.overview');
+        Route::delete('/patients/{patient}', [PatientController::class, 'destroy'])->name('patients.destroy');
+        Route::get('/dashboard/summary', [DashboardController::class, 'summary'])->name('dashboard.summary');
         Route::controller(NotificationController::class)->prefix('notifications')->as('notifications.')->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('/unread-count', 'unreadCount')->name('unreadCount');
@@ -109,7 +110,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/subscription/cancel', [SubscriptionController::class, 'cancel']);
     Route::get('/patient/next-visit', [PatientController::class, 'nextVisit']);
     Route::post('/chatbot/{patientId}', [ChatbotController::class, 'store'])->middleware('check-ai-access');
-    Route::get('/dashboard/summary', [DashboardController::class, 'summary']);
     Route::get('/dashboard/status-distribution', [DashboardController::class, 'statusDistribution']);
     Route::get('/dashboard/top-diseases', [DashboardController::class, 'topDiseases']);
     Route::get('/dashboard/today-visits', [DashboardController::class, 'todayVisits']);

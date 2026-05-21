@@ -36,18 +36,14 @@ class PatientController extends Controller
         }
     }
 
-    public function overview(int $patientId): JsonResponse
-    {
-        try {
-            $doctor = auth()->user()->doctor;
-            $patient = $this->patientService->getPatientOverview($doctor, $patientId);
 
-            if (! $patient) {
-                return ApiResponse::error(
-                    message: 'Unauthorized or patient not found in your list',
-                    status: 403
-                );
-            }
+    public function overview(PatientOverviewRequest $request, Patient $patient): JsonResponse
+    {
+
+        try {
+
+            $patient = $this->patientService
+                ->getPatientOverview($patient);
 
             return ApiResponse::success(
                 message: 'Patient retrieved successfully.',
@@ -55,7 +51,7 @@ class PatientController extends Controller
             );
 
         } catch (\Exception $e) {
-            \Log::error('Error fetching patient overview: '.$e->getMessage(), ['id' => $patientId]);
+            \Log::error('Error fetching patient overview: ' . $e->getMessage(), ['id' => $patientId]);
 
             return ApiResponse::error(
                 message: 'Failed to retrieve patient data.',
@@ -103,11 +99,12 @@ class PatientController extends Controller
         }
     }
 
-    public function destroy(int $patientId): JsonResponse
+    public function destroy(DeletePatientRequest $request, Patient $patient): JsonResponse
     {
+
         try {
-            $doctor = auth()->user()->doctor;
-            $result = $this->patientService->deletePatient($doctor, $patientId);
+
+            $this->patientService->deletePatient($patient);
 
             if (! $result) {
                 return ApiResponse::error(
