@@ -2172,6 +2172,85 @@ paths:
                   success: false
                   message: "Failed to retrieve status distribution"
                   data: null
+  '/api/v1/dashboard/top-diseases':
+    get:
+      summary: 'Get Top 5 Chronic Diseases'
+      operationId: getApiV1DashboardTopDiseases
+      description: 'Aggregates and calculates occurrence frequencies across all active patient medical histories assigned to the authenticated doctor. Returns the top 5 most prevalent chronic conditions formatted as label/value pairs optimized for Bar Chart components.'
+      tags:
+        - Dashboard
+      security:
+        - sanctum: []
+      responses:
+        200:
+          description: 'Top chronic diseases dataset retrieved successfully.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Top 5 chronic diseases retrieved successfully"
+                  data:
+                    type: array
+                    description: 'Collection of the top 5 chronic conditions ordered descending by prevalence.'
+                    items:
+                      type: object
+                      properties:
+                        label:
+                          type: string
+                          description: 'The standardized name of the chronic disease.'
+                          example: "Hypertension"
+                        value:
+                          type: integer
+                          description: 'The absolute total count of patients diagnosed with this condition.'
+                          example: 156
+              examples:
+                SuccessTopDiseases:
+                  summary: 'Standard Dashboard Charts Payload'
+                  description: 'Response payload containing categorized conditions ranked dynamically by frequency counts.'
+                  value:
+                    success: true
+                    message: "Top 5 chronic diseases retrieved successfully"
+                    data:
+                      - { label: "Hypertension", value: 156 }
+                      - { label: "Diabetes", value: 142 }
+                      - { label: "Heart Disease", value: 98 }
+                      - { label: "Thyroid Disorder", value: 45 }
+                      - { label: "Asthma", value: 22 }
+                NoDataState:
+                  summary: 'Empty Aggregation Fallback'
+                  description: 'Returned safely as an empty array when the doctors patients have no recorded values under chronic diseases.'
+                  value:
+                    success: true
+                    message: "Top 5 chronic diseases retrieved successfully"
+                    data: []
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          description: 'Not Found - User profile not linked to a valid doctor database record'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: "Doctor not found"
+                  data: null
+        500:
+          description: 'Internal Server Error'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: "Failed to retrieve top diseases"
+                  data: null
 
 
 components:
