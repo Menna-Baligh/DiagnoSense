@@ -14,6 +14,7 @@ class DeleteTaskRequest extends FormRequest
     public function authorize(): bool
     {
         Gate::authorize('deleteTask', [Visit::class, $this->route('task')]);
+
         return true;
     }
 }

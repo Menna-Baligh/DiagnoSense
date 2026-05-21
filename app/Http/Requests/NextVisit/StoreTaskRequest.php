@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\NextVisit;
 
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 
 class StoreTaskRequest extends FormRequest
 {
