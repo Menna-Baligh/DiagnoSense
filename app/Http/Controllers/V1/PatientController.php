@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\V1;
 
 use App\Helpers\ApiResponse;
-use App\Http\Resources\PatientOverviewResource;
-use App\Http\Resources\PatientEditResource;
 use App\Http\Requests\Patient\PatientListRequest;
 use App\Http\Requests\Patient\StorePatientRequest;
 use App\Http\Requests\UpdatePatientStatusRequest;
 use App\Http\Requests\UpdatePatientRequest;
+use App\Http\Resources\PatientEditResource;
+use App\Http\Resources\PatientOverviewResource;
 use App\Http\Resources\PatientResource;
 use App\Models\Patient;
 use App\Services\PatientService;
@@ -65,6 +65,7 @@ class PatientController extends Controller
             );
         }
     }
+
     public function store(StorePatientRequest $request): JsonResponse
     {
         try {
@@ -117,7 +118,6 @@ class PatientController extends Controller
                     status: 404);
             }
 
-
             return ApiResponse::success(
                 message: 'Patient deleted successfully.'
             );
@@ -128,9 +128,9 @@ class PatientController extends Controller
             return ApiResponse::error(
                 message: 'Failed to delete patient, please try again later.',
                 status: 500
-            );}
+            );
+        }
     }
-
 
     public function getComparativeAnalysis(Patient $patient): JsonResponse
     {
@@ -141,6 +141,7 @@ class PatientController extends Controller
                     message: 'No comparative analysis data available for this patient.',
                 );
             }
+
             return ApiResponse::success(
                 message: $result['message'],
                 data: $result['data']
@@ -183,24 +184,25 @@ class PatientController extends Controller
             return ApiResponse::error(message: 'AI Analysis Trigger failed: '.$e->getMessage(), status: 500);
         }
     }
+
     public function edit(int $patientId): JsonResponse
-        {
-            try {
-              $doctorId = auth()->user()->doctor->id;
+    {
+        try {
+            $doctorId = auth()->user()->doctor->id;
 
-              $patient = $this->patientService->getPatientEditData($doctorId, $patientId);
+            $patient = $this->patientService->getPatientEditData($doctorId, $patientId);
 
-             return ApiResponse::success(
-                 message: 'Data retrieved successfully',
+            return ApiResponse::success(
+                message: 'Data retrieved successfully',
                 data: new PatientEditResource($patient), status: 200);
 
-          } catch (\Exception $e) {
+        } catch (\Exception $e) {
 
-             \Log::error('Patient Edit Error: '.$e->getMessage(),['id' => $patientId,]);
+            \Log::error('Patient Edit Error: '.$e->getMessage(), ['id' => $patientId]);
 
-            return ApiResponse::error(message: 'Failed to retrieve patient data.'.$e->getMessage(),status: 500);
-          }
+            return ApiResponse::error(message: 'Failed to retrieve patient data.'.$e->getMessage(), status: 500);
         }
+    }
     public function updateStatus(UpdatePatientStatusRequest $request,Patient $patient): JsonResponse {
 
         try {
