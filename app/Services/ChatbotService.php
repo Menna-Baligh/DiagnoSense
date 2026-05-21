@@ -40,7 +40,7 @@ class ChatbotService
             ->where('status', 'completed')
             ->latest()
             ->first();
-        if (! $lastIngestion || ! hash_equals($lastIngestion->files_hash, $hash)) {
+        if (! $lastIngestion || ! hash_equals($lastIngestion->file_hash, $hash)) {
             return false;
         }
         return true;

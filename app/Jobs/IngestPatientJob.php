@@ -31,14 +31,14 @@ class IngestPatientJob implements ShouldQueue
             PatientIngestion::query()->create([
                 'patient_id' => $this->patient->id,
                 'status' => 'completed',
-                'files_hash' => $this->hash,
+                'file_hash' => $this->hash,
             ]);
         } catch (\Exception $e) {
             PatientIngestion::query()->create([
                 'patient_id' => $this->patient->id,
                 'status' => 'failed',
                 'error_message' => $e->getMessage(),
-                'files_hash' => null,
+                'file_hash' => null,
             ]);
             throw $e;
         }
