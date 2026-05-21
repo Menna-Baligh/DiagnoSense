@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Resources;
 
 use App\Models\Patient;
@@ -7,7 +8,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class DashboardStatusResource extends JsonResource
 {
-
     public function toArray(Request $request): array
     {
         $distribution = $this->resource;

@@ -19,7 +19,9 @@ class Patient extends Model
     use LogsActivity , SoftDeletes;
 
     const STATUS_CRITICAL = 'critical';
+
     const STATUS_STABLE = 'stable';
+
     const STATUS_UNDER_REVIEW = 'under review';
 
     protected $fillable = [
