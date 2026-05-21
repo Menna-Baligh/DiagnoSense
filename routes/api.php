@@ -81,11 +81,11 @@ Route::prefix('v1')->group(function () {
             Route::patch('/read-all', 'readAll')->name('readAll');
             Route::delete('/clear-all', 'clearAll')->name('clearAll');
         });
-        Route::prefix('doctors')->group(function () {
-            Route::get('/profile/edit', [DoctorProfileController::class, 'edit'])->name('doctor.profile.edit');
-            Route::patch('/profile', [DoctorProfileController::class, 'update'])->name('doctor.profile.update');
-            Route::delete('/profile', [DoctorProfileController::class, 'destroy'])->name('doctor.profile.destroy');
-            Route::patch('/change-password', [DoctorProfileController::class, 'changePassword'])->name('doctor.password.update');
+        Route::controller(DoctorProfileController::class)->prefix('doctors')->group(function () {
+            Route::get('/profile/edit', 'edit')->name('doctor.profile.edit');
+            Route::patch('/profile','update')->name('doctor.profile.update');
+            Route::delete('/profile', 'destroy')->name('doctor.profile.destroy');
+            Route::patch('/change-password', 'changePassword')->name('doctor.password.update');
         });
         Route::post('/support', SupportController::class)->name('support.create');
     });
