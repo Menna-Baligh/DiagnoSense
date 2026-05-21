@@ -1,7 +1,8 @@
 <?php
 
-use App\Models\Patient;
 use App\Models\MedicalHistory;
+use App\Models\Patient;
+
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\getJson;
 
@@ -50,8 +51,8 @@ it('returns correct aggregated top chronic diseases for the bar chart', function
         ->assertJsonPath('success', true)
         ->assertJsonStructure([
             'data' => [
-                '*' => ['label', 'value']
-            ]
+                '*' => ['label', 'value'],
+            ],
         ])
         ->assertJsonFragment(['label' => 'Diabetes', 'value' => 2])
         ->assertJsonFragment(['label' => 'Hypertension', 'value' => 1]);
