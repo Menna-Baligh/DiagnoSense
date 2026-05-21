@@ -403,4 +403,19 @@ class PatientService
             return $patient;
         });
     }
+    public function getPatientEditData(int $doctorId,int $patientId): ?Patient {
+
+          return Patient::query()
+               ->where('patients.id', $patientId)
+               ->whereHas('doctors', function ($query) use ($doctorId) {
+                  $query->where('doctors.id', $doctorId);
+             })
+               ->with([
+                 'user',
+                 'medicalHistory',
+                 'reports',
+             ])
+              ->first();
+    }
+
 }
