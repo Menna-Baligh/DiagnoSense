@@ -6,18 +6,24 @@ use App\Jobs\AiAnalysisJob;
 use App\Jobs\ComparativeAnalysis;
 use App\Models\AiAnalysisResult;
 use App\Models\Doctor;
-use App\Models\MedicalHistory;
 use App\Models\Patient;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
+use App\Http\Resources\DecisionSupportResource;
+use App\Jobs\AiAnalysisJob;
+use App\Jobs\ComparativeAnalysis;
+use App\Models\AiAnalysisResult;
+use App\Models\MedicalHistory;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Str;
 
 class PatientService
 {
     public function __construct(
-        protected ReportService $reportService
+        protected ReportService $reportService,
+        protected SubscriptionService $subscriptionService
     ) {}
 
     public function getPaginatedPatients(int $doctorId, array $params): LengthAwarePaginator
@@ -53,6 +59,22 @@ class PatientService
             ->appends($params);
     }
 
+    public function getPatientOverview(Patient $patient): Patient
+    {
+        return $patient->load([
+            'user',
+            'medicalHistory',
+            'latestAiAnalysisResult',
+        ]);
+    }
+
+    public function deletePatient(Patient $patient): bool
+    {
+        return DB::transaction(function () use ($patient) {
+
+            return (bool) $patient->delete();
+        });
+    }
     public function store(array $data): array
     {
         return DB::transaction(function () use ($data) {
@@ -119,7 +141,39 @@ class PatientService
         return $medicalHistory;
     }
 
-    private function getJobData(Patient $patient, Doctor $doctor, MedicalHistory $medicalHistory, array $pathsForAI): array
+    public function runAiAnalysis(Patient $patient, array $newPaths = [], bool $isReAnalysis = false): AiAnalysisResult
+    {
+        $doctor = auth()->user()->doctor;
+
+        $this->subscriptionService->validateAiAccess($doctor);
+
+        if ($isReAnalysis) {
+            $analysisResult = $patient->latestAiAnalysisResult;
+
+            if (! $analysisResult) {
+                throw new \Exception('No existing analysis found to upgrade.', 422);
+            }
+
+            $analysisResult->update(['status' => 'processing']);
+        } else {
+            $analysisResult = $patient->latestAiAnalysisResult()->create([
+                'status' => 'processing',
+            ]);
+        }
+
+        $allPaths = $newPaths;
+        if (empty(array_filter($newPaths))) {
+            $allPaths = $patient->reports->groupBy('type')->map(fn ($group) => $group->pluck('file_path')->toArray())->toArray();
+        }
+
+        $jobData = $this->getJobData($patient, $doctor, $patient->medicalHistory, $allPaths, $isReAnalysis);
+
+        $this->triggerAnalysisWorkflows($analysisResult, $jobData, $allPaths, $patient);
+
+        return $analysisResult;
+    }
+
+    private function getJobData(Patient $patient, Doctor $doctor, MedicalHistory $medicalHistory, array $pathsForAI, bool $isReAnalysis = false): array
     {
         $jobData = [
             'patient_id' => $patient->id,
@@ -131,6 +185,7 @@ class PatientService
             'features' => [
                 'decision_support' => $doctor->hasFeature('Decision Support'),
             ],
+            'isReAnalysis' => $isReAnalysis,
         ];
 
         return $jobData;
@@ -145,11 +200,205 @@ class PatientService
         $chain = [
             new AiAnalysisJob($analysisResult->id, $jobData),
         ];
-        if (! empty($pathsForAI['lab'])) {
-            $chain[] = new ComparativeAnalysis($patient->id, $analysisResult->id);
+        $isReAnalysis = $jobData['isReAnalysis'] ?? false;
+        if (! empty($pathsForAI['lab']) && ! $isReAnalysis) {
+            $chain[] = new ComparativeAnalysis($patient, $analysisResult);
         }
         DB::afterCommit(function () use ($chain) {
             Bus::chain($chain)->dispatch();
+        });
+    }
+
+    public function getPatientDecisionSupport(Patient $patient): array
+    {
+        $latestAnalysis = $this->fetchLatestAnalysisWithDecisions($patient);
+        $oldAnalysis = $this->fetchPreviousCompletedAnalysis($patient, $latestAnalysis?->id);
+
+        $isStillProcessing = $latestAnalysis?->status === 'processing';
+        $hasCurrentDecisions = $latestAnalysis?->decisionSupports->isNotEmpty() ?? false;
+        $hasOldDecisions = $oldAnalysis?->decisionSupports->isNotEmpty() ?? false;
+
+        $decisionsToReturn = $this->resolveDecisionsToReturn(
+            $hasCurrentDecisions,
+            $hasOldDecisions,
+            $latestAnalysis,
+            $oldAnalysis
+        );
+
+        return [
+            'message' => $this->determineStatusMessage($hasCurrentDecisions, $hasOldDecisions, $isStillProcessing, 'decision support'),
+            'data' => [
+                'still_processing' => $isStillProcessing && ! $hasCurrentDecisions,
+                'decisions' => DecisionSupportResource::collection($decisionsToReturn),
+            ],
+        ];
+    }
+
+    private function fetchLatestAnalysisWithDecisions(Patient $patient): ?AiAnalysisResult
+    {
+        return $patient->latestAiAnalysisResult()->with('decisionSupports')->first();
+    }
+
+    private function fetchPreviousCompletedAnalysis(Patient $patient, ?int $excludeId): ?AiAnalysisResult
+    {
+        if (! $excludeId) {
+            return null;
+        }
+
+        return $patient->aiAnalysisResults()
+            ->with('decisionSupports')
+            ->where('id', '!=', $excludeId)
+            ->where('status', 'completed')
+            ->latest()
+            ->first();
+    }
+
+    private function resolveDecisionsToReturn(
+        bool $hasCurrent,
+        bool $hasOld,
+        ?AiAnalysisResult $latest,
+        ?AiAnalysisResult $old
+    ): Collection {
+        if ($hasCurrent) {
+            return $latest->decisionSupports;
+        }
+
+        if ($hasOld) {
+            return $old->decisionSupports;
+        }
+
+        return collect();
+    }
+
+    public function getPatientComparativeAnalysis(Patient $patient): array
+    {
+        $latestAnalysis = $patient->latestAiAnalysisResult;
+        $isProcessing = $latestAnalysis?->status === 'processing';
+        $allResults = $patient->labResults()->orderBy('created_at', 'asc')->get();
+
+        if ($allResults->isEmpty() && ! $isProcessing) {
+            return [];
+        }
+
+        $analysisResponse = $this->formatComparativeData($allResults->groupBy('standard_name'));
+
+        $message = 'Comparative analysis retrieved successfully.';
+        if ($latestAnalysis?->status === 'failed') {
+            $message = 'Note: The AI failed to extract data from the latest reports. Showing historical data only.';
+        }
+
+        return [
+            'message' => $message,
+            'data' => [
+                'still_processing' => $isProcessing,
+                'analysis' => $analysisResponse,
+            ],
+        ];
+    }
+
+    private function formatComparativeData(Collection $groupedResults): Collection
+    {
+        return $groupedResults->map(function ($testResults, $testName) {
+            $count = $testResults->count();
+            $currentRecord = $testResults->last();
+            $previousRecord = $count > 1 ? $testResults->get($count - 2) : $currentRecord;
+
+            $currentVal = (float) $currentRecord->numeric_value;
+            $previousVal = (float) $previousRecord->numeric_value;
+
+            $changeValue = round($currentVal - $previousVal, 2);
+            $percentage = $previousVal != 0 ? round(($changeValue / $previousVal) * 100, 1) : 0;
+
+            return [
+                'test_name' => $testName,
+                'category' => $currentRecord->category,
+                'unit' => $currentRecord->unit,
+                'comparison' => [
+                    'current_value' => $currentVal,
+                    'previous_value' => ($count > 1) ? $previousVal : 'Initial',
+                    'change_value' => $changeValue,
+                    'change_percentage' => $percentage,
+                    'trend' => $this->calculateTrend($currentVal, $previousVal),
+                    'status' => $currentRecord->status,
+                ],
+                'all_points' => $testResults->map(fn ($item, $index) => [
+                    'visit_label' => 'Visit #'.($index + 1),
+                    'value' => (float) $item->numeric_value,
+                    'status' => $item->status,
+                    'date' => $item->created_at->format('Y-m-d'),
+                ])->values(),
+            ];
+        })->values();
+    }
+
+    private function calculateTrend(float $current, float $previous): string
+    {
+        if ($current > $previous) {
+            return 'up';
+        }
+        if ($current < $previous) {
+            return 'down';
+        }
+
+        return 'stable';
+    }
+
+    public function determineStatusMessage(bool $hasCurrentData, bool $hasOldData, bool $isStillProcessing, string $label): string
+    {
+        if ($isStillProcessing && $hasCurrentData) {
+            return "{$label} retrieved successfully but comparative analysis is still running.";
+        }
+        if ($isStillProcessing && $hasOldData) {
+            return "Showing old {$label}. Some files are still being processed.";
+        }
+        if ($isStillProcessing) {
+            return "AI analysis for {$label} is still running.";
+        }
+
+        return $hasOldData || $hasCurrentData ? "{$label} retrieved successfully." : "No {$label} found for this patient.";
+    }
+
+    public function update(Patient $patient, array $data): Patient
+    {
+        return DB::transaction(function () use ($patient, $data) {
+            $userData = array_intersect_key($data, array_flip(['name', 'contact']));
+            if (! empty($userData)) {
+                $patient->user->update($userData);
+            }
+
+            $patientData = array_intersect_key($data, array_flip(['gender', 'date_of_birth', 'national_id']));
+            if (! empty($patientData)) {
+                $patient->update($patientData);
+            }
+
+            $complaintChanged = false;
+
+            $medicalHistoryKeys = [
+                'current_complaints', 'is_smoker', 'chronic_diseases',
+                'previous_surgeries_name', 'current_medications', 'allergies', 'family_history',
+            ];
+            $medicalHistoryData = array_intersect_key($data, array_flip($medicalHistoryKeys));
+
+            if (! empty($medicalHistoryData)) {
+                $medicalHistory = $patient->medicalHistory()->updateOrCreate(
+                    ['patient_id' => $patient->id],
+                    $medicalHistoryData
+                );
+
+                $complaintChanged = $medicalHistory->wasChanged('current_complaints');
+            }
+
+            $reportsTypes = ['lab', 'radiology', 'medical_history'];
+            $newPathsForAI = ['lab' => [], 'radiology' => [], 'medical_history' => []];
+
+            $newPathsForAI = $this->reportService->getPathsForAI($reportsTypes, $data, $patient, $newPathsForAI);
+            $hasNewFiles = ! empty(array_filter($newPathsForAI));
+
+            if ($hasNewFiles || $complaintChanged) {
+                $this->runAiAnalysis($patient, $newPathsForAI);
+            }
+
+            return $patient;
         });
     }
 }
