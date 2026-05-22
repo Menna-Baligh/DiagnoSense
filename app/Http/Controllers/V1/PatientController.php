@@ -7,15 +7,15 @@ use App\Http\Requests\Patient\PatientListRequest;
 use App\Http\Requests\Patient\StorePatientRequest;
 use App\Http\Requests\UpdatePatientRequest;
 use App\Http\Requests\UpdatePatientStatusRequest;
+use App\Http\Resources\ActivityLogResource;
 use App\Http\Resources\PatientEditResource;
 use App\Http\Resources\PatientOverviewResource;
 use App\Http\Resources\PatientResource;
-use App\Http\Resources\ActivityLogResource;
-use App\Models\Patient;
 use App\Models\ActivityLog;
-use Illuminate\Http\Request;
+use App\Models\Patient;
 use App\Services\PatientService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class PatientController extends Controller
 {
@@ -246,7 +246,7 @@ class PatientController extends Controller
         } catch (\Exception $e) {
             \Log::error('Error retrieving patient activities: '.$e->getMessage(),['patient_id' => $patient->id,]);
 
-        return ApiResponse::error(message: 'An error occurred while retrieving patient activities.', status: $e->getCode() ?: 500);
+        return ApiResponse::error(message: 'An error occurred while retrieving patient activities.'.$e->getMessage(), status: $e->getCode() ?: 500);
         }
     }
 
