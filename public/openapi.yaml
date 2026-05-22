@@ -1833,6 +1833,70 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         500:
           description: 'Internal Server Error'
+  '/api/v1/subscriptions/subscribe':
+    post:
+      summary: 'Subscribe to a Plan'
+      operationId: postApiV1SubscriptionsSubscribe
+      description: 'Deducts the plan price from the authenticated doctor wallet, updates their billing mode to subscription, creates or updates an active subscription record, and logs a billing transaction. Emits verification and budget alert notifications.'
+      tags:
+        - Subscriptions
+      security:
+        - sanctum: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - plan_id
+              properties:
+                plan_id:
+                  type: integer
+                  description: 'The unique structural database ID of the plan to subscribe to.'
+                  example: 17
+      responses:
+        201:
+          description: 'Successfully subscribed to the plan!'
+                          example:
+                  success: true
+                  message: "Successfully subscribed to the plan!"
+                  data: null
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          description: 'Billing Validation Conflict - Already has an active subscription or insufficient wallet credits balance.'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: "Insufficient credits. Please recharge E£45 to your wallet to subscribe to this plan."
+                  data: null
+        404:
+          description: 'Not Found - Doctor profile associated with the token does not exist'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: "Doctor profile not found."
+                  data: null
+        422:
+          description: 'Validation Error - Plan ID field is missing, not an integer, or does not exist in the plans database table'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: "The given data was invalid."
+                  errors:
+                    plan_id: ["The selected plan is invalid."]
+        500:
+          description: 'Internal Server Error - Operational database transaction rollback'
   '/api/v1/dashboard/summary':
     get:
       summary: 'Retrieve Dashboard Widgets Summary'
@@ -1849,6 +1913,7 @@ paths:
             application/json:
               schema:
                 type: object
+
                 properties:
                   success:
                     type: boolean
@@ -1948,6 +2013,20 @@ paths:
                   message: "Failed to retrieve dashboard summary, please try again later."
                   data: null
 
+  '/api/v1/subscriptions/current':
+    get:
+      summary: 'Get Current Subscription and Billing Details'
+      operationId: getApiV1SubscriptionsCurrent
+      description: 'Retrieves the dynamic billing status and subscription information for the authenticated doctor. The response structure adapts polymorphic data based on whether the billing mode is "pay-per-use" or "subscription" (active or expired).'
+      tags:
+        - Subscriptions
+      security:
+        - sanctum: []
+      responses:
+        200:
+          description: 'Current billing details retrieved successfully.'
+
+
   '/api/v1/patients/{patientId}/visits':
     get:
       summary: 'Get Patient Visit History Details'
@@ -1972,6 +2051,81 @@ paths:
             application/json:
               schema:
                 type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Current billing mode retrieved successfully"
+                  data:
+                    type: object
+                    required: [billing_mode, balance]
+                    properties:
+                      billing_mode:
+                        type: string
+                        enum: [pay-per-use, subscription]
+                        example: "subscription"
+                      balance:
+                        type: number
+                        format: float
+                        example: 250.50
+              examples:
+                ActiveSubscriptionMode:
+                  summary: 'Doctor is under an Active Fixed Plan Subscription'
+                  value:
+                    success: true
+                    message: "Current billing mode retrieved successfully"
+                    data:
+                      billing_mode: "subscription"
+                      balance: 450.00
+                      plan_name: "Premium Clinic Plan"
+                      status: "active"
+                      usage:
+                        used: 12
+                        total: 50
+                        remaining: 38
+                        percentage: 24.00
+                      starts_at: "Fri, May 01, 2026"
+                      expires_at: "Sun, May 31, 2026"
+                      features:
+                        - "Unlimited Patient Records"
+                        - "Decision Support Assistance"
+                        - "Advanced PDF Comparative Reports"
+                PayPerUseMode:
+                  summary: 'Doctor is under Pay-Per-Use Billing Mode'
+                  value:
+                    success: true
+                    message: "Current billing mode retrieved successfully"
+                    data:
+                      billing_mode: "pay-per-use"
+                      balance: 85.00
+                      price_per_file: 20.00
+                      features:
+                        - "All features included"
+                ExpiredSubscriptionFallback:
+                  summary: 'Subscription Expired but Billing Mode is still flagged'
+                  value:
+                    success: true
+                    message: "Current billing mode retrieved successfully"
+                    data:
+                      billing_mode: "subscription"
+                      balance: 0.00
+                      plan_name: "Basic Starter Plan"
+                      status: "expired"
+                      usage:
+                        used: 20
+                        total: 20
+                        remaining: 0
+                        percentage: 100.00
+                      starts_at: "Tue, April 07, 2026"
+                      expires_at: "Thu, May 07, 2026"
+                      features:
+                        - "Basic OCR Extraction"
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          description: 'Not Found - The doctor profile does not have an active billing mode established yet'
               examples:
                 SuccessVisitDetails:
                   summary: 'Complete Visit Medical Records'
@@ -2163,6 +2317,23 @@ paths:
               schema:
                 type: object
                 example:
+                  success: false
+                  message: "No active subscription or billing mode found."
+                  data: null
+        500:
+          description: 'Internal Server Error'
+  '/api/v1/subscriptions/cancel':
+    post:
+      summary: 'Cancel Subscription or Billing Mode'
+      operationId: postApiV1SubscriptionsCancel
+      description: 'Cancels the authenticated doctor’s active subscription or disables their pay-per-use billing mode. If a subscription is cancelled before expiration, it informs the user about their grace period and remaining summaries.'
+      tags:
+        - Subscriptions
+      security:
+        - sanctum: []
+      responses:
+        200:
+          description: 'Cancellation request processed successfully.'
                   success: true
                   message: "Medication deleted successfully"
         401:
@@ -2216,6 +2387,42 @@ paths:
             application/json:
               schema:
                 type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+              examples:
+                CancelledWithGracePeriod:
+                  summary: 'Subscription Cancelled with Remaining Credits'
+                  description: 'Triggered when the doctor cancels the subscription but still has remaining summaries left to use until the expiration date.'
+                  value:
+                    success: true
+                    message: "Subscription cancelled. You can still use your remaining 38 summaries until Sun, May 31, 2026"
+                    data: null
+                CancelledLimitReached:
+                  summary: 'Subscription Cancelled with Limit Reached'
+                  description: 'Triggered when the doctor cancels the subscription and has already consumed 100% of the allowed summaries limit.'
+                  value:
+                    success: true
+                    message: "Subscription cancelled. Note: You have already reached your limit of 50 summaries."
+                    data: null
+                DisabledPayPerUse:
+                  summary: 'Pay-Per-Use Mode Disabled'
+                  description: 'Triggered when a doctor on pay-per-use cancels their billing style, reverting the doctor billing_mode back to null.'
+                  value:
+                    success: true
+                    message: "Pay-Per-Use mode has been disabled. Please subscribe to a plan to continue."
+                    data: null
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          description: 'Billing Validation Conflict - No active subscription or billing mode found to cancel.'
               examples:
                 TaskCreated:
                   summary: 'Task Resource Payload'
@@ -2240,6 +2447,10 @@ paths:
                 type: object
                 example:
                   success: false
+                  message: "No active subscription or billing mode found to cancel."
+                  data: null
+        500:
+          description: 'Internal Server Error'
                   message: "Next visit date is required for tasks."
 
   '/api/v1/tasks/{taskId}':
@@ -2266,6 +2477,9 @@ paths:
               schema:
                 type: object
                 example:
+                  success: false
+                  message: "An error occurred while cancelling your subscription."
+                  data: null
                   success: true
                   message: "Task deleted successfully"
 

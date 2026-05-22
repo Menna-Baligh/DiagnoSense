@@ -69,6 +69,11 @@ Route::prefix('v1')->group(function () {
         Route::post('charge', 'store')->name('charge');
         Route::get('transactions', 'index')->name('transactions');
     });
+    Route::controller(SubscriptionController::class)->middleware('auth:sanctum')->prefix('subscriptions')->as('subscriptions.')->group(function () {
+        Route::post('/subscribe', 'subscribe')->name('subscribe');
+        Route::get('/current', 'current')->name('current');
+        Route::post('/cancel', 'cancel')->name('cancel');
+    });
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/patients/{patient}/overview', [PatientController::class, 'overview'])->name('patients.overview');
@@ -104,11 +109,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/patients/{patientId}/key-info', [KeyPointController::class, 'store']);
     Route::get('/patients/{patientId}/decision-support', [PatientController::class, 'getDecisionSupport']);
     Route::delete('/patients/{patientId}', [PatientController::class, 'destroy']);
-    Route::post('/subscription/subscribe', [SubscriptionController::class, 'subscribe']);
     Route::post('/subscription/pay-per-use', [SubscriptionController::class, 'switchToPayPerUse']);
     Route::get('/subscription/plans', [SubscriptionController::class, 'index']);
-    Route::get('/subscription/current', [SubscriptionController::class, 'current']);
-    Route::post('/subscription/cancel', [SubscriptionController::class, 'cancel']);
     Route::get('/patient/next-visit', [PatientController::class, 'nextVisit']);
     Route::post('/chatbot/{patientId}', [ChatbotController::class, 'store'])->middleware('check-ai-access');
     Route::get('/dashboard/status-distribution', [DashboardController::class, 'statusDistribution']);
