@@ -119,6 +119,7 @@ class DashboardService
     {
         $todayPatients= Visit::where('doctor_id', $doctor->id)
             ->whereDate('next_visit_date', today())
+            ->where('status', '!=', 'attended')
             ->with([
                 'patient.user',
                 'patient.latestAiAnalysisResult'
