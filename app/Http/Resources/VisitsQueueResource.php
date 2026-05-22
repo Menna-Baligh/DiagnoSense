@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class QueueDashboardResource extends JsonResource
+class VisitsQueueResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,15 +15,13 @@ class QueueDashboardResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $currentId = $request->input('current_id');
-
         return [
-            'id' => $this->id,
-            'name' => $this->user->name,
-            'age' => $this->age,
-            'gender' => ucfirst($this->gender),
+            'id' => $this->patient->id,
+            'name' => $this->patient->user->name,
+            'age' => $this->patient->age,
+            'gender' => ucfirst($this->patient->gender),
             'appointment_time' => Carbon::parse($this->next_visit_date)->format('h:i A'),
-            'status_tag' => $this->id == $currentId ? 'Now' : 'Waiting',
+            'status_tag' => $this->patient->id == request('current_patient_id') ? 'Now' : 'Waiting',
         ];
     }
 }
