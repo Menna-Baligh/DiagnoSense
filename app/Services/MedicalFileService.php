@@ -8,10 +8,12 @@ use Illuminate\Database\Eloquent\Collection;
 
 class MedicalFileService
 {
-    public function getMedicalHistoryFiles(?Patient $patient,?string $search = null): Collection {
+    public function getMedicalHistoryFiles(?Patient $patient, ?string $search = null): Collection
+    {
 
         if (! $patient) {
-            throw new \Exception('Unauthorized',403);}
+            throw new \Exception('Unauthorized', 403);
+        }
 
         return $patient->reports()
             ->where('type', 'medical_history')
@@ -26,9 +28,12 @@ class MedicalFileService
             ->get();
     }
 
-    public function getLabReports(?Patient $patient,?string $search = null): Collection {
+    public function getLabReports(?Patient $patient, ?string $search = null): Collection
+    {
 
-        if (! $patient) {throw new \Exception('Unauthorized',403);}
+        if (! $patient) {
+            throw new \Exception('Unauthorized', 403);
+        }
 
         return $patient->reports()
             ->where('type', 'lab')
@@ -44,10 +49,11 @@ class MedicalFileService
             ->get();
     }
 
-    public function getRadiologyReports(?Patient $patient,?string $search = null): Collection {
+    public function getRadiologyReports(?Patient $patient, ?string $search = null): Collection
+    {
 
-        if (! $patient)
-             {throw new \Exception('Unauthorized',403);
+        if (! $patient) {
+            throw new \Exception('Unauthorized', 403);
         }
 
         return $patient->reports()
@@ -62,7 +68,9 @@ class MedicalFileService
             ->latest()
             ->get();
     }
-       public function updateProfile(User $user,array $data): array {
+
+    public function updateProfile(User $user, array $data): array
+    {
 
         $user->update($data);
 
