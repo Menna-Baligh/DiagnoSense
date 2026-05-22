@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use App\Rules\ValidContactRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;

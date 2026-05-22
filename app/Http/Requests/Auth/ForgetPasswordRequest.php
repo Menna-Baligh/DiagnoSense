@@ -2,9 +2,6 @@
 
 namespace App\Http\Requests\Auth;
 
-use App\Helpers\ApiResponse;
-use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Contracts\Validation\Validator;
 use App\Rules\ValidContactRule;
 use Illuminate\Foundation\Http\FormRequest;
 
