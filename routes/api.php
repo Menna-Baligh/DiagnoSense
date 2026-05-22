@@ -74,6 +74,10 @@ Route::prefix('v1')->group(function () {
         Route::get('/current', 'current')->name('current');
         Route::post('/cancel', 'cancel')->name('cancel');
     });
+    Route::controller(DashboardController::class)->middleware('auth:sanctum')->prefix('dashboard')->as('dashboard.')->group(function () {
+        Route::get('/status-distribution', 'statusDistribution')->name('status-distribution');
+        Route::get('/top-diseases', 'topDiseases')->name('top-diseases');
+    });
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/patients/{patient}/overview', [PatientController::class, 'overview'])->name('patients.overview');
@@ -113,8 +117,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/subscription/plans', [SubscriptionController::class, 'index']);
     Route::get('/patient/next-visit', [PatientController::class, 'nextVisit']);
     Route::post('/chatbot/{patientId}', [ChatbotController::class, 'store'])->middleware('check-ai-access');
-    Route::get('/dashboard/status-distribution', [DashboardController::class, 'statusDistribution']);
-    Route::get('/dashboard/top-diseases', [DashboardController::class, 'topDiseases']);
+
+
     Route::get('/dashboard/today-visits', [DashboardController::class, 'todayVisits']);
     Route::patch('/dashboard/{patientId}/attend', [DashboardController::class, 'markAttended']);
     Route::get('/patients/{patientId}', [PatientController::class, 'edit']);

@@ -3,8 +3,15 @@
 namespace App\Http\Controllers\V1;
 
 use App\Helpers\ApiResponse;
+use App\Http\Resources\CurrentVisitDashboardResource;
+use App\Http\Resources\DashboardStatusResource;
+use App\Http\Resources\QueueDashboardResource;
+use App\Http\Resources\TopDiseaseResource;
 use App\Http\Resources\WidgetsDashboardResource;
+use App\Models\AiAnalysisResult;
+use App\Models\Patient;
 use App\Services\DashboardService;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -13,6 +20,13 @@ class DashboardController extends Controller
     public function __construct(
         protected DashboardService $dashboardService
     ) {}
+
+    public function summary(Request $request)
+    {
+        $doctor = $request->user()->doctor;
+        if (! $doctor) {
+            return ApiResponse::error('Unauthorized', null, 403);
+        }
 
     public function summary(Request $request): JsonResponse
     {
@@ -32,73 +46,44 @@ class DashboardController extends Controller
         }
     }
 
-    public function statusDistribution(Request $request)
+    public function statusDistribution(Request $request): JsonResponse
     {
-        $doctor = $request->user()->doctor;
+        try {
+            $doctor = $request->user()->doctor;
+            if (! $doctor) {
+                return ApiResponse::error(message: 'Doctor not found', status: 404);
+            }
+            $distribution = $this->dashboardService->getPatientStatusDistribution($doctor);
 
-        if (! $doctor) {
-            return ApiResponse::error('Unauthorized', null, 403);
+            return ApiResponse::success(
+                message: 'Status distribution retrieved successfully',
+                data: new DashboardStatusResource($distribution)
+            );
+        } catch (\Exception $e) {
+            \Log::error('Error retrieving status distribution: '.$e->getMessage());
+
+            return ApiResponse::error(message: 'Failed to retrieve status distribution', status: 500);
         }
-
-        $distribution = $doctor->patients()
-            ->select('status', DB::raw('count(*) as total'))
-            ->groupBy('status')
-            ->pluck('total', 'status');
-
-        $totalPatients = $distribution->sum();
-
-        $statuses = ['critical', 'stable', 'under review'];
-
-        $result = collect($statuses)->map(function ($status) use ($distribution, $totalPatients) {
-            $count = $distribution[$status] ?? 0;
-
-            return [
-                'status' => $status,
-                'value' => $count,
-                'percentage' => $totalPatients > 0 ? round(($count / $totalPatients) * 100) : 0,
-            ];
-        })->values();
-
-        return ApiResponse::success(
-            'Status distribution retrieved successfully',
-            [
-                'total_registered_patients' => $totalPatients,
-                'pie_chart_data' => $result,
-            ],
-            200
-        );
     }
 
-    public function topDiseases(Request $request)
+    public function topDiseases(Request $request): JsonResponse
     {
-        $doctor = $request->user()->doctor;
-        if (! $doctor) {
-            return ApiResponse::error('Unauthorized', null, 403);
+        try {
+            $doctor = $request->user()->doctor;
+            if (! $doctor) {
+                return ApiResponse::error(message: 'Doctor not found', status: 404);
+            }
+            $topDiseases = $this->dashboardService->getTopChronicDiseases($doctor);
+
+            return ApiResponse::success(
+                message: 'Top 5 chronic diseases retrieved successfully',
+                data: TopDiseaseResource::collection($topDiseases)
+            );
+        } catch (\Exception $e) {
+            \Log::error('Error retrieving top diseases: '.$e->getMessage());
+
+            return ApiResponse::error(message: 'Failed to retrieve top diseases', status: 500);
         }
-
-        $patientIds = $doctor->patients()->pluck('patients.id');
-        $histories = MedicalHistory::whereIn('patient_id', $patientIds)
-            ->whereNotNull('chronic_diseases')
-            ->pluck('chronic_diseases');
-
-        $topDiseases = collect($histories)
-            ->flatMap(fn ($diseases) => (array) $diseases)
-            ->filter()
-            ->countBy()
-            ->sortDesc()
-            ->take(5)
-            ->map(fn ($count, $name) => [
-                'label' => $name,
-                'value' => $count,
-            ])
-            ->values();
-
-        return ApiResponse::success(
-            'Top 5 chronic diseases retrieved successfully',
-            $topDiseases,
-            200
-        );
-
     }
 
     public function todayVisits(Request $request)

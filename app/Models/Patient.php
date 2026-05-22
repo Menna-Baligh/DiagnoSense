@@ -18,6 +18,12 @@ class Patient extends Model
     use HasFactory;
     use LogsActivity , SoftDeletes;
 
+    const STATUS_CRITICAL = 'critical';
+
+    const STATUS_STABLE = 'stable';
+
+    const STATUS_UNDER_REVIEW = 'under review';
+
     protected $fillable = [
         'id',
         'user_id',
@@ -109,5 +115,14 @@ class Patient extends Model
     public function labResults(): HasMany
     {
         return $this->hasMany(PatientLabResult::class);
+    }
+
+    public static function getStatuses(): array
+    {
+        return [
+            self::STATUS_CRITICAL,
+            self::STATUS_STABLE,
+            self::STATUS_UNDER_REVIEW,
+        ];
     }
 }
