@@ -1,8 +1,8 @@
 <?php
 
+use App\Models\AiAnalysisResult;
 use App\Models\KeyPoint;
 use App\Models\Patient;
-use App\Models\AiAnalysisResult;
 
 beforeEach(function () {
 
@@ -18,69 +18,69 @@ beforeEach(function () {
 });
 
 describe('Patient Activities', function () {
-it('returns patient activity history successfully', function () {
+    it('returns patient activity history successfully', function () {
 
-    $analysis = AiAnalysisResult::factory()->create([
-        'patient_id' => $this->patient->id,
-    ]);
+        $analysis = AiAnalysisResult::factory()->create([
+            'patient_id' => $this->patient->id,
+        ]);
 
-    KeyPoint::factory()->create([
-        'ai_analysis_result_id' => $analysis->id,
-        'is_ai_generated' => false,
-    ]);
+        KeyPoint::factory()->create([
+            'ai_analysis_result_id' => $analysis->id,
+            'is_ai_generated' => false,
+        ]);
 
-    KeyPoint::factory()->create([
-        'ai_analysis_result_id' => $analysis->id,
-        'is_ai_generated' => false,
-    ]);
+        KeyPoint::factory()->create([
+            'ai_analysis_result_id' => $analysis->id,
+            'is_ai_generated' => false,
+        ]);
 
-    $response = $this->getJson(
-        route('patients.activities', [
-            'patient' => $this->patient->id,
-        ])
-    );
+        $response = $this->getJson(
+            route('patients.activities', [
+                'patient' => $this->patient->id,
+            ])
+        );
 
-    $response->assertStatus(200)
-        ->assertJsonPath(
-            'message',
-            'Activity history retrieved successfully'
-        )
-        ->assertJsonCount(2, 'data');
-});
+        $response->assertStatus(200)
+            ->assertJsonPath(
+                'message',
+                'Activity history retrieved successfully'
+            )
+            ->assertJsonCount(2, 'data');
+    });
 
-it('returns activities ordered by latest first', function () {
+    it('returns activities ordered by latest first', function () {
 
-    $analysis = AiAnalysisResult::factory()->create([
-        'patient_id' => $this->patient->id,
-    ]);
+        $analysis = AiAnalysisResult::factory()->create([
+            'patient_id' => $this->patient->id,
+        ]);
 
-    $oldKeyPoint = KeyPoint::factory()->create([
-        'ai_analysis_result_id' => $analysis->id,
-        'is_ai_generated' => false,
-        'created_at' => now()->subDay(),
-    ]);
+        $oldKeyPoint = KeyPoint::factory()->create([
+            'ai_analysis_result_id' => $analysis->id,
+            'is_ai_generated' => false,
+            'created_at' => now()->subDay(),
+        ]);
 
-    sleep(1);
+        sleep(1);
 
-    $latestKeyPoint = KeyPoint::factory()->create([
-        'ai_analysis_result_id' => $analysis->id,
-        'is_ai_generated' => false,
-    ]);
+        $latestKeyPoint = KeyPoint::factory()->create([
+            'ai_analysis_result_id' => $analysis->id,
+            'is_ai_generated' => false,
+        ]);
 
-    $response = $this->getJson(
-        route('patients.activities', [
-            'patient' => $this->patient->id,
-        ])
-    );
+        $response = $this->getJson(
+            route('patients.activities', [
+                'patient' => $this->patient->id,
+            ])
+        );
 
-    $response->assertStatus(200);
+        $response->assertStatus(200);
 
-    expect($response->json('data.0.model_id'))
-        ->toBe($latestKeyPoint->id);
+        expect($response->json('data.0.model_id'))
+            ->toBe($latestKeyPoint->id);
 
-    expect($response->json('data.1.model_id'))
-        ->toBe($oldKeyPoint->id);
-});
+        expect($response->json('data.1.model_id'))
+            ->toBe($oldKeyPoint->id);
+    });
     it('returns 403 when doctor tries to access unauthorized patient activities', function () {
 
         $anotherDoctorUser = createDoctorWithBilling();
