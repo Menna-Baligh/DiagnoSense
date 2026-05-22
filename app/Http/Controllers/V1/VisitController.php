@@ -51,4 +51,23 @@ class VisitController extends Controller
             return ApiResponse::error(message: 'An error occurred while creating visit.', status: 500);
         }
     }
+
+    public function show(): JsonResponse
+    {
+        try{
+            $patient = request()->user()->patient;
+            $nextVisit = $this->visitService->getNextVisit($patient);
+            if(!$nextVisit){
+                return ApiResponse::success(message: 'No upcoming visit.', status: 200);
+            }
+            return ApiResponse::success(
+                message: 'Next visit retrieved successfully.',
+                data: new NextVisitResource($nextVisit)
+            );
+        }catch (\Exception $e) {
+            \Log::error('Show nest visit Error: '.$e->getMessage());
+
+            return ApiResponse::error(message: 'An error occurred while fetching next visit.', status: 500);
+        }
+    }
 }
