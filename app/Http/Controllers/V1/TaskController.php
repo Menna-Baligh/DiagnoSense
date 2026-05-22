@@ -20,22 +20,18 @@ class TaskController extends Controller
 
     public function index()
     {
-        $patient = auth()->user()->patient;
+        try{
+            $patient = auth()->user()->patient;
+            $tasks = $this->taskService->getTasks($patient);
+            return ApiResponse::success(
+                message: 'Tasks retrieved successfully',
+                data: TaskResource::collection($tasks),
+            );
+        }catch (\Exception $e) {
+            \Log::error('Error fetching tasks: '.$e->getMessage(), ['exception' => $e]);
 
-        if (! $patient) {
-            return ApiResponse::error('Unauthorized', null, 403);
+            return ApiResponse::error(message: 'Failed to retrieve tasks, please try again later.', status: 500);
         }
-
-        $tasks = $patient->tasks()
-            ->with('visit')
-            ->latest()
-            ->get();
-
-        return ApiResponse::success(
-            message: 'Tasks retrieved successfully',
-            data: TaskResource::collection($tasks),
-            statusCode: 200
-        );
     }
 
     public function store(StoreTaskRequest $request, Visit $visit): JsonResponse
