@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\AiAnalysisResult;
 use App\Models\Doctor;
+use App\Models\Patient;
 use App\Models\Visit;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -112,5 +113,23 @@ class DashboardService
         }
 
         return $patientsThisMonth > 0 ? 100 : 0;
+    }
+
+    public function getTodayVisit(Doctor $doctor): array
+    {
+        $todayPatients= Visit::where('doctor_id', $doctor->id)
+            ->whereDate('next_visit_date', today())
+            ->with([
+                'patient.user',
+                'patient.latestAiAnalysisResult'
+            ])
+            ->orderBy('next_visit_date', 'asc')
+            ->get();
+        $currentPatient = $todayPatients->first();
+        return [
+            'todayPatients' => $todayPatients->take(5),
+            'currentPatient' => $currentPatient,
+            'totalTodayCount' => $todayPatients->count(),
+        ];
     }
 }

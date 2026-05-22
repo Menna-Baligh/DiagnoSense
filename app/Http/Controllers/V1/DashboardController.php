@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\V1;
 
 use App\Helpers\ApiResponse;
+use App\Http\Resources\CurrentVisitResource;
+use App\Http\Resources\VisitsQueueResource;
 use App\Http\Resources\WidgetsDashboardResource;
 use App\Services\DashboardService;
 use Illuminate\Http\JsonResponse;
@@ -101,38 +103,25 @@ class DashboardController extends Controller
 
     }
 
-    public function todayVisits(Request $request)
+    public function todayVisits(): JsonResponse
     {
-        $doctor = $request->user()->doctor;
+        try{
+            $doctor = auth()->user()->doctor;
+            $result = $this->dashboardService->getTodayVisit($doctor);
+            request()->merge(['current_patient_id' => $result['currentPatient']?->patient->id ?? null]);
+            return ApiResponse::success(
+                message: 'Queue retrieved successfully',
+                data:[
+                    'current_attending' => $result['currentPatient'] ? new CurrentVisitResource($result['currentPatient']) : null,
+                    'full_queue_list' => $result['todayPatients']->isNotEmpty() ? VisitsQueueResource::collection($result['todayPatients']) : null,
+                    'remaining_count_label' => ($result['totalTodayCount'] > 1 ? ($result['totalTodayCount'] - 1) : 0).' remaining',
+                ]
+            );
+        }catch (\Exception $e) {
+            \Log::error('Error retrieving today\'s visits: '.$e->getMessage(), ['exception' => $e]);
 
-        if (! $doctor) {
-            return ApiResponse::error('Unauthorized', null, 403);
+            return ApiResponse::error(message: 'Failed to retrieve today\'s visits, please try again later.', status: 500);
         }
-
-        $patientsToday = Patient::whereHas('doctors', function ($q) use ($doctor) {
-            $q->where('doctors.id', $doctor->id);
-        })
-            ->whereDate('patients.next_visit_date', today())
-            ->with('latestAiAnalysisResult')
-            ->orderBy('patients.next_visit_date', 'asc')
-            ->take(5)
-            ->get();
-        $currentPatient = $patientsToday->first();
-        $totalTodayCount = Patient::whereHas('doctors', fn ($q) => $q->where('doctors.id', $doctor->id))
-            ->whereDate('patients.next_visit_date', today())
-            ->count();
-        $request->merge(['current_id' => $currentPatient?->id]);
-
-        return ApiResponse::success(
-            'Queue retrieved successfully',
-            [
-                'current_attending' => $currentPatient ? new CurrentVisitDashboardResource($currentPatient) : null,
-                'full_queue_list' => QueueDashboardResource::collection($patientsToday),
-                'remaining_count_label' => ($totalTodayCount > 1 ? ($totalTodayCount - 1) : 0).' remaining',
-            ],
-            200
-        );
-
     }
 
     public function markAttended(Request $request, $patientId)
