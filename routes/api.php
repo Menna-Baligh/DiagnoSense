@@ -69,7 +69,7 @@ Route::prefix('v1')->group(function () {
         Route::post('charge', 'store')->name('charge');
         Route::get('transactions', 'index')->name('transactions');
     });
-    
+
     Route::controller(MedicalFileController::class)->middleware('auth:sanctum')->prefix('patient')->as('patient.')->group(function () {
         Route::get('medical-history', 'medicalHistoryFiles')->name('medical-history');
         Route::get('radiology-reports', 'radiologyReports')->name('radiology-reports');
@@ -134,7 +134,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/patients/{patientId}/comparative-analysis', [PatientController::class, 'getComparativeAnalysis']);
 });
 
-Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);
+// Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);
 Route::get('/payment-success', function () {
     return response()->json(['message' => 'Payment successful! You can close this tab.']);
 })->name('payment.success');

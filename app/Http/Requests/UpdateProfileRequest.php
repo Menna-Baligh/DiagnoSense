@@ -2,18 +2,24 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\ValidContactRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateProfileRequest extends FormRequest
 {
+    public function authorize(): bool
+    {
+        return true;
+    }
+
     public function rules(): array
     {
         $userId = auth()->id();
 
-         return [
+        return [
             'contact' => [
                 'sometimes',
-                'email',
+                new ValidContactRule,
                 'unique:users,contact,'.$userId,
             ],
         ];
