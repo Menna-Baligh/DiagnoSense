@@ -9,6 +9,7 @@ use App\Models\AiAnalysisResult;
 use App\Models\Doctor;
 use App\Models\MedicalHistory;
 use App\Models\Patient;
+use App\Models\ActivityLog;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -436,4 +437,22 @@ class PatientService
 
         return ['status' => $patient->status];
     }
+
+    public function getPatientActivities(int $doctorId,Patient $patient): Collection {
+
+        $isAuthorized = $patient->doctors()
+            ->where('doctor_id', $doctorId)
+            ->exists();
+
+        if (! $isAuthorized) {
+            throw new \Exception('You are not allowed to view this patient activities',403);
+        }
+
+        return ActivityLog::query()
+           ->where('patient_id', $patient->id)
+           ->with('doctor.user')
+           ->latest('created_at')
+           ->get();
+    }
+
 }

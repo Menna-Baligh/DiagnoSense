@@ -24,7 +24,7 @@ trait LogsActivity
 
         static::updated(function ($model) {
             $modelName = class_basename($model);
-            if (in_array($modelName, ['Patient', 'KeyPoint', 'Task', 'Medication', 'Visit'])) {
+            if (in_array($modelName, ['Patient', 'KeyPoint', 'Medication', 'Visit'])) {
                 $model->logActivity('updated');
             }
         });
@@ -82,8 +82,8 @@ trait LogsActivity
         ActivityLog::create([
             'doctor_id' => $doctor?->id,
             'patient_id' => $patientId,
-            'changeable_type' => class_basename($this),
-            'changeable_id' => $this->id,
+            'model_type' => class_basename($this),
+            'model_id' => $this->id,
             'action' => strtolower(class_basename($this)).'_'.$event,
             'description' => $this->generateDescription($event, $formattedChanges),
             'changes' => $formattedChanges ?: null,

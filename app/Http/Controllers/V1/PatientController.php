@@ -229,28 +229,25 @@ class PatientController extends Controller
             return ApiResponse::error(message: $e->getMessage(), status: $e->getCode() ?: 500);
         }
     }
-        public function activityHistory(Request $request, $patientId)
-    {
-        $doctor = $request->user()->doctor;
-        $patient = $doctor->patients()->find($patientId);
 
-        if (! $patient) {
-            return ApiResponse::error(
-                'You are not allowed to view this patient activities',
-                null,
-                403
-            );
+    public function activityHistory(Request $request,Patient $patient): JsonResponse {
+
+        try {
+            $doctorId = auth()->user()->doctor->id;
+ 
+            $logs = $this->patientService->getPatientActivities($doctorId,$patient);
+
+            return ApiResponse::success(
+               message: 'Activity history retrieved successfully',
+               data: ActivityLogResource::collection($logs),
+               status: 200
+           );
+
+        } catch (\Exception $e) {
+            \Log::error('Error retrieving patient activities: '.$e->getMessage(),['patient_id' => $patient->id,]);
+
+        return ApiResponse::error(message: 'An error occurred while retrieving patient activities.', status: $e->getCode() ?: 500);
         }
-
-        $logs = ActivityLog::where('patient_id', $patientId)
-            ->with('doctor.user')
-            ->orderByDesc('created_at')
-            ->get();
-
-        return ApiResponse::success(
-            'Activity history retrieved successfully',
-            ActivityLogResource::collection($logs),
-            200
-        );
     }
+
 }
