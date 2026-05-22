@@ -55,7 +55,7 @@ class VisitController extends Controller
     public function show(): JsonResponse
     {
         try{
-            $patient = request()->user()->patient;
+            $patient = auth()->user()->patient;
             $nextVisit = $this->visitService->getNextVisit($patient);
             if(!$nextVisit){
                 return ApiResponse::success(message: 'No upcoming visit.', status: 200);
