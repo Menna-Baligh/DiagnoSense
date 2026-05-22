@@ -10,7 +10,10 @@ use App\Http\Requests\UpdatePatientStatusRequest;
 use App\Http\Resources\PatientEditResource;
 use App\Http\Resources\PatientOverviewResource;
 use App\Http\Resources\PatientResource;
+use App\Http\Resources\ActivityLogResource;
 use App\Models\Patient;
+use App\Models\ActivityLog;
+use Illuminate\Http\Request;
 use App\Services\PatientService;
 use Illuminate\Http\JsonResponse;
 
@@ -225,5 +228,29 @@ class PatientController extends Controller
 
             return ApiResponse::error(message: $e->getMessage(), status: $e->getCode() ?: 500);
         }
+    }
+        public function activityHistory(Request $request, $patientId)
+    {
+        $doctor = $request->user()->doctor;
+        $patient = $doctor->patients()->find($patientId);
+
+        if (! $patient) {
+            return ApiResponse::error(
+                'You are not allowed to view this patient activities',
+                null,
+                403
+            );
+        }
+
+        $logs = ActivityLog::where('patient_id', $patientId)
+            ->with('doctor.user')
+            ->orderByDesc('created_at')
+            ->get();
+
+        return ApiResponse::success(
+            'Activity history retrieved successfully',
+            ActivityLogResource::collection($logs),
+            200
+        );
     }
 }

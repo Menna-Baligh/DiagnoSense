@@ -77,6 +77,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/patients/{patientId}', [PatientController::class, 'edit'])->name('patients.edit');
         Route::delete('/key-points/{keyPointId}', [KeyPointController::class, 'destroy'])->name('key-points.destroy');
         Route::patch('/key-points/{keyPointId}', [KeyPointController::class, 'update'])->name('key-points.update');
+        Route::get('/patients/{patient}/activities', [PatientController::class, 'activityHistory'])->name('patients.activities');
 
         Route::patch('/patients/{patient}/status', [PatientController::class, 'updateStatus'])->name('patients.update-status');
         Route::controller(NotificationController::class)->prefix('notifications')->as('notifications.')->group(function () {
