@@ -6,6 +6,9 @@ use App\Exceptions\BillingValidationException;
 use App\Models\Doctor;
 use App\Models\Plan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Collection;
+ use App\Notifications\PayPerUseActivated;
+
 
 class SubscriptionService
 {
@@ -46,13 +49,19 @@ class SubscriptionService
         });
     }
 
-    public function setPayPerUseMode(Doctor $doctor)
-    {
-        $doctor->update(['billing_mode' => 'pay_per_use']);
 
-        $doctor->subscriptions()->update(['status' => 'cancelled']);
+    public function switchToPayPerUseMode(Doctor $doctor): string {
+
+        $doctor->update(['billing_mode' => 'pay-per-use',]);
+ 
+        $doctor->subscriptions()->update([
+            'status' => 'cancelled',
+        ]);
+
+        $doctor->notify(new PayPerUseActivated);
+
+        return 'Switched to Pay-Per-Use mode. E£ 25 will be charged per file.';
     }
-
     public function validateAiAccess(Doctor $doctor): void
     {
         $doctor->loadMissing(['wallet', 'activeSubscription.plan', 'latestSubscription.plan']);
@@ -100,5 +109,10 @@ class SubscriptionService
             );
         }
         throw new BillingValidationException(__('No active subscription found. Please subscribe to a plan.'), 403);
+    }
+
+    public function getAllPlans(): Collection
+    {
+         return Plan::all();
     }
 }
