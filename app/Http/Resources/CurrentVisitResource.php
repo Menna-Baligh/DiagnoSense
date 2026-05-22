@@ -16,7 +16,8 @@ class CurrentVisitResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->patient->id,
+            'id' => $this->id,
+            'patient_id' => $this->patient->id,
             'name' => $this->patient->user->name,
             'age' => $this->patient->age.' y/o',
             'gender' => ucfirst($this->patient->gender),
