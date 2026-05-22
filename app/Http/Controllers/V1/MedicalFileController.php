@@ -3,15 +3,14 @@
 namespace App\Http\Controllers\V1;
 
 use App\Helpers\ApiResponse;
-use App\Http\Resources\LabReportResource;
 use App\Http\Requests\UpdateProfileRequest;
+use App\Http\Resources\LabReportResource;
 use App\Http\Resources\MedicalFileResource;
+use App\Http\Resources\MedicationListResource;
 use App\Http\Resources\RadiologyReportResource;
+use App\Http\Resources\TimelineResource;
 use App\Services\MedicalFileService;
 use Illuminate\Http\JsonResponse;
-use App\Http\Resources\MedicationListResource;
-use App\Http\Resources\TimelineResource;
-
 use Illuminate\Http\Request;
 
 class MedicalFileController extends Controller
@@ -20,13 +19,14 @@ class MedicalFileController extends Controller
         protected MedicalFileService $medicalFileService
     ) {}
 
-    public function medicalHistoryFiles(Request $request): JsonResponse {
+    public function medicalHistoryFiles(Request $request): JsonResponse
+    {
         try {
             $files = $this->medicalFileService
                 ->getMedicalHistoryFiles(
                     patient: auth()->user()->patient,
                     search: $request->query('search')
-                    );
+                );
 
             return ApiResponse::success(
                 message: 'Medical history files retrieved successfully',
@@ -36,12 +36,13 @@ class MedicalFileController extends Controller
         } catch (\Exception $e) {
             \Log::error('Error retrieving medical history files: '.$e->getMessage());
 
-            return ApiResponse::error(message: $e->getMessage(),status: $e->getCode() ?: 500
+            return ApiResponse::error(message: $e->getMessage(), status: $e->getCode() ?: 500
             );
         }
     }
 
-    public function labReports(Request $request): JsonResponse {
+    public function labReports(Request $request): JsonResponse
+    {
         try {
             $reports = $this->medicalFileService
                 ->getLabReports(
@@ -58,11 +59,12 @@ class MedicalFileController extends Controller
         } catch (\Exception $e) {
             \Log::error('Error retrieving lab reports: '.$e->getMessage());
 
-            return ApiResponse::error(message: $e->getMessage(),status: $e->getCode() ?: 500);
+            return ApiResponse::error(message: $e->getMessage(), status: $e->getCode() ?: 500);
         }
     }
 
-    public function radiologyReports(Request $request): JsonResponse {
+    public function radiologyReports(Request $request): JsonResponse
+    {
         try {
             $reports = $this->medicalFileService
                 ->getRadiologyReports(
@@ -79,35 +81,37 @@ class MedicalFileController extends Controller
         } catch (\Exception $e) {
             \Log::error('Error retrieving radiology reports: '.$e->getMessage());
 
-            return ApiResponse::error(message: $e->getMessage(),status: $e->getCode() ?: 500);
+            return ApiResponse::error(message: $e->getMessage(), status: $e->getCode() ?: 500);
         }
     }
 
-    public function update(UpdateProfileRequest $request): JsonResponse {
+    public function update(UpdateProfileRequest $request): JsonResponse
+    {
 
-    try {
+        try {
 
-        $data = $this->medicalFileService->updateProfile(
+            $data = $this->medicalFileService->updateProfile(
                 user: auth()->user(),
                 data: $request->validated()
             );
 
-        return ApiResponse::success(
-            message: 'Profile updated successfully',
-            data: $data,
-            status: 200
-        );
+            return ApiResponse::success(
+                message: 'Profile updated successfully',
+                data: $data,
+                status: 200
+            );
 
-    } catch (\Exception $e) {
-        \Log::error('Error updating profile: '.$e->getMessage(),['user_id' => auth()->id(),]);
+        } catch (\Exception $e) {
+            \Log::error('Error updating profile: '.$e->getMessage(), ['user_id' => auth()->id()]);
 
-        return ApiResponse::error(
-            message: 'An error occurred while updating profile.',
-            status: $e->getCode() ?: 500
-        );
+            return ApiResponse::error(
+                message: 'An error occurred while updating profile.',
+                status: $e->getCode() ?: 500
+            );
+        }
     }
-}
-       /**
+
+    /**
      * Medications
      */
     public function medications(Request $request)
@@ -176,5 +180,4 @@ class MedicalFileController extends Controller
 
         return TimelineResource::collection($timeline);
     }
-
 }

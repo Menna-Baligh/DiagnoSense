@@ -69,12 +69,12 @@ Route::prefix('v1')->group(function () {
         Route::post('charge', 'store')->name('charge');
         Route::get('transactions', 'index')->name('transactions');
     });
-    
+
     Route::controller(MedicalFileController::class)->middleware('auth:sanctum')->prefix('patient')->as('patient.')->group(function () {
         Route::get('medical-history', 'medicalHistoryFiles')->name('medical-history');
         Route::get('radiology-reports', 'radiologyReports')->name('radiology-reports');
-        Route::get('lab-reports','labReports')->name('lab-reports');
-        Route::put('profile',  'update')->name('profile.update');
+        Route::get('lab-reports', 'labReports')->name('lab-reports');
+        Route::put('profile', 'update')->name('profile.update');
     });
 
     Route::middleware('auth:sanctum')->group(function () {
@@ -141,9 +141,6 @@ Route::get('/payment-success', function () {
 Route::get('/payment-cancel', function () {
     return response()->json(['message' => 'Payment cancelled.']);
 })->name('payment.cancel');
-
-
-
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/patient/medications', [MedicalFileController::class, 'medications']);

@@ -10,7 +10,7 @@ class UpdateProfileRequest extends FormRequest
     {
         $userId = auth()->id();
 
-         return [
+        return [
             'contact' => [
                 'sometimes',
                 'email',
