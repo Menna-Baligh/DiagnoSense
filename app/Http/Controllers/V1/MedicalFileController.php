@@ -4,94 +4,110 @@ namespace App\Http\Controllers\V1;
 
 use App\Helpers\ApiResponse;
 use App\Http\Resources\LabReportResource;
+use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Resources\MedicalFileResource;
-use App\Http\Resources\MedicationListResource;
 use App\Http\Resources\RadiologyReportResource;
+use App\Services\MedicalFileService;
+use Illuminate\Http\JsonResponse;
+use App\Http\Resources\MedicationListResource;
 use App\Http\Resources\TimelineResource;
+
 use Illuminate\Http\Request;
 
 class MedicalFileController extends Controller
 {
-    /**
-     * Medical History Files
-     */
-    public function medicalHistoryFiles(Request $request)
-    {
-        $user = $request->user();
+    public function __construct(
+        protected MedicalFileService $medicalFileService
+    ) {}
 
-        if (! $user->patient) {
-            return response()->json(['message' => 'Unauthorized'], 403);
+    public function medicalHistoryFiles(Request $request): JsonResponse {
+        try {
+            $files = $this->medicalFileService
+                ->getMedicalHistoryFiles(
+                    patient: auth()->user()->patient,
+                    search: $request->query('search')
+                    );
+
+            return ApiResponse::success(
+                message: 'Medical history files retrieved successfully',
+                data: MedicalFileResource::collection($files),
+                status: 200
+            );
+        } catch (\Exception $e) {
+            \Log::error('Error retrieving medical history files: '.$e->getMessage());
+
+            return ApiResponse::error(message: $e->getMessage(),status: $e->getCode() ?: 500
+            );
         }
-
-        $patient = $user->patient;
-
-        $search = $request->query('search');
-
-        $files = $patient->reports()
-            ->where('type', 'medical_history')
-            ->when($search, function ($query) use ($search) {
-                $query->where('file_name', 'like', "%{$search}%");
-            })
-            ->latest()
-            ->get();
-
-        return MedicalFileResource::collection($files);
     }
 
-    /**
-     * Lab Reports
-     */
-    public function labReports(Request $request)
-    {
-        $user = $request->user();
+    public function labReports(Request $request): JsonResponse {
+        try {
+            $reports = $this->medicalFileService
+                ->getLabReports(
+                    patient: auth()->user()->patient,
+                    search: $request->query('search')
+                );
 
-        if (! $user->patient) {
-            return response()->json(['message' => 'Unauthorized'], 403);
+            return ApiResponse::success(
+                message: 'Lab reports retrieved successfully',
+                data: LabReportResource::collection($reports),
+                status: 200
+            );
+
+        } catch (\Exception $e) {
+            \Log::error('Error retrieving lab reports: '.$e->getMessage());
+
+            return ApiResponse::error(message: $e->getMessage(),status: $e->getCode() ?: 500);
         }
-
-        $patient = $user->patient;
-
-        $search = $request->query('search');
-
-        $reports = $patient->reports()
-            ->where('type', 'lab')
-            ->when($search, function ($query) use ($search) {
-                $query->where('file_name', 'like', "%{$search}%");
-            })
-            ->with(['patient.visits.doctor.user'])
-            ->latest()
-            ->get();
-
-        return LabReportResource::collection($reports);
     }
 
-    /**
-     * Radiology Reports
-     */
-    public function radiologyReports(Request $request)
-    {
-        $user = $request->user();
+    public function radiologyReports(Request $request): JsonResponse {
+        try {
+            $reports = $this->medicalFileService
+                ->getRadiologyReports(
+                    patient: auth()->user()->patient,
+                    search: $request->query('search')
+                );
 
-        if (! $user->patient) {
-            return response()->json(['message' => 'Unauthorized'], 403);
+            return ApiResponse::success(
+                message: 'Radiology reports retrieved successfully',
+                data: RadiologyReportResource::collection($reports),
+                status: 200
+            );
+
+        } catch (\Exception $e) {
+            \Log::error('Error retrieving radiology reports: '.$e->getMessage());
+
+            return ApiResponse::error(message: $e->getMessage(),status: $e->getCode() ?: 500);
         }
-
-        $patient = $user->patient;
-
-        $search = $request->query('search');
-
-        $reports = $patient->reports()
-            ->where('type', 'radiology')
-            ->when($search, function ($query) use ($search) {
-                $query->where('file_name', 'like', "%{$search}%");
-            })
-            ->latest()
-            ->get();
-
-        return RadiologyReportResource::collection($reports);
     }
 
-    /**
+    public function update(UpdateProfileRequest $request): JsonResponse {
+
+    try {
+
+        $data = $this->medicalFileService->updateProfile(
+                user: auth()->user(),
+                data: $request->validated()
+            );
+
+        return ApiResponse::success(
+            message: 'Profile updated successfully',
+            data: $data,
+            status: 200
+        );
+
+    } catch (\Exception $e) {
+        \Log::error('Error updating profile: '.$e->getMessage(),['user_id' => auth()->id(),]);
+
+        return ApiResponse::error(
+            message: 'An error occurred while updating profile.',
+            status: $e->getCode() ?: 500
+        );
+    }
+}
+       /**
      * Medications
      */
     public function medications(Request $request)
@@ -161,23 +177,4 @@ class MedicalFileController extends Controller
         return TimelineResource::collection($timeline);
     }
 
-    public function update(Request $request)
-    {
-        $user = $request->user();
-        $validated = $request->validate([
-            'email' => 'sometimes|email|unique:users,email,'.$user->id,
-            'phone' => 'sometimes|string|unique:users,phone,'.$user->id.'|max:20',
-        ]);
-        $user->update($validated);
-
-        return ApiResponse::success(
-            message: 'Profile updated successfully',
-            data: [
-                'name' => $user->name,
-                'email' => $user->email,
-                'phone' => $user->phone,
-            ],
-            statusCode: 200
-        );
-    }
 }

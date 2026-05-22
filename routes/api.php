@@ -69,6 +69,13 @@ Route::prefix('v1')->group(function () {
         Route::post('charge', 'store')->name('charge');
         Route::get('transactions', 'index')->name('transactions');
     });
+    
+    Route::controller(MedicalFileController::class)->middleware('auth:sanctum')->prefix('patient')->as('patient.')->group(function () {
+        Route::get('medical-history', 'medicalHistoryFiles')->name('medical-history');
+        Route::get('radiology-reports', 'radiologyReports')->name('radiology-reports');
+        Route::get('lab-reports','labReports')->name('lab-reports');
+        Route::put('profile',  'update')->name('profile.update');
+    });
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/next-visit', [VisitController::class, 'show'])->name('next-visit');
@@ -135,14 +142,13 @@ Route::get('/payment-cancel', function () {
     return response()->json(['message' => 'Payment cancelled.']);
 })->name('payment.cancel');
 
+
+
+
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/patient/medical-history', [MedicalFileController::class, 'medicalHistoryFiles']);
-    Route::get('/patient/lab-reports', [MedicalFileController::class, 'labReports']);
-    Route::get('/patient/radiology-reports', [MedicalFileController::class, 'radiologyReports']);
     Route::get('/patient/medications', [MedicalFileController::class, 'medications']);
     Route::get('/patient/timeline', [MedicalFileController::class, 'timeline']);
     Route::get('/patient/notifications', [FlutterNotificationController::class, 'index']);
-    Route::put('/patient/profile', [MedicalFileController::class, 'update']);
 });
 
 Broadcast::routes(['middleware' => ['auth:sanctum']]);
