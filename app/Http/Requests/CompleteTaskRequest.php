@@ -9,19 +9,7 @@ class CompleteTaskRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        $task = Task::find($this->route('task'));
-
-        $patient = auth()->user()->patient;
-
-        if (! $task || ! $patient) {
-            return false;
-        }
-
-        return $task->patient_id === $patient->id;
-    }
-
-    public function rules(): array
-    {
-        return [];
+        $task = $this->route('task');
+        return $task->visit?->patient_id === $this->user()->patient->id;
     }
 }

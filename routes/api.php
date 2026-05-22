@@ -74,6 +74,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/next-visit', [VisitController::class, 'show'])->name('next-visit');
         Route::get('/tasks', [TaskController::class, 'index'])->name('tasks');
         Route::get('/tasks/{task}', [TaskController::class, 'show'])->name('tasks.show');
+        Route::patch('/tasks/{task}/complete', [TaskController::class, 'complete'])->name('tasks.complete');
         Route::get('/patients/{patient}/overview', [PatientController::class, 'overview'])->name('patients.overview');
         Route::delete('/patients/{patient}', [PatientController::class, 'destroy'])->name('patients.destroy');
         Route::get('/dashboard/summary', [DashboardController::class, 'summary'])->name('dashboard.summary');

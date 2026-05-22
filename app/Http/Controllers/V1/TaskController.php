@@ -79,19 +79,17 @@ class TaskController extends Controller
         }
     }
 
-    public function complete(CompleteTaskRequest $request, $task)
+    public function complete(CompleteTaskRequest $request, Task $task)
     {
-        $task = Task::findOrFail($task);
         $task->update([
             'is_completed' => ! $task->is_completed,
         ]);
-
+        $task->load('visit');
         return ApiResponse::success(
             message: $task->is_completed
                ? 'Task marked as completed'
                : 'Task marked as uncompleted',
             data: new TaskResource($task),
-            statusCode: 200
         );
     }
 }
