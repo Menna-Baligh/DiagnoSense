@@ -86,10 +86,10 @@ trait LogsActivity
             'changeable_id' => $this->id,
             'action' => strtolower(class_basename($this)).'_'.$event,
             'description' => $this->generateDescription(
-            $event,
-            $formattedChanges
+                $event,
+                $formattedChanges
             ),
-               'changes' => $formattedChanges ?: null,
+            'changes' => $formattedChanges ?: null,
         ]);
     }
 
