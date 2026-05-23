@@ -13,30 +13,8 @@ class MedicationListResource extends JsonResource
             'name' => $this->name,
             'dosage' => $this->dosage,
             'frequency' => $this->frequency,
-            'status' => $this->getStatus(),
+            'duration' => $this->duration ?? 'N/A',
         ];
     }
 
-    private function getStatus()
-    {
-        $duration = trim(strtolower($this->dosage ?? ''));
-
-        if (! $duration) {
-            return 'ACTIVE';
-        }
-
-        $days = 0;
-
-        if (str_contains($duration, 'week')) {
-            $days = 7;
-        } elseif (str_contains($duration, 'month')) {
-            $days = 30;
-        } elseif (str_contains($duration, 'day')) {
-            $days = 1;
-        }
-
-        $endDate = Carbon::parse($this->created_at)->addDays($days);
-
-        return now()->gte($endDate) ? 'COMPLETED' : 'ACTIVE';
-    }
 }
