@@ -953,6 +953,68 @@ paths:
           description: 'Validation Error'
         500:
           description: 'Internal Server Error'
+    delete:
+      summary: 'Delete Doctor Account'
+      operationId: deleteApiV1DoctorsProfileDestroy
+      description: 'Permanently deletes the authenticated doctor profile, invalidates all active Sanctum authentication tokens, and removes the associated user record. Requires valid password confirmation for security verification.'
+      tags:
+        - Doctor Profile
+      security:
+        - sanctum: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - password
+                - password_confirmation
+              properties:
+                password:
+                  type: string
+                  format: password
+                  example: "SecretPassword123"
+                password_confirmation:
+                  type: string
+                  format: password
+                  example: "SecretPassword123"
+      responses:
+        200:
+          description: 'Account and associated clinical profile rows deleted successfully.'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                message: "Account deleted successfully"
+                data: null
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        422:
+          description: 'Validation Error - Incorrect password hash or missing confirmation fields.'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "The given data was invalid."
+                errors:
+                  password:
+                    - "The password security verification failed."
+                    - "The password confirmation does not match."
+        500:
+          description: 'Internal Server Error'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "Failed to fetch doctor profile"
+                data: null
 
   '/api/v1/doctors/change-password':
     patch:
@@ -2686,6 +2748,78 @@ paths:
                   success: false
                   message: "Failed to retrieve top diseases"
                   data: null
+  '/api/v1/doctors/profile/edit':
+    get:
+      summary: 'Get Authenticated Doctor Profile'
+      operationId: getApiV1DoctorsProfileEdit
+      description: 'Retrieves the secure profile details of the currently authenticated doctor using their Sanctum token session. Returns account configuration parameters like name, contact channel, and clinical specialization.'
+      tags:
+        - Doctor Profile
+      security:
+        - sanctum: []
+      responses:
+        200:
+          description: 'Doctor profile data fetched successfully.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Doctor Information"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 12
+                      name:
+                        type: string
+                        example: "Dr. Menna Baligh"
+                      contact:
+                        type: string
+                        example: "menna.backend@example.com"
+                      speciality:
+                        type: string
+                        example: "Cardiology"
+              examples:
+                StandardDoctorProfile:
+                  summary: 'Complete Profile Payload'
+                  value:
+                    success: true
+                    message: "Doctor Information"
+                    data:
+                      id: 12
+                      name: "Dr. Menna Baligh"
+                      contact: "menna.backend@example.com"
+                      speciality: "Cardiology"
+                UnassignedSpecialtyProfile:
+                  summary: 'Profile Missing Specialty Branch'
+                  value:
+                    success: true
+                    message: "Doctor Information"
+                    data:
+                      id: 15
+                      name: "Dr. Unknown Practitioner"
+                      contact: "+201012345678"
+                      speciality: "N/A"
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        500:
+          description: 'Internal Server Error'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "Failed to fetch doctor profile"
+                data: null
+
 
 
 components:
