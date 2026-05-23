@@ -406,20 +406,14 @@ class PatientService
         });
     }
 
-    public function getPatientEditData(int $doctorId, int $patientId): ?Patient
+    public function getPatientEditData(Doctor $doctor, Patient $patient): ?Patient
     {
 
-        return Patient::query()
-            ->where('patients.id', $patientId)
-            ->whereHas('doctors', function ($query) use ($doctorId) {
-                $query->where('doctors.id', $doctorId);
-            })
-            ->with([
+        return $patient->with([
                 'user',
                 'medicalHistory',
                 'reports',
-            ])
-            ->first();
+            ])->first();
     }
 
     public function updatePatientStatus(int $doctorId, Patient $patient, string $status): array

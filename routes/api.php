@@ -52,6 +52,7 @@ Route::prefix('v1')->group(function () {
         Route::controller(PatientController::class)->group(function () {
             Route::get('', 'index')->name('index');
             Route::post('', 'store')->name('store')->middleware('check-ai-access');
+            Route::get('{patient}/edit', [PatientController::class, 'edit'])->name('edit');
             Route::middleware('can:view,patient')->group(function () {
                 Route::get('/{patient}/decision-support', 'getDecisionSupport')->name('decision-support');
                 Route::get('/{patient}/comparative-analysis', 'getComparativeAnalysis')->name('comparative-analysis');
@@ -74,7 +75,6 @@ Route::prefix('v1')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/patients/{patientId}/overview', [PatientController::class, 'overview'])->name('patients.overview');
         Route::delete('/patients/{patientId}', [PatientController::class, 'destroy'])->name('patients.destroy');
-        Route::get('/patients/{patientId}', [PatientController::class, 'edit'])->name('patients.edit');
         Route::delete('/key-points/{keyPointId}', [KeyPointController::class, 'destroy'])->name('key-points.destroy');
         Route::patch('/key-points/{keyPointId}', [KeyPointController::class, 'update'])->name('key-points.update');
         Route::get('/patients/{patient}/activities', [PatientController::class, 'activityHistory'])->name('patients.activities');

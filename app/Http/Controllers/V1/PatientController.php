@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\V1;
 
 use App\Helpers\ApiResponse;
+use App\Http\Requests\GetPatientDataForUpdateRequest;
 use App\Http\Requests\Patient\PatientListRequest;
 use App\Http\Requests\Patient\StorePatientRequest;
 use App\Http\Requests\UpdatePatientRequest;
@@ -187,22 +188,23 @@ class PatientController extends Controller
         }
     }
 
-    public function edit(int $patientId): JsonResponse
+    public function edit(GetPatientDataForUpdateRequest $request , Patient $patient): JsonResponse
     {
         try {
-            $doctorId = auth()->user()->doctor->id;
+            $doctor = auth()->user()->doctor;
 
-            $patient = $this->patientService->getPatientEditData($doctorId, $patientId);
+            $patient = $this->patientService->getPatientEditData($doctor, $patient);
 
             return ApiResponse::success(
                 message: 'Data retrieved successfully',
-                data: new PatientEditResource($patient), status: 200);
+                data: new PatientEditResource($patient)
+            );
 
         } catch (\Exception $e) {
 
-            \Log::error('Patient Edit Error: '.$e->getMessage(), ['id' => $patientId]);
+            \Log::error('Error retrieving patient data for edit: '.$e->getMessage(), ['id' => $patient->id]);
 
-            return ApiResponse::error(message: 'Failed to retrieve patient data.'.$e->getMessage(), status: 500);
+           return ApiResponse::error(message: 'An error occurred while retrieving patient data for edit.', status: 500);
         }
     }
 
