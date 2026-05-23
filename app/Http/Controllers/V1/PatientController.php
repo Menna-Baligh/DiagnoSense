@@ -213,21 +213,16 @@ class PatientController extends Controller
 
         try {
 
-            $doctorId = auth()->user()->doctor->id;
+            $doctor = auth()->user()->doctor;
 
-            $data = $this->patientService->updatePatientStatus($doctorId, $patient, $request->validated()['status']);
+            $this->patientService->updatePatientStatus($doctor, $patient, $request->validated()['status']);
 
-            return ApiResponse::success(
-                message: 'Patient status updated successfully',
-                data: $data,
-                status: 200
-            );
+            return ApiResponse::success(message: 'Patient status updated successfully');
 
         } catch (\Exception $e) {
 
             \Log::error('Patient Status Update Error: '.$e->getMessage(), ['id' => $patient->id]);
-
-            return ApiResponse::error(message: $e->getMessage(), status: $e->getCode() ?: 500);
+            return ApiResponse::error(message: 'Failed to update patient status.', status: 500);
         }
     }
 

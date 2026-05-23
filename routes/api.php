@@ -52,12 +52,13 @@ Route::prefix('v1')->group(function () {
         Route::controller(PatientController::class)->group(function () {
             Route::get('', 'index')->name('index');
             Route::post('', 'store')->name('store')->middleware('check-ai-access');
-            Route::get('{patient}/edit', [PatientController::class, 'edit'])->name('edit');
+            Route::get('{patient}/edit', 'edit')->name('edit');
             Route::middleware('can:view,patient')->group(function () {
                 Route::get('/{patient}/decision-support', 'getDecisionSupport')->name('decision-support');
                 Route::get('/{patient}/comparative-analysis', 'getComparativeAnalysis')->name('comparative-analysis');
             });
             Route::patch('/{patient}', 'update')->name('update');
+            Route::patch('{patient}/status','updateStatus')->name('update-status');
             Route::post('/{patient}/re-analyze', 'triggerAiAnalysis')->name('re-analyze')->middleware('check-ai-access');
 
         });
@@ -79,7 +80,6 @@ Route::prefix('v1')->group(function () {
         Route::patch('/key-points/{keyPointId}', [KeyPointController::class, 'update'])->name('key-points.update');
         Route::get('/patients/{patient}/activities', [PatientController::class, 'activityHistory'])->name('patients.activities');
 
-        Route::patch('/patients/{patient}/status', [PatientController::class, 'updateStatus'])->name('patients.update-status');
         Route::controller(NotificationController::class)->prefix('notifications')->as('notifications.')->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('/unread-count', 'unreadCount')->name('unreadCount');
