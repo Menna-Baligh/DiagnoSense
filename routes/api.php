@@ -16,6 +16,7 @@ use App\Http\Controllers\V1\MedicationController;
 use App\Http\Controllers\V1\NotificationController;
 use App\Http\Controllers\V1\PatientController;
 use App\Http\Controllers\V1\PaymobWebhookController;
+use App\Http\Controllers\V1\PlanController;
 use App\Http\Controllers\V1\SubscriptionController;
 use App\Http\Controllers\V1\SupportController;
 use App\Http\Controllers\V1\TaskController;
@@ -72,7 +73,7 @@ Route::prefix('v1')->group(function () {
     Route::controller(SubscriptionController::class)->middleware('auth:sanctum')->prefix('subscription')->as('subscription.')->group(function () {
         Route::post('subscribe', 'subscribe');
         Route::post('pay-per-use', 'switchToPayPerUse')->name('pay-per-use');
-        Route::get('plans', 'index')->name('plans');
+        Route::get('plans', PlanController::class)->name('plans.index');
         Route::get('current', 'current');
         Route::post('cancel', 'cancel');
     });

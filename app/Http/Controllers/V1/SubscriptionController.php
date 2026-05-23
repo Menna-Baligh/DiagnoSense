@@ -16,12 +16,9 @@ use Illuminate\Http\Request;
 
 class SubscriptionController extends Controller
 {
-    protected $subscriptionService;
-
-    public function __construct(SubscriptionService $service)
-    {
-        $this->subscriptionService = $service;
-    }
+    public function __construct(
+        protected SubscriptionService $subscriptionService
+    ) {}
 
     public function subscribe(SubscribePlanRequest $request)
     {
@@ -88,26 +85,7 @@ class SubscriptionController extends Controller
         }
     }
 
-    public function index(): JsonResponse
-    {
-        try {
-            $plans = $this->subscriptionService->getAllPlans();
-
-            return ApiResponse::success(
-                message: 'Available plans retrieved successfully',
-                data: PlanResource::collection($plans),
-                status: 200
-            );
-
-        } catch (\Exception $e) {
-            \Log::error('Error retrieving plans: '.$e->getMessage());
-
-            return ApiResponse::error(
-                message: 'An error occurred while retrieving plans.',
-                status: 500
-            );
-        }
-    }
+    
 
     public function current(Request $request)
     {

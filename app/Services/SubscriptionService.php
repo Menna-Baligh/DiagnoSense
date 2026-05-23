@@ -111,8 +111,4 @@ class SubscriptionService
         throw new BillingValidationException(__('No active subscription found. Please subscribe to a plan.'), 403);
     }
 
-    public function getAllPlans(): Collection
-    {
-        return Plan::all();
-    }
 }
