@@ -16,6 +16,7 @@ class Plan extends Model
         'duration_days',
         'features',
     ];
+
     protected $casts = [
         'features' => 'array',
     ];

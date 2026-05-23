@@ -6,7 +6,6 @@ use App\Exceptions\BillingValidationException;
 use App\Models\Doctor;
 use App\Models\Plan;
 use App\Notifications\PayPerUseActivated;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
 class SubscriptionService
@@ -110,5 +109,4 @@ class SubscriptionService
         }
         throw new BillingValidationException(__('No active subscription found. Please subscribe to a plan.'), 403);
     }
-
 }

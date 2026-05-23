@@ -12,6 +12,7 @@ class PlanController extends Controller
     {
         try {
             $plansResource = $getAvailablePlansAction->execute();
+
             return ApiResponse::success(
                 message: 'Available plans retrieved successfully',
                 data: $plansResource,
@@ -19,6 +20,7 @@ class PlanController extends Controller
 
         } catch (\Exception $e) {
             \Log::error('Error retrieving plans: '.$e->getMessage());
+
             return ApiResponse::error(
                 message: 'An error occurred while retrieving plans.',
                 status: 500
