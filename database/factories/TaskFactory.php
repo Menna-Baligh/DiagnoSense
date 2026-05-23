@@ -7,7 +7,7 @@ use App\Models\Visit;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Task>
+ * @extends Factory<Task>
  */
 class TaskFactory extends Factory
 {
@@ -28,7 +28,7 @@ class TaskFactory extends Factory
                 'Measure fasting blood sugar',
                 'Drink 3 liters of water daily',
                 'Do a complete blood count (CBC) test',
-                'Follow up after two weeks'
+                'Follow up after two weeks',
             ]),
             'description' => fake()->sentence(),
             'notes' => fake()->optional()->paragraph(),

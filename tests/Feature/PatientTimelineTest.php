@@ -1,8 +1,9 @@
 <?php
 
+use App\Models\Task;
 use App\Models\User;
 use App\Models\Visit;
-use App\Models\Task;
+
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\getJson;
 
@@ -38,8 +39,8 @@ it('returns a successfully combined and sorted timeline of visits and tasks', fu
         ->assertJsonPath('message', 'Timeline retrieved successfully')
         ->assertJsonStructure([
             'data' => [
-                '*' => ['type', 'title', 'description', 'doctor', 'day', 'month', 'year']
-            ]
+                '*' => ['type', 'title', 'description', 'doctor', 'day', 'month', 'year'],
+            ],
         ]);
 
     $data = $response->json('data');

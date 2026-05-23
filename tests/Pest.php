@@ -45,7 +45,7 @@ pest()->extend(TestCase::class)
 |
 */
 
-function createUserWithType(string $type, string $contact, string $name = null): User
+function createUserWithType(string $type, string $contact, ?string $name = null): User
 {
     $user = User::factory()->create([
         'type' => $type,
