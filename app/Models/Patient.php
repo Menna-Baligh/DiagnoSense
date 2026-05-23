@@ -77,7 +77,6 @@ class Patient extends Model
         return $this->hasOne(related: Visit::class)->latestOfMany();
     }
 
-
     public function medications(): HasManyThrough
     {
         return $this->hasManyThrough(

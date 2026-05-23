@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Factories;
 
 use App\Models\Medication;
@@ -6,7 +7,7 @@ use App\Models\Visit;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Medication>
+ * @extends Factory<Medication>
  */
 class MedicationFactory extends Factory
 {
@@ -27,25 +28,25 @@ class MedicationFactory extends Factory
                 'Augmentin 1g',
                 'Brufen 400mg',
                 'Catafast 50mg',
-                'Amaryl 2mg'
+                'Amaryl 2mg',
             ]),
             'dosage' => fake()->randomElement([
                 '1 tablet',
                 '2 tablets',
                 '5ml syrup',
-                '1 capsule'
+                '1 capsule',
             ]),
             'frequency' => fake()->randomElement([
                 'Once daily',
                 'Twice per day',
                 'Three times daily',
-                'Every 8 hours'
+                'Every 8 hours',
             ]),
             'duration' => fake()->randomElement([
                 '5 days',
                 '1 week',
                 '10 days',
-                '1 month'
+                '1 month',
             ]),
         ];
     }

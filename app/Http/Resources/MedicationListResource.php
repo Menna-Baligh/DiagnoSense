@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class MedicationListResource extends JsonResource
@@ -16,5 +15,4 @@ class MedicationListResource extends JsonResource
             'duration' => $this->duration ?? 'N/A',
         ];
     }
-
 }

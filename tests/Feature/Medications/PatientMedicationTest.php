@@ -1,9 +1,10 @@
 <?php
 
-use App\Models\User;
-use App\Models\Visit;
 use App\Models\Doctor;
 use App\Models\Medication;
+use App\Models\User;
+use App\Models\Visit;
+
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\getJson;
 
@@ -45,8 +46,8 @@ it('returns a successful response with the correct medications list and structur
         ->assertJsonPath('message', 'Patient medications retrieved successfully')
         ->assertJsonStructure([
             'data' => [
-                '*' => ['name', 'dosage', 'frequency', 'duration']
-            ]
+                '*' => ['name', 'dosage', 'frequency', 'duration'],
+            ],
         ])
         ->assertJsonFragment([
             'name' => 'Panadol',

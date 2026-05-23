@@ -21,9 +21,11 @@ class MedicationController
 
     public function index(Request $request): JsonResponse
     {
-        try{
+        try {
             $patient = $request->user()->patient;
-            if (!$patient) return ApiResponse::error(message: 'No patient profile found for the user.', status: 404);
+            if (! $patient) {
+                return ApiResponse::error(message: 'No patient profile found for the user.', status: 404);
+            }
             $medications = $this->medicationService->getPatientMedications($patient);
 
             return ApiResponse::success(

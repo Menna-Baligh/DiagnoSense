@@ -16,6 +16,7 @@ class MedicationService
             ->latest()
             ->get();
     }
+
     public function store(Visit $visit, array $data): Medication
     {
         return (new StoreMedicationAction)->execute($visit, $data);
