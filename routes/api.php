@@ -44,9 +44,6 @@ Route::prefix('v1')->group(function () {
             Route::post('/logout/{type}', [AuthenticatedController::class, 'logout'])->name('logout');
             Route::post('/verify-contact', [ContactVerificationController::class, 'verifyContact'])->name('verify-contact');
             Route::get('/resend-otp', [ContactVerificationController::class, 'resendOtp'])->name('resend-otp');
-            Route::post('/logout/{type}', [AuthenticatedController::class, 'logout'])->name('logout');
-            Route::post('/verify-contact', [ContactVerificationController::class, 'verifyContact']);
-            Route::get('/resend-otp', [ContactVerificationController::class, 'resendOtp']);
         });
     });
 
