@@ -9,7 +9,6 @@ use App\Http\Controllers\V1\Auth\SocialAuthController;
 use App\Http\Controllers\V1\ChatbotController;
 use App\Http\Controllers\V1\DashboardController;
 use App\Http\Controllers\V1\Doctor\DoctorProfileController;
-use App\Http\Controllers\V1\DoctorController;
 use App\Http\Controllers\V1\FlutterNotificationController;
 use App\Http\Controllers\V1\KeyPointController;
 use App\Http\Controllers\V1\MedicalFileController;
@@ -22,7 +21,6 @@ use App\Http\Controllers\V1\SupportController;
 use App\Http\Controllers\V1\TaskController;
 use App\Http\Controllers\V1\VisitController;
 use App\Http\Controllers\V1\WalletController;
-use Illuminate\Http\Request;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
@@ -97,9 +95,11 @@ Route::prefix('v1')->group(function () {
             Route::patch('/read-all', 'readAll')->name('readAll');
             Route::delete('/clear-all', 'clearAll')->name('clearAll');
         });
-        Route::prefix('doctors')->group(function () {
-            Route::patch('/profile', [DoctorProfileController::class, 'update'])->name('doctor.profile.update');
-            Route::patch('/change-password', [DoctorProfileController::class, 'changePassword'])->name('doctor.password.update');
+        Route::controller(DoctorProfileController::class)->prefix('doctors')->group(function () {
+            Route::get('/profile/edit', 'edit')->name('doctor.profile.edit');
+            Route::patch('/profile', 'update')->name('doctor.profile.update');
+            Route::delete('/profile', 'destroy')->name('doctor.profile.destroy');
+            Route::patch('/change-password', 'changePassword')->name('doctor.password.update');
         });
         Route::apiResource('patients.visits', VisitController::class)->only(['index', 'store'])->shallow();
         Route::apiResource('visits.medications', MedicationController::class)->only(['store', 'destroy'])->shallow();
@@ -133,9 +133,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/patients/{patientId}', [PatientController::class, 'edit']);
     Route::post('/support', [SupportController::class, 'store']);
     Route::put('/patients/{patientId}', [PatientController::class, 'update']);
-    Route::get('/doctors/{doctorId}', [DoctorController::class, 'edit']);
-    Route::delete('/doctors/{doctorId}', [DoctorController::class, 'destroy']);
-    Route::patch('/change-password', [DoctorController::class, 'changePassword']);
     Route::get('/patients/{patientId}/comparative-analysis', [PatientController::class, 'getComparativeAnalysis']);
 });
 
