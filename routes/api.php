@@ -19,6 +19,7 @@ use App\Http\Controllers\V1\PaymobWebhookController;
 use App\Http\Controllers\V1\SubscriptionController;
 use App\Http\Controllers\V1\SupportController;
 use App\Http\Controllers\V1\TaskController;
+use App\Http\Controllers\V1\TimelineController;
 use App\Http\Controllers\V1\VisitController;
 use App\Http\Controllers\V1\WalletController;
 use Illuminate\Http\Request;
@@ -76,6 +77,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/tasks/{task}', [TaskController::class, 'show'])->name('tasks.show');
         Route::patch('/tasks/{task}/complete', [TaskController::class, 'complete'])->name('tasks.complete');
         Route::get('/medications', [MedicationController::class, 'index'])->name('medications.index');
+        Route::get('/timeline', TimelineController::class)->name('timeline.index');
         Route::get('/patients/{patient}/overview', [PatientController::class, 'overview'])->name('patients.overview');
         Route::delete('/patients/{patient}', [PatientController::class, 'destroy'])->name('patients.destroy');
         Route::get('/dashboard/summary', [DashboardController::class, 'summary'])->name('dashboard.summary');

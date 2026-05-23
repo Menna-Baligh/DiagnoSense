@@ -89,9 +89,16 @@ class Patient extends Model
         );
     }
 
-    public function tasks(): HasMany
+    public function tasks(): HasManyThrough
     {
-        return $this->hasMany(Task::class);
+        return $this->hasManyThrough(
+            Task::class,
+            Visit::class,
+            'patient_id',
+            'visit_id',
+            'id',
+            'id'
+        );
     }
 
     public function latestAiAnalysisResult(): HasOne
