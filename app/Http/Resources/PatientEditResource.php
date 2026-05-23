@@ -5,7 +5,6 @@ namespace App\Http\Resources;
 use App\Helpers\FileSystem;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Storage;
 
 class PatientEditResource extends JsonResource
 {
@@ -30,7 +29,7 @@ class PatientEditResource extends JsonResource
                 'id' => $report->id,
                 'type' => $report->type,
                 'name' => $report->file_name,
-               'url' => FileSystem::getTempUrl($report->file_path),
+                'url' => FileSystem::getTempUrl($report->file_path),
             ]),
         ];
     }

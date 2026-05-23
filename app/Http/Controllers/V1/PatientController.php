@@ -188,7 +188,7 @@ class PatientController extends Controller
         }
     }
 
-    public function edit(GetPatientDataForUpdateRequest $request , Patient $patient): JsonResponse
+    public function edit(GetPatientDataForUpdateRequest $request, Patient $patient): JsonResponse
     {
         try {
             $doctor = auth()->user()->doctor;
@@ -204,7 +204,7 @@ class PatientController extends Controller
 
             \Log::error('Error retrieving patient data for edit: '.$e->getMessage(), ['id' => $patient->id]);
 
-           return ApiResponse::error(message: 'An error occurred while retrieving patient data for edit.', status: 500);
+            return ApiResponse::error(message: 'An error occurred while retrieving patient data for edit.', status: 500);
         }
     }
 
