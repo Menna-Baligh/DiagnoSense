@@ -2,6 +2,7 @@
 
 use App\Models\Plan;
 use Illuminate\Support\Facades\Notification;
+
 use function Pest\Laravel\actingAs;
 
 beforeEach(function () {
