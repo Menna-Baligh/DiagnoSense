@@ -2,22 +2,23 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Patient;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateKeyPointRequest extends FormRequest
 {
+    public function authorize(): bool
+    {
+        $patient =$this->route('patient');
+        $keyPoint = $this->route('keyPoint');
+        return $patient->aiAnalysisResults()->whereHas('keyPoints', function ($query) use ($keyPoint) {
+            $query->where('id', $keyPoint->id);
+        })->exists();
+    }
     public function rules(): array
     {
         return [
             'insight' => 'required|string',
-        ];
-    }
-
-    public function messages(): array
-    {
-        return [
-            'insight.required' => 'The insight field is required.',
-            'insight.string' => 'The insight must be a string.',
         ];
     }
 }

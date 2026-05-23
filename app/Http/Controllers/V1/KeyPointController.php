@@ -51,23 +51,17 @@ class KeyPointController extends Controller
         }
     }
 
-    public function update(UpdateKeyPointRequest $request, KeyPoint $keyPointId): JsonResponse
+    public function update(UpdateKeyPointRequest $request, Patient $patient, KeyPoint $keyPoint): JsonResponse
     {
         try {
-            $data = $this->keyPointService->updateKeyPoint($keyPointId, $request->validated());
+            $this->keyPointService->updateKeyPoint($keyPoint, $request->validated());
 
-            return ApiResponse::success(
-                message: 'Key point updated successfully',
-                data: $data,
-                status: 200
-            );
+            return ApiResponse::success(message: 'Key point updated successfully');
 
         } catch (\Exception $e) {
-            \Log::error('Error updating key point: '.$e->getMessage(), ['id' => $keyPointId->id]
-            );
+            \Log::error('Error updating key point: '.$e->getMessage(), ['id' => $keyPoint->id]);
 
-            return ApiResponse::error(
-                message: $e->getMessage(), status: $e->getCode() ?: 500);
+            return ApiResponse::error(message: 'Error while updating key point', status: 500);
         }
     }
 

@@ -115,28 +115,8 @@ class KeyPointService
         $keyPointId->delete();
     }
 
-    public function updateKeyPoint(KeyPoint $keyPointId, array $data): array
+    public function updateKeyPoint(KeyPoint $keyPoint, array $data): void
     {
-
-        $isAuthorized = $keyPointId->aiAnalysisResult
-            ->patient
-            ->doctors()
-            ->where('doctor_id', auth()->user()->doctor->id)
-            ->exists();
-
-        if (! $isAuthorized) {
-
-            throw new \Exception(
-                'Unauthorized access: You do not have permission for this action.',
-                403
-            );
-        }
-
-        $keyPointId->update(['insight' => $data['insight']]);
-
-        return [
-            'id' => $keyPointId->id,
-            'insight' => $keyPointId->insight,
-        ];
+        $keyPoint->update(['insight' => $data['insight']]);
     }
 }
