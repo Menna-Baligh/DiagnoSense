@@ -13,6 +13,7 @@ use App\Http\Controllers\V1\FlutterNotificationController;
 use App\Http\Controllers\V1\KeyPointController;
 use App\Http\Controllers\V1\MedicalFileController;
 use App\Http\Controllers\V1\MedicationController;
+use App\Http\Controllers\V1\MobileNotificationController;
 use App\Http\Controllers\V1\NotificationController;
 use App\Http\Controllers\V1\PatientController;
 use App\Http\Controllers\V1\PaymobWebhookController;
@@ -78,6 +79,8 @@ Route::prefix('v1')->group(function () {
         Route::patch('/tasks/{task}/complete', [TaskController::class, 'complete'])->name('tasks.complete');
         Route::get('/medications', [MedicationController::class, 'index'])->name('medications.index');
         Route::get('/timeline', TimelineController::class)->name('timeline.index');
+        Route::patch('/fcm-token', [PatientController::class, 'updateFcmToken'])->name('patients.fcm-token');
+        Route::get('/mobile-notifications', MobileNotificationController::class)->name('notifications.index');
         Route::get('/patients/{patient}/overview', [PatientController::class, 'overview'])->name('patients.overview');
         Route::delete('/patients/{patient}', [PatientController::class, 'destroy'])->name('patients.destroy');
         Route::get('/dashboard/summary', [DashboardController::class, 'summary'])->name('dashboard.summary');
