@@ -2819,6 +2819,99 @@ paths:
                 success: false
                 message: "Failed to fetch doctor profile"
                 data: null
+  '/api/v1/patients/{patient}/chatbot/ask':
+    post:
+      summary: 'Ask Patient Chatbot (DiagnoBot)'
+      operationId: postApiV1PatientsChatbotAsk
+      description: 'Queries the AI chatbot regarding a specific patient clinical record data. If the patient data files have changed or are not yet ingested into the vector storage ecosystem, it triggers a background job processing routine and gracefully flags a 202 status.'
+      tags:
+        - Patient Profile
+      security:
+        - sanctum: []
+      parameters:
+        - in: path
+          name: patient
+          required: true
+          description: 'The secure primary row ID of the patient.'
+          schema:
+            type: integer
+          example: 48
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - question
+              properties:
+                question:
+                  type: string
+                  minLength: 3
+                  description: 'The clinical question or query directed at the patient analytical profile records.'
+                  example: "Does the patient have any critical cardiovascular risk indications?"
+      responses:
+        200:
+          description: 'Success - Chatbot query response retrieved successfully.'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                message: "Answer from chatbot"
+                data: "Based on the latest lab report findings, the patient shows a high risk of hypertensive episodes due to elevated lipid values."
+        202:
+          description: 'Accepted - Patient data is being prepared and ingested asynchronously.'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                message: "Answer from chatbot"
+                data: "Preparing patient data..."
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          description: 'Forbidden - Feature premium gating constraint or patient access ownership mismatch.'
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                PremiumGateError:
+                  summary: 'Subscription Tier Conflict'
+                  value:
+                    success: false
+                    message: "You need to upgrade to Premium to use the chatbot"
+                UnauthorizedPatientAccess:
+                  summary: 'Patient Ownership Mismatch'
+                  value:
+                    success: false
+                    message: "This action is unauthorized."
+        422:
+          description: 'Validation Error - Missing question or text length below structural minimum constraints.'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "The given data was invalid."
+                errors:
+                  question:
+                    - "The question field is required."
+        500:
+          description: 'Internal Server Error - AI Gateway handshake exceptions or downstream pipeline failures.'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "Failed to get answer from chatbot"
+                data: null
 
 
 
