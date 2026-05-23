@@ -96,23 +96,9 @@ class KeyPointService
         ]);
     }
 
-    public function deleteKeyPoint(KeyPoint $keyPointId): void
+    public function deleteKeyPoint(KeyPoint $keyPoint): void
     {
-        $isAuthorized = $keyPointId->aiAnalysisResult
-            ->patient
-            ->doctors()
-            ->where('doctor_id', auth()->user()->doctor->id)
-            ->exists();
-
-        if (! $isAuthorized) {
-
-            throw new \Exception(
-                'Unauthorized access: You do not have permission for this action.',
-                403
-            );
-        }
-
-        $keyPointId->delete();
+        $keyPoint->delete();
     }
 
     public function updateKeyPoint(KeyPoint $keyPoint, array $data): void

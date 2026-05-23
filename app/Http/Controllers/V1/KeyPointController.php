@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\V1;
 
 use App\Helpers\ApiResponse;
+use App\Http\Requests\DeleteKeyInfoRequest;
 use App\Http\Requests\StoreManualNoteRequest;
 use App\Http\Requests\UpdateKeyPointRequest;
 use App\Http\Resources\KeyPointResource;
@@ -34,20 +35,16 @@ class KeyPointController extends Controller
         }
     }
 
-    public function destroy(KeyPoint $keyPointId): JsonResponse
+    public function destroy(DeleteKeyInfoRequest $request, Patient $patient, KeyPoint $keyPoint): JsonResponse
     {
         try {
-            $this->keyPointService->deleteKeyPoint($keyPointId);
+            $this->keyPointService->deleteKeyPoint($keyPoint);
 
-            return ApiResponse::success(
-                message: 'Key point deleted successfully',
-                status: 200
-            );
+            return ApiResponse::success(message: 'Key point deleted successfully');
         } catch (\Exception $e) {
-            \Log::error('Error deleting key point: '.$e->getMessage(), ['id' => $keyPointId->id]);
+            \Log::error('Error deleting key point: '.$e->getMessage(), ['id' => $keyPoint->id]);
 
-            return ApiResponse::error(message: $e->getMessage(), status: $e->getCode() ?: 500
-            );
+            return ApiResponse::error(message: 'Error while deleting key point', status: 500);
         }
     }
 
