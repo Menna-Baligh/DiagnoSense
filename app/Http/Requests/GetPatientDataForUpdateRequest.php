@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class GetPatientDataForUpdateRequest extends FormRequest
@@ -13,10 +12,11 @@ class GetPatientDataForUpdateRequest extends FormRequest
     public function authorize(): bool
     {
         $currentDoctor = auth()->user()->doctor;
-        if(! $currentDoctor) {
+        if (! $currentDoctor) {
             return false;
         }
         $patient = $this->route('patient');
+
         return $currentDoctor->patients()->where('patients.id', $patient->id)->exists();
     }
 }

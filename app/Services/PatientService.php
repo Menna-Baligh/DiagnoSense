@@ -410,10 +410,10 @@ class PatientService
     {
 
         return $patient->with([
-                'user',
-                'medicalHistory',
-                'reports',
-            ])->first();
+            'user',
+            'medicalHistory',
+            'reports',
+        ])->first();
     }
 
     public function updatePatientStatus(int $doctorId, Patient $patient, string $status): array
