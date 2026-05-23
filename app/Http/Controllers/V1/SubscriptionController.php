@@ -64,28 +64,26 @@ class SubscriptionController extends Controller
 
     }
 
-    public function switchToPayPerUse(): JsonResponse
+    public function switchToPayPerUse(Request $request): JsonResponse
     {
         try {
+            $doctor = $request->user()->doctor;
+            if (!$doctor) return ApiResponse::error(message:'Doctor profile not found.',status: 404);
 
-            $doctor = auth()->user()->doctor;
-
-            $message = $this->subscriptionService
-                ->switchToPayPerUseMode($doctor);
+            $message = $this->subscriptionService->switchToPayPerUseMode($doctor);
 
             return ApiResponse::success(
                 message: $message,
-                status: 200
             );
 
         } catch (\Exception $e) {
-            \Log::error('Error switching to pay per use mode: '.$e->getMessage(), ['doctor_id' => auth()->user()->doctor->id]);
+            \Log::error('Error switching to pay per use mode: '.$e->getMessage(), ['user_id' => auth()->id()]);
 
             return ApiResponse::error(message: 'An error occurred while switching to pay-per-use mode.', status: 500);
         }
     }
 
-    
+
 
     public function current(Request $request)
     {

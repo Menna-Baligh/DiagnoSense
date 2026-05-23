@@ -51,15 +51,23 @@ class SubscriptionService
     public function switchToPayPerUseMode(Doctor $doctor): string
     {
 
-        $doctor->update(['billing_mode' => 'pay-per-use']);
+        DB::transaction(function () use ($doctor) {
+            $doctor->update([
+                'billing_mode' => 'pay-per-use'
+            ]);
 
-        $doctor->subscriptions()->update([
-            'status' => 'cancelled',
-        ]);
+            $doctor->subscriptions()
+                ->where('status', 'active')
+                ->update([
+                    'status' => 'cancelled',
+                ]);
+        });
 
-        $doctor->notify(new PayPerUseActivated);
+        DB::afterCommit(function () use ($doctor) {
+            $doctor->notify(new PayPerUseActivated);
+        });
 
-        return 'Switched to Pay-Per-Use mode. E£ 25 will be charged per file.';
+        return "Switched to Pay-Per-Use mode. ".Plan::PAY_PER_USE_PRICE."EGP will be charged per file.";
     }
 
     public function validateAiAccess(Doctor $doctor): void
