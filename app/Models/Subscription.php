@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Subscription extends Model
 {
@@ -22,17 +24,17 @@ class Subscription extends Model
         'expires_at' => 'datetime',
     ];
 
-    public function doctor()
+    public function doctor(): BelongsTo
     {
         return $this->belongsTo(Doctor::class);
     }
 
-    public function plan()
+    public function plan(): BelongsTo
     {
         return $this->belongsTo(Plan::class);
     }
 
-    public function transactions()
+    public function transactions(): HasMany
     {
         return $this->hasMany(Transactions::class);
     }
@@ -42,7 +44,7 @@ class Subscription extends Model
         return $this->expires_at->isPast();
     }
 
-    protected static function booted()
+    protected static function booted(): void
     {
         static::retrieved(function ($subscription) {
             if ($subscription->status === 'active' && $subscription->is_expired) {
