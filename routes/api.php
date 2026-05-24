@@ -15,6 +15,7 @@ use App\Http\Controllers\V1\MedicalFileController;
 use App\Http\Controllers\V1\MedicationController;
 use App\Http\Controllers\V1\NotificationController;
 use App\Http\Controllers\V1\PatientController;
+use App\Http\Controllers\V1\PatientProfileController;
 use App\Http\Controllers\V1\PaymobWebhookController;
 use App\Http\Controllers\V1\SubscriptionController;
 use App\Http\Controllers\V1\SupportController;
@@ -74,8 +75,8 @@ Route::prefix('v1')->group(function () {
         Route::get('medical-history', 'medicalHistoryFiles')->name('medical-history');
         Route::get('radiology-reports', 'radiologyReports')->name('radiology-reports');
         Route::get('lab-reports', 'labReports')->name('lab-reports');
-        Route::put('profile', 'update')->name('profile.update');
     });
+    Route::patch('/profile', [PatientProfileController::class, 'update'])->name('profile.update')->middleware('auth:sanctum');
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/next-visit', [VisitController::class, 'show'])->name('next-visit');
