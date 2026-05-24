@@ -2896,6 +2896,104 @@ paths:
                 success: false
                 message: "Failed to get answer from chatbot"
                 data: null
+  '/api/v1/subscriptions/plans':
+    get:
+      summary: 'Get Available Subscription Plans'
+      operationId: getApiV1SubscriptionsPlans
+      description: 'Retrieves a collection of all available subscription plans including their pricing, summary usage limits, active feature lists, and duration periods.'
+      tags:
+        - Subscriptions
+      security: []
+      responses:
+        200:
+          description: 'Available plans retrieved successfully.'
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                SuccessPlansList:
+                  summary: 'Available Plans Collection Response'
+                  value:
+                    success: true
+                    message: "Available plans retrieved successfully"
+                    data:
+                      - id: 1
+                        name: "Basic Starter Plan"
+                        price: 150.00
+                        summaries_limit: 20
+                        features:
+                          - "Basic OCR Document Extraction"
+                          - "Standard Patient History Storage"
+                        duration_days: 30
+                      - id: 2
+                        name: "Premium Clinic Plan"
+                        price: 450.00
+                        summaries_limit: 50
+                        features:
+                          - "Advanced OCR Document Extraction"
+                          - "DiagnoBot AI Chatbot Assistant"
+                          - "Clinical Decision Support Warnings"
+                          - "Comparative Analysis Lab Trend Charts"
+                        duration_days: 30
+                EmptyPlansList:
+                  summary: 'No Plans Configured State'
+                  value:
+                    success: true
+                    message: "Available plans retrieved successfully"
+                    data: []
+        500:
+          description: 'Internal Server Error'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "An error occurred while retrieving plans."
+                data: null
+  '/api/v1/subscriptions/pay-per-use':
+    post:
+      summary: 'Switch to Pay-Per-Use Mode'
+      operationId: postApiV1SubscriptionsPayPerUse
+      description: 'Transitions the authenticated doctor’s billing configuration to pay-per-use mode inside a database transaction. This action simultaneously cancels any currently active structural fixed plan subscriptions and dispatches an activation notification alert.'
+      tags:
+        - Subscriptions
+      security:
+        - sanctum: []
+      responses:
+        200:
+          description: 'Successfully switched to pay-per-use billing mode.'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                message: "Switched to Pay-Per-Use mode. 20EGP will be charged per file."
+                data: null
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          description: 'Not Found - Authenticated user account is not associated with a doctor profile record.'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "Doctor profile not found."
+                data: null
+        500:
+          description: 'Internal Server Error - Database atomic operation failure or notification event rollback exception.'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "An error occurred while switching to pay-per-use mode."
+                data: null
 
 
 
