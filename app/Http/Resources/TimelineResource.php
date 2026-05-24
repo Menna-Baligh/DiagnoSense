@@ -8,7 +8,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class TimelineResource extends JsonResource
 {
-    public function toArray($request)
+    public function toArray($request): array
     {
         $isVisit = $this->resource instanceof Visit;
         $createdAt = Carbon::parse($this->created_at);
