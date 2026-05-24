@@ -7,7 +7,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class MobileNotificationResource extends JsonResource
 {
-    public function toArray($request)
+    public function toArray($request): array
     {
         $createdAt = Carbon::parse($this->created_at);
 
