@@ -9,11 +9,15 @@ class UpdateKeyPointRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        $patient = $this->route('patient');
-        $keyPoint = $this->route('keyPoint');
+        $doctor = $this->user()->doctor;
+        $keyPoint = $this->route('key_point');
+        if(!$doctor || ! $keyPoint)
+        {
+            return false;
+        }
 
-        return $patient->aiAnalysisResults()->whereHas('keyPoints', function ($query) use ($keyPoint) {
-            $query->where('id', $keyPoint->id);
+        return $doctor->patients()->whereHas('aiAnalysisResults.keyPoints', function ($query) use ($keyPoint) {
+            $query->whereKey($keyPoint->id);
         })->exists();
     }
 
