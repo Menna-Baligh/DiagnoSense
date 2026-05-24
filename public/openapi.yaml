@@ -3753,6 +3753,391 @@ paths:
               example:
                 success: false
                 message: "This action is unauthorized."
+  '/api/v1/patient/medical-files':
+    get:
+      summary: 'Get Patient Medical Files'
+      operationId: getApiV1PatientMedicalFiles
+      description: 'Retrieves a list of uploaded medical documents, lab tests, or radiology reports belonging to the authenticated patient. Supports filtering by file type and searching by file name.'
+      tags:
+        - Mobile App
+      security:
+        - sanctum: []
+      parameters:
+        - in: query
+          name: type
+          required: false
+          description: 'Filter files by specific clinical document category.'
+          schema:
+            type: string
+            enum: [lab, medical_history, radiology]
+          example: lab
+        - in: query
+          name: search
+          required: false
+          description: 'Search string matching parts of the original file name.'
+          schema:
+            type: string
+          example: "blood_test"
+      responses:
+        200:
+          description: 'Medical files list retrieved successfully.'
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                FilteredFilesList:
+                  summary: 'Filtered Medical Documents Result'
+                  value:
+                    success: true
+                    message: "Medical files retrieved successfully."
+                    data:
+                      - id: 201
+                        name: "blood_test_report.pdf"
+                        referred_by: "Ref: Dr. Menna Baligh"
+                        date: "May 24, 2026"
+                        extension: "PDF"
+                        file_url: "https://diagnosensestorage.blob.core.windows.net/patient-data/ocr/blood_test_report.pdf?sv=2026..."
+                      - id: 204
+                        name: "lipid_panel_results.png"
+                        referred_by: "Ref: Unknown"
+                        date: "May 10, 2026"
+                        extension: "PNG"
+                        file_url: "https://diagnosensestorage.blob.core.windows.net/patient-data/ocr/lipid_panel_results.png?sv=2026..."
+                EmptyFilesList:
+                  summary: 'No Matching Files Found'
+                  value:
+                    success: true
+                    message: "Medical files retrieved successfully."
+                    data: []
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          description: 'Not Found - User account is not linked to a valid patient database profile.'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "Patient profile not found."
+                data: null
+        422:
+          description: 'Validation Error - Invalid type value constraint parameter.'
+        500:
+          description: 'Internal Server Error'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "An error occurred while fetching medical files."
+                data: null
+  '/api/v1/medications':
+    get:
+      summary: 'Get Patient Medications List'
+      operationId: getApiV1MedicationsIndex
+      description: 'Retrieves all active and historical medications prescribed to the authenticated patient profile, sorted with the latest prescriptions first.'
+      tags:
+        - Mobile App
+      security:
+        - sanctum: []
+      responses:
+        200:
+          description: 'Patient prescriptions collection dataset retrieved successfully.'
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                PrescriptionsFound:
+                  summary: 'Active Medications List'
+                  value:
+                    success: true
+                    message: "Patient medications retrieved successfully"
+                    data:
+                      - name: "Concor 5mg"
+                        dosage: "Half tablet"
+                        frequency: "Once every morning"
+                        duration: "3 months"
+                      - name: "Metformin 500mg"
+                        dosage: "1 tablet"
+                        frequency: "Twice daily"
+                        duration: "N/A"
+                NoPrescriptions:
+                  summary: 'Empty Medications Log'
+                  value:
+                    success: true
+                    message: "Patient medications retrieved successfully"
+                    data: []
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          description: 'Not Found - The user account session is not associated with a patient record row.'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "No patient profile found for the user."
+                data: null
+        500:
+          description: 'Internal Server Error'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "An error occurred while retrieving medications."
+                data: null
+  '/api/v1/timeline':
+    get:
+      summary: 'Get Patient Timeline'
+      operationId: getApiV1Timeline
+      description: 'Retrieves a combined, unified chronological timeline of all healthcare interactions for the authenticated mobile patient user. Polymorphically merges clinical doctor visits and recovery tasks into a single feed sorted dynamically by creation date.'
+      tags:
+        - Mobile App
+      security:
+        - sanctum: []
+      responses:
+        200:
+          description: 'Unified timeline events dataset retrieved successfully.'
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                MixedTimelineFeed:
+                  summary: 'Combined Visits and Tasks Timeline'
+                  value:
+                    success: true
+                    message: "Timeline retrieved successfully"
+                    data:
+                      - type: "VISIT"
+                        title: "Visit"
+                        description: "2026-06-15 10:00 AM"
+                        doctor: "Dr. Menna Baligh"
+                        day: "24"
+                        month: "May"
+                        year: "2026"
+                      - type: "TASK"
+                        title: "Check Fasting Blood Sugar"
+                        description: "Daily before breakfast monitoring"
+                        doctor: "Dr. Menna Baligh"
+                        day: "24"
+                        month: "May"
+                        year: "2026"
+                      - type: "TASK"
+                        title: "Low Salt Diet Plan"
+                        description: "Restrict sodium intake below 2g daily"
+                        doctor: "Dr. Menna Baligh"
+                        day: "22"
+                        month: "May"
+                        year: "2026"
+                EmptyTimelineFeed:
+                  summary: 'No Timeline Logs Established'
+                  value:
+                    success: true
+                    message: "Timeline retrieved successfully"
+                    data: []
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          description: 'Not Found - The authenticated mobile user session is not linked to an active patient record.'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "No patient profile found for the user."
+                data: null
+        500:
+          description: 'Internal Server Error'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "Failed to fetch timeline"
+                data: null
+  '/api/v1/fcm-token':
+    patch:
+      summary: 'Update Patient FCM Registration Token'
+      operationId: patchApiV1FcmToken
+      description: 'Updates or registers the Firebase Cloud Messaging device registration token for the authenticated patient user session to enable push notifications.'
+      tags:
+        - Mobile App
+      security:
+        - sanctum: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - fcm_token
+              properties:
+                fcm_token:
+                  type: string
+                  description: 'The unique cloud token string returned by the client device OS push subsystem.'
+                  example: "bk3RNwM-3Q0:CI2g_X56...cl1Vy"
+      responses:
+        200:
+          description: 'Firebase device context registration string cached successfully.'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                message: "FCM Token Updated Successfully"
+                data: null
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        422:
+          description: 'Validation Error - Missing the fcm_token request payload parameter.'
+        500:
+          description: 'Internal Server Error'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "An error occurred while updating the FCM token."
+                data: null
+
+  '/api/v1/mobile-notifications':
+    get:
+      summary: 'Get Patient Notification'
+      operationId: getApiV1MobileNotifications
+      description: 'Retrieves an ordered aggregate feed collection of application notifications generated for the authenticated patient device containing structural category parameters.'
+      tags:
+        - Mobile App
+      security:
+        - sanctum: []
+      responses:
+        200:
+          description: 'Patient notification database record collections marshaled successfully.'
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                NotificationsFeed:
+                  summary: 'Populated App Push In-Box Feed'
+                  value:
+                    success: true
+                    message: "Notifications retrieved successfully"
+                    data:
+                      data:
+                        - id: "930fc4ea-d7ab-4e51-8ff1-9daa68b8df14"
+                          type: "MEDICATION"
+                          title: "New Medication Added"
+                          body: "Dr. Menna Baligh added a new medication: med4"
+                          time_ago: "34 minutes ago"
+                        - id: "cee32dfb-ef91-462c-9d5f-332ac9822bab"
+                          type: "TASK"
+                          title: "New Task Assigned"
+                          body: "title task 11"
+                          time_ago: "34 minutes ago"
+                        - id: "dd1ea8b6-6c7f-44fc-8e01-11ecbe61f449"
+                          type: "VISIT"
+                          title: "Upcoming Appointment Scheduled"
+                          body: "Your next visit is scheduled on: 2026-08-20 06:41 AM"
+                          time_ago: "35 minutes ago"
+                EmptyFeed:
+                  summary: 'Zero Notifications Present State'
+                  value:
+                    success: true
+                    message: "Notifications retrieved successfully"
+                    data:
+                      data: []
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        500:
+          description: 'Internal Server Error'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "Failed to fetch notifications"
+                data: null
+  '/api/v1/profile':
+    patch:
+      summary: 'Update Patient Profile Contact'
+      operationId: patchApiV1Profile
+      description: 'Updates the authenticated patient’s primary contact channel (Email or Phone number). Validates the entry format and checks for global system uniqueness, ignoring the user’s current record.'
+      tags:
+        - Mobile App
+      security:
+        - sanctum: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                contact:
+                  type: string
+                  description: 'A newly updated valid Email address or Egyptian phone number constraint.'
+                  example: "menna.patient@example.com"
+      responses:
+        200:
+          description: 'Patient account profile contact updated successfully.'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                message: "Profile updated successfully"
+                data:
+                  name: "Menna Baligh"
+                  contact: "menna.patient@example.com"
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          description: 'Not Found - User session authenticated but no associated patient record structure exists.'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "Patient Profile Not Found"
+                data: null
+        422:
+          description: 'Validation Error - Contact value fails custom contact rules or is already registered to another user.'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "The given data was invalid."
+                errors:
+                  contact:
+                    - "The contact has already been taken."
+        500:
+          description: 'Internal Server Error'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "An error occurred while updating profile."
+                data: null
 
 
 
