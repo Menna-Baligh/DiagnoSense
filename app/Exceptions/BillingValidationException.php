@@ -6,12 +6,11 @@ use Exception;
 
 class BillingValidationException extends Exception
 {
-    protected $code;
-
-    public function __construct(string $message, int $code = 403)
-    {
-        parent::__construct($message);
-        $this->code = $code;
+    public function __construct(
+        string $message,
+        int $code = 403,
+    ) {
+        parent::__construct($message, $code);
     }
 
     public function getStatusCode(): int
