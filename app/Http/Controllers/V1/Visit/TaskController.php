@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\V1;
+namespace App\Http\Controllers\V1\Visit;
 
 use App\Helpers\ApiResponse;
+use App\Http\Controllers\V1\Controller;
 use App\Http\Requests\CompleteTaskRequest;
 use App\Http\Requests\DeleteTaskRequest;
 use App\Http\Requests\GetTaskDetailsRequest;
