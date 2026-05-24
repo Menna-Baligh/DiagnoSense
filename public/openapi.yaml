@@ -953,6 +953,68 @@ paths:
           description: 'Validation Error'
         500:
           description: 'Internal Server Error'
+    delete:
+      summary: 'Delete Doctor Account'
+      operationId: deleteApiV1DoctorsProfileDestroy
+      description: 'Permanently deletes the authenticated doctor profile, invalidates all active Sanctum authentication tokens, and removes the associated user record. Requires valid password confirmation for security verification.'
+      tags:
+        - Doctor Profile
+      security:
+        - sanctum: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - password
+                - password_confirmation
+              properties:
+                password:
+                  type: string
+                  format: password
+                  example: "SecretPassword123"
+                password_confirmation:
+                  type: string
+                  format: password
+                  example: "SecretPassword123"
+      responses:
+        200:
+          description: 'Account and associated clinical profile rows deleted successfully.'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                message: "Account deleted successfully"
+                data: null
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        422:
+          description: 'Validation Error - Incorrect password hash or missing confirmation fields.'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "The given data was invalid."
+                errors:
+                  password:
+                    - "The password security verification failed."
+                    - "The password confirmation does not match."
+        500:
+          description: 'Internal Server Error'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "Failed to fetch doctor profile"
+                data: null
 
   '/api/v1/doctors/change-password':
     patch:
@@ -2268,7 +2330,7 @@ paths:
                 example:
                   success: true
                   message: "Task deleted successfully"
-  '/api/v1/subscriptions/subscribe':
+  '/api/v1/subscriptions/{plan}/subscribe':
     post:
       summary: 'Subscribe to a Plan'
       operationId: postApiV1SubscriptionsSubscribe
@@ -2277,19 +2339,14 @@ paths:
         - Subscriptions
       security:
         - sanctum: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - plan_id
-              properties:
-                plan_id:
-                  type: integer
-                  description: 'The unique structural database ID of the plan to subscribe to.'
-                  example: 17
+      parameters:
+        - name: plan
+          in: path
+          required: true
+          description: 'The unique structural database ID of the plan to subscribe to.'
+          schema:
+            type: integer
+          example: 17
       responses:
         201:
           description: 'Successfully subscribed to the plan!'
@@ -2304,7 +2361,7 @@ paths:
         401:
           $ref: '#/components/responses/Unauthorized'
         403:
-          description: 'Billing Validation Conflict - Already has an active subscription or insufficient wallet credits balance.'
+          description: 'Billing Validation Conflict - Already has an active subscription, unauthorized non-doctor user, or insufficient wallet credits balance.'
           content:
             application/json:
               schema:
@@ -2314,26 +2371,15 @@ paths:
                   message: "Insufficient credits. Please recharge E£45 to your wallet to subscribe to this plan."
                   data: null
         404:
-          description: 'Not Found - Doctor profile associated with the token does not exist'
+          description: 'Not Found - The selected plan ID or doctor profile associated with the token does not exist'
           content:
             application/json:
               schema:
                 type: object
                 example:
                   success: false
-                  message: "Doctor profile not found."
+                  message: "Doctor profile or plan not found."
                   data: null
-        422:
-          description: 'Validation Error - Plan ID field is missing, not an integer, or does not exist in the plans database table'
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  success: false
-                  message: "The given data was invalid."
-                  errors:
-                    plan_id: ["The selected plan is invalid."]
         500:
           description: 'Internal Server Error - Operational database transaction rollback'
           content:
@@ -2686,6 +2732,171 @@ paths:
                   success: false
                   message: "Failed to retrieve top diseases"
                   data: null
+  '/api/v1/doctors/profile/edit':
+    get:
+      summary: 'Get Authenticated Doctor Profile'
+      operationId: getApiV1DoctorsProfileEdit
+      description: 'Retrieves the secure profile details of the currently authenticated doctor using their Sanctum token session. Returns account configuration parameters like name, contact channel, and clinical specialization.'
+      tags:
+        - Doctor Profile
+      security:
+        - sanctum: []
+      responses:
+        200:
+          description: 'Doctor profile data fetched successfully.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Doctor Information"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 12
+                      name:
+                        type: string
+                        example: "Dr. Menna Baligh"
+                      contact:
+                        type: string
+                        example: "menna.backend@example.com"
+                      speciality:
+                        type: string
+                        example: "Cardiology"
+              examples:
+                StandardDoctorProfile:
+                  summary: 'Complete Profile Payload'
+                  value:
+                    success: true
+                    message: "Doctor Information"
+                    data:
+                      id: 12
+                      name: "Dr. Menna Baligh"
+                      contact: "menna.backend@example.com"
+                      speciality: "Cardiology"
+                UnassignedSpecialtyProfile:
+                  summary: 'Profile Missing Specialty Branch'
+                  value:
+                    success: true
+                    message: "Doctor Information"
+                    data:
+                      id: 15
+                      name: "Dr. Unknown Practitioner"
+                      contact: "+201012345678"
+                      speciality: "N/A"
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        500:
+          description: 'Internal Server Error'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "Failed to fetch doctor profile"
+                data: null
+  '/api/v1/patients/{patient}/chatbot/ask':
+    post:
+      summary: 'Ask Patient Chatbot (DiagnoBot)'
+      operationId: postApiV1PatientsChatbotAsk
+      description: 'Queries the AI chatbot regarding a specific patient clinical record data. If the patient data files have changed or are not yet ingested into the vector storage ecosystem, it triggers a background job processing routine and gracefully flags a 202 status.'
+      tags:
+        - Patient Profile
+      security:
+        - sanctum: []
+      parameters:
+        - in: path
+          name: patient
+          required: true
+          description: 'The secure primary row ID of the patient.'
+          schema:
+            type: integer
+          example: 48
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - question
+              properties:
+                question:
+                  type: string
+                  minLength: 3
+                  description: 'The clinical question or query directed at the patient analytical profile records.'
+                  example: "Does the patient have any critical cardiovascular risk indications?"
+      responses:
+        200:
+          description: 'Success - Chatbot query response retrieved successfully.'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                message: "Answer from chatbot"
+                data: "Based on the latest lab report findings, the patient shows a high risk of hypertensive episodes due to elevated lipid values."
+        202:
+          description: 'Accepted - Patient data is being prepared and ingested asynchronously.'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                message: "Answer from chatbot"
+                data: "Preparing patient data..."
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          description: 'Forbidden - Feature premium gating constraint or patient access ownership mismatch.'
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                PremiumGateError:
+                  summary: 'Subscription Tier Conflict'
+                  value:
+                    success: false
+                    message: "You need to upgrade to Premium to use the chatbot"
+                UnauthorizedPatientAccess:
+                  summary: 'Patient Ownership Mismatch'
+                  value:
+                    success: false
+                    message: "This action is unauthorized."
+        422:
+          description: 'Validation Error - Missing question or text length below structural minimum constraints.'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "The given data was invalid."
+                errors:
+                  question:
+                    - "The question field is required."
+        500:
+          description: 'Internal Server Error - AI Gateway handshake exceptions or downstream pipeline failures.'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "Failed to get answer from chatbot"
+                data: null
+
 
 
 components:
