@@ -4,7 +4,7 @@ namespace App\Http\Controllers\V1\Auth;
 
 use App\Helpers\ApiResponse;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Http\Requests\LogoutRequest;
+use App\Http\Requests\Auth\LogoutRequest;
 use App\Http\Resources\UserResource;
 use App\Services\Auth\AuthenticationService;
 use Illuminate\Http\JsonResponse;
