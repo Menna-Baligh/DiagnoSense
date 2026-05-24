@@ -16,7 +16,7 @@ use App\Http\Controllers\V1\Notification\MobileNotificationController;
 use App\Http\Controllers\V1\Notification\WebNotificationController;
 use App\Http\Controllers\V1\Patient\PatientController;
 use App\Http\Controllers\V1\Patient\PatientProfileController;
-use App\Http\Controllers\V1\PaymobWebhookController;
+use App\Http\Controllers\V1\Paymob\PaymobWebhookController;
 use App\Http\Controllers\V1\PlanController;
 use App\Http\Controllers\V1\SubscriptionController;
 use App\Http\Controllers\V1\SupportController;

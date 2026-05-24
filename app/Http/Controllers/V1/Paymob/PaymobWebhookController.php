@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\V1;
+namespace App\Http\Controllers\V1\Paymob;
 
 use App\Exceptions\Hmac\InvalidHmacException;
 use App\Exceptions\Hmac\MissingHmacException;
+use App\Http\Controllers\V1\Controller;
 use App\Models\Transactions;
 use App\Models\Wallet;
 use Illuminate\Http\JsonResponse;
@@ -111,7 +112,7 @@ class PaymobWebhookController extends Controller
         return $wallet;
     }
 
-    private function verifyHmac(Request $request, string $payload)
+    private function verifyHmac(Request $request, string $payload): void
     {
         if (! $request->has('hmac')) {
             \Log::error('Paymob Webhook: Missing HMAC');
@@ -125,6 +126,5 @@ class PaymobWebhookController extends Controller
             throw new InvalidHmacException;
         }
 
-        return true;
     }
 }
