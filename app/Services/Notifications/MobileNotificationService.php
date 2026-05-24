@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Notifications;
 
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
 class MobileNotificationService
