@@ -2,9 +2,8 @@
 
 use App\Models\Plan;
 use App\Models\Subscription;
-use App\Notifications\PayPerUseActivated;
+use App\Notifications\Subscription\PayPerUseActivated;
 use Illuminate\Support\Facades\Notification;
-
 use function Pest\Laravel\actingAs;
 
 beforeEach(function () {

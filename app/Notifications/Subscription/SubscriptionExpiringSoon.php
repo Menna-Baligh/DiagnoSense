@@ -1,19 +1,16 @@
 <?php
 
-namespace App\Notifications;
+namespace App\Notifications\Subscription;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Notification;
 
-class PlanSubscribed extends Notification implements ShouldBroadcast
+class SubscriptionExpiringSoon extends Notification implements ShouldBroadcast
 {
     use Queueable;
 
-    public function __construct(
-        protected string $planName
-    ) {}
 
     /**
      * Get the notification's delivery channels.
@@ -28,16 +25,16 @@ class PlanSubscribed extends Notification implements ShouldBroadcast
     public function toDatabase(object $notifiable): array
     {
         return [
-            'title' => 'New Subscription',
-            'message' => "Welcome to the {$this->planName} plan! Enjoy your new features.",
+            'title' => 'Subscription Expiring Soon',
+            'message' => 'Your plan will expire in 3 days be careful.',
         ];
     }
 
     public function toBroadcast(object $notifiable): BroadcastMessage
     {
         return new BroadcastMessage([
-            'title' => 'New Subscription',
-            'message' => "Welcome to the {$this->planName} plan! Enjoy your new features.",
+            'title' => 'Subscription Expiring Soon',
+            'message' => 'Your plan will expire in 3 days be careful.',
         ]);
     }
 }

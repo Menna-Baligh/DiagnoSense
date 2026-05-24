@@ -7,9 +7,9 @@ use App\Models\Doctor;
 use App\Models\Plan;
 use App\Models\Subscription;
 use App\Notifications\Credit\CreditsExhausted;
-use App\Notifications\PayPerUseActivated;
-use App\Notifications\PlanSubscribed;
-use App\Notifications\SubscriptionCancelled;
+use App\Notifications\Subscription\PayPerUseActivated;
+use App\Notifications\Subscription\PlanSubscribed;
+use App\Notifications\Subscription\SubscriptionCancelled;
 use Illuminate\Support\Facades\DB;
 
 class SubscriptionService

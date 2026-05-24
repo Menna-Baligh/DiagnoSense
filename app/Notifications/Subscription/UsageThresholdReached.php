@@ -1,23 +1,19 @@
 <?php
 
-namespace App\Notifications;
+namespace App\Notifications\Subscription;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Notification;
 
-class SubscriptionExpired extends Notification implements ShouldBroadcast
+class UsageThresholdReached extends Notification implements ShouldBroadcast
 {
     use Queueable;
 
-    /**
-     * Create a new notification instance.
-     */
-    public function __construct()
-    {
-        //
-    }
+    public function __construct(
+        protected int|float $percentage = 80,
+    ) {}
 
     /**
      * Get the notification's delivery channels.
@@ -32,16 +28,16 @@ class SubscriptionExpired extends Notification implements ShouldBroadcast
     public function toDatabase(object $notifiable): array
     {
         return [
-            'title' => 'Subscription Expired',
-            'message' => 'Your subscription has expired. Access to features is now restricted.',
+            'title' => "Usage Alert: {$this->percentage}% Reached",
+            'message' => "You have consumed {$this->percentage}% of your plan's summaries. Top up soon to avoid interruption.",
         ];
     }
 
     public function toBroadcast(object $notifiable): BroadcastMessage
     {
         return new BroadcastMessage([
-            'title' => 'Subscription Expired',
-            'message' => 'Your subscription has expired. Access to features is now restricted.',
+            'title' => "Usage Alert: {$this->percentage}% Reached",
+            'message' => "You have consumed {$this->percentage}% of your plan's summaries. Top up soon to avoid interruption.",
         ]);
     }
 }

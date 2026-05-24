@@ -6,8 +6,8 @@ use App\Models\AiAnalysisResult;
 use App\Models\Doctor;
 use App\Models\Plan;
 use App\Notifications\Credit\CreditsExhausted;
-use App\Notifications\UsageExhausted;
-use App\Notifications\UsageThresholdReached;
+use App\Notifications\Subscription\UsageExhausted;
+use App\Notifications\Subscription\UsageThresholdReached;
 
 class AiAnalysisBillingService
 {

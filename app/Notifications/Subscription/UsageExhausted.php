@@ -1,22 +1,16 @@
 <?php
 
-namespace App\Notifications;
+namespace App\Notifications\Subscription;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Notification;
 
-class UsageThresholdReached extends Notification implements ShouldBroadcast
+class UsageExhausted extends Notification implements ShouldBroadcast
 {
     use Queueable;
 
-    protected $percentage;
-
-    public function __construct($percentage = 80)
-    {
-        $this->percentage = $percentage;
-    }
 
     /**
      * Get the notification's delivery channels.
@@ -31,16 +25,16 @@ class UsageThresholdReached extends Notification implements ShouldBroadcast
     public function toDatabase(object $notifiable): array
     {
         return [
-            'title' => "Usage Alert: {$this->percentage}% Reached",
-            'message' => "You have consumed {$this->percentage}% of your plan's summaries. Top up soon to avoid interruption.",
+            'title' => 'Usage Limit Reached',
+            'message' => 'You have used all your available summaries. Please top up or upgrade to continue.',
         ];
     }
 
     public function toBroadcast(object $notifiable): BroadcastMessage
     {
         return new BroadcastMessage([
-            'title' => "Usage Alert: {$this->percentage}% Reached",
-            'message' => "You have consumed {$this->percentage}% of your plan's summaries. Top up soon to avoid interruption.",
+            'title' => 'Usage Limit Reached',
+            'message' => 'You have used all your available summaries. Please top up or upgrade to continue.',
         ]);
     }
 }

@@ -1,15 +1,19 @@
 <?php
 
-namespace App\Notifications;
+namespace App\Notifications\Subscription;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Notification;
 
-class PayPerUseActivated extends Notification implements ShouldBroadcast
+class PlanSubscribed extends Notification implements ShouldBroadcast
 {
     use Queueable;
+
+    public function __construct(
+        protected string $planName
+    ) {}
 
     /**
      * Get the notification's delivery channels.
@@ -24,16 +28,16 @@ class PayPerUseActivated extends Notification implements ShouldBroadcast
     public function toDatabase(object $notifiable): array
     {
         return [
-            'title' => 'Pay-per-use system activated',
-            'message' => 'Now you can enjoy the flexibility of our pay-per-use billing system.',
+            'title' => 'New Subscription',
+            'message' => "Welcome to the {$this->planName} plan! Enjoy your new features.",
         ];
     }
 
     public function toBroadcast(object $notifiable): BroadcastMessage
     {
         return new BroadcastMessage([
-            'title' => 'Pay-per-use system activated',
-            'message' => 'Now you can enjoy the flexibility of our pay-per-use billing system.',
+            'title' => 'New Subscription',
+            'message' => "Welcome to the {$this->planName} plan! Enjoy your new features.",
         ]);
     }
 }
