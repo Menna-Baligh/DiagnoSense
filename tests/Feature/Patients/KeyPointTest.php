@@ -28,7 +28,7 @@ it('returns still_processing true when first analysis is running', function () {
     ]);
 
     $response = $this->getJson(
-        route('patients.key-info', $this->patient)
+        route('patients.key-points.index', $this->patient)
     );
 
     $response->assertStatus(200)
@@ -55,7 +55,7 @@ it('returns still_processing false when key points are ready but status is still
     ]);
 
     $response = $this->getJson(
-        route('patients.key-info', $this->patient)
+        route('patients.key-points.index', $this->patient)
     );
 
     $response->assertStatus(200)
@@ -93,7 +93,7 @@ it('shows historical data while new analysis is processing', function () {
     ]);
 
     $response = $this->getJson(
-        route('patients.key-info', $this->patient)
+        route('patients.key-points.index', $this->patient)
     );
 
     $response->assertStatus(200)
@@ -123,7 +123,7 @@ it('can add a new manual note successfully', function () {
     ];
 
     $response = $this->postJson(
-        route('patients.add-note', $this->patient),
+        route('patients.key-points.store', $this->patient),
         $payload
     );
 
@@ -151,7 +151,7 @@ it('can add a new manual note successfully', function () {
 it('fails to add a manual note when insight is missing', function () {
 
     $response = $this->postJson(
-        route('patients.add-note', $this->patient),
+        route('patients.key-points.store', $this->patient),
         [
             'priority' => 'high',
         ]
@@ -176,7 +176,7 @@ it('can delete key point successfully', function () {
     ]);
 
     $response = $this->deleteJson(
-        route('patients.key-points.destroy', [$this->patient, $keyPoint]),
+        route('key-points.destroy',  $keyPoint),
     );
 
     $response->assertStatus(200)
@@ -210,7 +210,7 @@ it('returns 403 when deleting key point for unauthorized doctor', function () {
     ]);
 
     $response = $this->deleteJson(
-        route('patients.key-points.destroy', [$this->patient, $keyPoint])
+        route('key-points.destroy', $keyPoint)
     );
 
     $response->assertStatus(403)
@@ -237,7 +237,7 @@ it('can update key point successfully', function () {
     ];
 
     $response = $this->patchJson(
-        route('patients.key-points.update', [$this->patient, $keyPoint]),
+        route('key-points.update',$keyPoint),
         $payload
     );
 
@@ -273,7 +273,7 @@ it('returns 403 when updating key point for unauthorized doctor', function () {
     ]);
 
     $response = $this->patchJson(
-        route('patients.key-points.update', [$this->patient, $keyPoint]),
+        route('key-points.update', $keyPoint),
         [
             'insight' => 'Updated insight',
         ]
