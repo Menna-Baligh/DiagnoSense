@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\V1;
+namespace App\Http\Controllers\V1\Notification;
 
 use App\Helpers\ApiResponse;
+use App\Http\Controllers\V1\Controller;
 use App\Http\Requests\MarkNotificationAsReadRequest;
 use App\Http\Resources\NotificationResource;
 use App\Services\Notifications\WebNotificationService;
@@ -10,7 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\DatabaseNotification;
 
-class NotificationController extends Controller
+class WebNotificationController extends Controller
 {
     public function __construct(
         protected WebNotificationService $notificationService

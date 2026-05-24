@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\V1;
+namespace App\Http\Controllers\V1\Notification;
 
 use App\Helpers\ApiResponse;
+use App\Http\Controllers\V1\Controller;
 use App\Http\Resources\MobileNotificationResource;
 use App\Services\MobileNotificationService;
 use Illuminate\Http\JsonResponse;
