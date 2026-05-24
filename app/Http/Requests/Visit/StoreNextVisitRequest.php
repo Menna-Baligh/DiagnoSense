@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\NextVisit;
+namespace App\Http\Requests\Visit;
 
 use App\Models\Visit;
 use Illuminate\Contracts\Validation\ValidationRule;

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\V1\Visit;
 
 use App\Helpers\ApiResponse;
 use App\Http\Requests\DeleteMedicationRequest;
-use App\Http\Requests\NextVisit\StoreMedicationRequest;
+use App\Http\Requests\Visit\StoreMedicationRequest;
 use App\Http\Resources\MedicationListResource;
 use App\Http\Resources\MedicationResource;
 use App\Models\Medication;

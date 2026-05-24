@@ -44,7 +44,7 @@ class StorePatientRequest extends FormRequest
         ];
     }
 
-    public function messages()
+    public function messages(): array
     {
         return [
             'contact.required' => 'The contact field is required.',

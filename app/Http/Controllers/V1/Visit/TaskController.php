@@ -7,7 +7,7 @@ use App\Http\Controllers\V1\Controller;
 use App\Http\Requests\CompleteTaskRequest;
 use App\Http\Requests\DeleteTaskRequest;
 use App\Http\Requests\GetTaskDetailsRequest;
-use App\Http\Requests\NextVisit\StoreTaskRequest;
+use App\Http\Requests\Visit\StoreTaskRequest;
 use App\Http\Resources\TaskResource;
 use App\Models\Task;
 use App\Models\Visit;

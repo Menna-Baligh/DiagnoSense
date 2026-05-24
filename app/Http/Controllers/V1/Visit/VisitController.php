@@ -4,8 +4,8 @@ namespace App\Http\Controllers\V1\Visit;
 
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\V1\Controller;
-use App\Http\Requests\NextVisit\GetNextVisitDetailsRequest;
-use App\Http\Requests\NextVisit\StoreNextVisitRequest;
+use App\Http\Requests\Visit\GetNextVisitDetailsRequest;
+use App\Http\Requests\Visit\StoreNextVisitRequest;
 use App\Http\Resources\MedicationResource;
 use App\Http\Resources\NextVisitResource;
 use App\Http\Resources\TaskResource;
