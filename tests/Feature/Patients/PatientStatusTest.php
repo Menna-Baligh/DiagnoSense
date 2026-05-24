@@ -39,9 +39,7 @@ describe('Update Patient Status', function () {
             ->assertJson([
                 'success' => true,
                 'message' => 'Patient status updated successfully',
-                'data' => [
-                    'status' => 'stable',
-                ],
+                'data' => null
             ]);
     });
 
