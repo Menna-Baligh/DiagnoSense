@@ -8,7 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Task extends Model
 {
     use LogsActivity;
-
+    protected array $logOnlyEvents = ['created', 'deleted'];
+    public function toActivityDisplayName(): string
+    {
+        return "Task: '{$this->title}'";
+    }
     protected $fillable = [
         'title',
         'description',
