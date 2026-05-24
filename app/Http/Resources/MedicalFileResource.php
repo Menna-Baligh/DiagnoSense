@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 
 class MedicalFileResource extends JsonResource
 {
-    public function toArray($request)
+    public function toArray($request): array
     {
         $doctor = $this->patient?->doctors->first();
         $doctorName = $doctor?->user?->name ? 'Dr. '.$doctor->user->name : 'Unknown';
