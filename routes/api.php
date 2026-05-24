@@ -30,14 +30,14 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')->group(function () {
     Route::prefix('auth')->group(function () {
         Route::post('register', RegisterController::class)->name('register');
-        Route::controller(SocialAuthController::class)->group(function () {
-            Route::get('/google/redirect', 'redirectToGoogle')->name('google.redirect');
-            Route::get('/google/callback', 'handleGoogleCallback')->name('google.callback');
+        Route::controller(SocialAuthController::class)->prefix('google')->as('google.')->group(function () {
+            Route::get('/redirect', 'redirectToGoogle')->name('redirect');
+            Route::get('/callback', 'handleGoogleCallback')->name('callback');
         });
 
         Route::middleware('check-user-type')->group(function () {
             Route::controller(AuthenticatedController::class)->group(function () {
-                Route::post('/login/{type}','login')->middleware('throttle:login')->name('login');
+                Route::post('/login/{type}','login')->name('login')->middleware('throttle:login');
                 Route::post('/logout/{type}', 'logout')->name('logout')->middleware('auth:sanctum');
             });
             Route::controller(ResetPasswordController::class)->as('password.')->group(function () {
@@ -70,7 +70,7 @@ Route::prefix('v1')->group(function () {
                 Route::get('/{patient}/decision-support', 'getDecisionSupport')->name('decision-support');
                 Route::get('/{patient}/comparative-analysis', 'getComparativeAnalysis')->name('comparative-analysis');
             });
-            Route::post('/{patient}/chatbot/ask', ChatbotController::class)->middleware( 'check-ai-access')->name('chatbot.ask');
+            Route::post('/{patient}/chatbot/ask', ChatbotController::class)->name('chatbot.ask')->middleware( 'check-ai-access');
         });
         Route::apiResource('patients.key-points', KeyPointController::class)
             ->only(['index', 'store', 'update', 'destroy'])
@@ -84,9 +84,9 @@ Route::prefix('v1')->group(function () {
         Route::controller(SubscriptionController::class)->prefix('subscriptions')->as('subscriptions.')->group(function () {
             Route::post('/{plan}/subscribe', 'subscribe')->name('subscribe');
             Route::post('pay-per-use', 'switchToPayPerUse')->name('pay-per-use');
-            Route::get('plans', PlanController::class)->name('plans.index');
             Route::get('current', 'current')->name('current');
             Route::post('cancel', 'cancel')->name('cancel');
+            Route::get('plans', PlanController::class)->name('plans.index');
         });
 
         Route::controller(DashboardController::class)->prefix('dashboard')->as('dashboard.')->group(function () {
@@ -124,7 +124,6 @@ Route::prefix('v1')->group(function () {
 
         Route::get('patient/medical-files', MedicalFileController::class)->name('patient.medical-files.index');
         Route::patch('/profile',[PatientProfileController::class])->name('profile.update');
-
         Route::get('/medications', [MedicationController::class, 'index'])->name('medications.index');
         Route::get('/timeline', TimelineController::class)->name('timeline.index');
         Route::patch('/fcm-token', [PatientController::class, 'updateFcmToken'])->name('patients.fcm-token');
