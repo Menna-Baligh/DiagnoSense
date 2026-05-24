@@ -3107,6 +3107,409 @@ paths:
                 success: false
                 message: "An error occurred while attending visit."
                 data: null
+  '/api/v1/patients/{patientId}/edit':
+    get:
+      summary: 'Get Patient Data for Update'
+      operationId: getApiV1PatientsEdit
+      description: 'Retrieves complete clinical and personal data of a specific patient to populate update forms on the frontend. Ensures the authenticated doctor owns the record and generates temporary secure URLs for existing medical files.'
+      tags:
+        - Patient Profile
+      security:
+        - sanctum: []
+      parameters:
+        - in: path
+          name: patientId
+          required: true
+          description: 'The unique primary database row ID of the patient.'
+          schema:
+            type: integer
+          example: 48
+      responses:
+        200:
+          description: 'Patient dataset for update form retrieved successfully.'
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                SuccessPatientEditData:
+                  summary: 'Complete Form Population Payload'
+                  value:
+                    success: true
+                    message: "Data retrieved successfully"
+                    data:
+                      id: 48
+                      personal_info:
+                        name: "Ahmed Mohamed"
+                        contact: "ahmed.patient@example.com"
+                        age: 45
+                        gender: "male"
+                        national_id: "28405121234567"
+                      medical_history:
+                        id: 92
+                        is_smoker: false
+                        chronic_diseases: ["hypertension", "diabetes"]
+                        previous_surgeries_name: "Appendectomy in 2018"
+                        current_medications: "Metformin 500mg once daily"
+                        allergies: "Penicillin allergy"
+                        family_history: "Father had Type 2 Diabetes"
+                        current_complaints: "Persistent chest discomfort"
+                      existing_files:
+                        - id: 201
+                          type: "lab"
+                          name: "blood_test_report.pdf"
+                          url: "https://diagnosensestorage.blob.core.windows.net/patient-data/ocr/blood_test_report.pdf?sv=2026..."
+                        - id: 202
+                          type: "radiology"
+                          name: "chest_xray.jpg"
+                          url: "https://diagnosensestorage.blob.core.windows.net/patient-data/ocr/chest_xray.jpg?sv=2026..."
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          description: 'Forbidden - User is not a valid doctor profile or does not own this patient record list.'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "This action is unauthorized."
+        500:
+          description: 'Internal Server Error'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "An error occurred while retrieving patient data for edit."
+                data: null
+  '/api/v1/patients/{patient}/status':
+    patch:
+      summary: 'Update Patient Health Status'
+      operationId: patchApiV1PatientsStatus
+      description: 'Updates the clinical triage status of an existing patient assigned to the authenticated doctor. Validates that the input value matches system parameters (critical, stable, under review).'
+      tags:
+        - Patient Profile
+      security:
+        - sanctum: []
+      parameters:
+        - in: path
+          name: patient
+          required: true
+          description: 'The unique row database ID of the target patient.'
+          schema:
+            type: integer
+          example: 48
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - status
+              properties:
+                status:
+                  type: string
+                  enum: [critical, stable, under review]
+                  description: 'The newly designated clinical severity tier classification of the patient.'
+                  example: "critical"
+      responses:
+        200:
+          description: 'Patient severity status updated successfully.'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                message: "Patient status updated successfully"
+                data: null
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          description: 'Forbidden - Authenticated profile is not a valid doctor or lacks structural ownership access to this patient record.'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "This action is unauthorized."
+        422:
+          description: 'Validation Error - Missing status field or value parameter does not conform to the predefined structural enumeration.'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "The given data was invalid."
+                errors:
+                  status:
+                    - "The selected status is invalid."
+        500:
+          description: 'Internal Server Error'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "Failed to update patient status."
+                data: null
+  '/api/v1/patients/{patient}/key-info/{keyPoint}':
+    patch:
+      summary: 'Update Patient Key Point Insight'
+      operationId: patchApiV1PatientsKeyInfoUpdate
+      description: 'Updates the clinical insight content text of a specific patient key point row. Validates that the requested key point relates structurally to the specified patient record list.'
+      tags:
+        - Patient Profile
+      security:
+        - sanctum: []
+      parameters:
+        - in: path
+          name: patient
+          required: true
+          description: 'The unique row database ID of the target patient.'
+          schema:
+            type: integer
+          example: 48
+        - in: path
+          name: keyPoint
+          required: true
+          description: 'The structural database key point record ID identifier.'
+          schema:
+            type: integer
+          example: 102
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - insight
+              properties:
+                insight:
+                  type: string
+                  description: 'The updated medical note or dynamic medical text explanation string.'
+                  example: "Patient exhibits secondary historic blood pressure stabilization indicators."
+      responses:
+        200:
+          description: 'Key point insight updated successfully.'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                message: "Key point updated successfully"
+                data: null
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          description: 'Forbidden - Unauthorized access or structural relationship mismatch between patient and key point.'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "This action is unauthorized."
+        422:
+          description: 'Validation Error - Missing insight parameter string.'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "The given data was invalid."
+                errors:
+                  insight:
+                    - "The insight field is required."
+        500:
+          description: 'Internal Server Error'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "Error while updating key point"
+                data: null
+
+    delete:
+      summary: 'Delete Patient Key Point'
+      operationId: deleteApiV1PatientsKeyInfoDestroy
+      description: 'Permanently removes a specific clinical key point record entry from the selected patient medical history profile scope.'
+      tags:
+        - Patient Profile
+      security:
+        - sanctum: []
+      parameters:
+        - in: path
+          name: patient
+          required: true
+          description: 'The unique row database ID of the target patient.'
+          schema:
+            type: integer
+          example: 48
+        - in: path
+          name: keyPoint
+          required: true
+          description: 'The structural database key point record ID identifier.'
+          schema:
+            type: integer
+          example: 102
+      responses:
+        200:
+          description: 'Key point row dropped from patient dataset logs successfully.'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: true
+                message: "Key point deleted successfully"
+                data: null
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          description: 'Forbidden - Lacks valid relationship links tracking between targeted key point and parent patient identifier.'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "This action is unauthorized."
+        500:
+          description: 'Internal Server Error'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "Error while deleting key point"
+                data: null
+  '/api/v1/patients/{patientId}/activities':
+    get:
+      summary: 'Get Patient Activity Audit Logs'
+      operationId: getApiV1PatientsActivities
+      description: 'Retrieves a paginated list of tracking audit logs and historical operational actions recorded for a specific patient. Enforces strict doctor ownership authorization mapping and formats timestamps into relative time metrics.'
+      tags:
+        - Patient Profile
+      security:
+        - sanctum: []
+      parameters:
+        - in: path
+          name: patientId
+          required: true
+          description: 'The unique row database record ID of the patient.'
+          schema:
+            type: integer
+          example: 48
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: 'The page number constraint parameter used to navigate through pagination records.'
+          example: 1
+      responses:
+        200:
+          description: 'Patient activity timeline logs collection retrieved successfully with pagination wrappers.'
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                SuccessActivityLogsList:
+                  summary: 'Standard Paginated Timeline Logs Response'
+                  value:
+                    success: true
+                    message: "Activity history retrieved successfully"
+                    data:
+                      data:
+                        - id: 501
+                          type: "created_visit"
+                          message: "Dr. Menna Baligh initialized a new clinic visit session."
+                          time_ago: "2 hours ago"
+                        - id: 502
+                          type: "added_medication"
+                          message: "Added Metformin 500mg prescription entry to active patient log."
+                          time_ago: "3 days ago"
+                        - id: 503
+                          type: "triggered_ai_analysis"
+                          message: "AI diagnostic pipeline extracted clinical insights from radiology scans."
+                          time_ago: "1 week ago"
+                      links:
+                        first: "http://localhost:8000/api/v1/patients/48/activities?page=1"
+                        last: "http://localhost:8000/api/v1/patients/48/activities?page=3"
+                        prev: null
+                        next: "http://localhost:8000/api/v1/patients/48/activities?page=2"
+                      meta:
+                        current_page: 1
+                        from: 1
+                        last_page: 3
+                        path: "http://localhost:8000/api/v1/patients/48/activities"
+                        per_page: 15
+                        to: 15
+                        total: 42
+                EmptyTimelineState:
+                  summary: 'No Activity History Logged'
+                  value:
+                    success: true
+                    message: "Activity history retrieved successfully"
+                    data:
+                      data: []
+                      links:
+                        first: "http://localhost:8000/api/v1/patients/48/activities?page=1"
+                        last: "http://localhost:8000/api/v1/patients/48/activities?page=1"
+                        prev: null
+                        next: null
+                      meta:
+                        current_page: 1
+                        from: null
+                        last_page: 1
+                        path: "http://localhost:8000/api/v1/patients/48/activities"
+                        per_page: 15
+                        to: null
+                        total: 0
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          description: 'Forbidden - The authenticated doctor profile is not cross-referenced or authorized to view this patient logs dataset.'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "You are not allowed to view this patient's activities."
+        404:
+          description: 'Not Found - The user account profile structure does not match a valid clinical doctor entity entry.'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "Doctor not found"
+                data: null
+        500:
+          description: 'Internal Server Error'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                success: false
+                message: "An error occurred while retrieving patient activities."
+                data: null
 
 
 
