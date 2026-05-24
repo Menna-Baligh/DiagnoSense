@@ -39,7 +39,7 @@ dataset('invalid_credentials', [
 ]);
 
 dataset('invalid_data', [
-    'empty contact' => [['contact' => null], ['contact' => ['The contact field is required.']]],
+    'empty contact' => [['contact' => null], ['contact' => ['Contact is required.']]],
     'empty password' => [['password' => null], ['password' => ['The password field is required.']]],
 ]);
 
