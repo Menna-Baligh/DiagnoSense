@@ -41,6 +41,6 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Route::model('patient', Patient::class);
-        Route::model('keyPoint', KeyPoint::class);
+        Route::model('$key_point', KeyPoint::class);
     }
 }
