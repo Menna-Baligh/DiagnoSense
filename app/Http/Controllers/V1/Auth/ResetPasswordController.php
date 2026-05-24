@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\V1\Auth;
 
 use App\Actions\Doctor\ChangeDoctorPasswordAction;
-use App\Exceptions\InvalidOtpException;
-use App\Exceptions\InvalidUserTypeException;
+use App\Exceptions\Auth\InvalidOtpException;
+use App\Exceptions\Auth\InvalidUserTypeException;
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\V1\Controller;
 use App\Http\Requests\Auth\ForgetPasswordRequest;

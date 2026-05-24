@@ -1,7 +1,7 @@
 <?php
 
-use App\Exceptions\InvalidOtpException;
-use App\Exceptions\InvalidUserTypeException;
+use App\Exceptions\Auth\InvalidOtpException;
+use App\Exceptions\Auth\InvalidUserTypeException;
 use App\Helpers\ApiResponse;
 use App\Http\Middleware\CheckAiAccess;
 use App\Http\Middleware\CheckUserType;

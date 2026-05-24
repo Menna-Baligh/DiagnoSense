@@ -3,8 +3,8 @@
 namespace App\Services\Auth;
 
 use App\Events\User\UserRegistered;
-use App\Exceptions\InvalidOtpException;
-use App\Exceptions\InvalidUserTypeException;
+use App\Exceptions\Auth\InvalidOtpException;
+use App\Exceptions\Auth\InvalidUserTypeException;
 use App\Helpers\Auth;
 use App\Mail\EmailVerificationMail;
 use App\Mail\ResetPasswordMail;
