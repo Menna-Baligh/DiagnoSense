@@ -19,7 +19,7 @@ class TaskController extends Controller
         protected TaskService $taskService
     ) {}
 
-    public function index()
+    public function index(): JsonResponse
     {
         try {
             $patient = auth()->user()->patient;
@@ -66,7 +66,7 @@ class TaskController extends Controller
         }
     }
 
-    public function show(GetTaskDetailsRequest $request, Task $task)
+    public function show(GetTaskDetailsRequest $request, Task $task): JsonResponse
     {
         try {
             $task->load('visit');
@@ -82,7 +82,7 @@ class TaskController extends Controller
         }
     }
 
-    public function complete(CompleteTaskRequest $request, Task $task)
+    public function complete(CompleteTaskRequest $request, Task $task): JsonResponse
     {
         $task->update([
             'is_completed' => ! $task->is_completed,
