@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
-use App\Rules\ValidContactRule;
+use App\Rules\UserData\ValidContactRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ForgetPasswordRequest extends FormRequest

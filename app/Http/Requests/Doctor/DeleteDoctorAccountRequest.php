@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Doctor;
 
-use App\Rules\CheckOldPasswordRule;
+use App\Rules\UserData\CheckOldPasswordRule;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 

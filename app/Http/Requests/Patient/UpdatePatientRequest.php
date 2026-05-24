@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Patient;
 
-use App\Rules\ValidContactRule;
+use App\Rules\UserData\ValidContactRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
