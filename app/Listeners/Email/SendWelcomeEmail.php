@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Listeners;
+namespace App\Listeners\Email;
 
 use App\Events\User\UserRegistered;
 use App\Mail\WelcomeMail;
