@@ -123,7 +123,7 @@ Route::prefix('v1')->group(function () {
         });
 
         Route::get('patient/medical-files', MedicalFileController::class)->name('patient.medical-files.index');
-        Route::patch('/profile',[PatientProfileController::class])->name('profile.update');
+        Route::patch('/profile',PatientProfileController::class)->name('profile.update');
         Route::get('/medications', [MedicationController::class, 'index'])->name('medications.index');
         Route::get('/timeline', TimelineController::class)->name('timeline.index');
         Route::patch('/fcm-token', [PatientController::class, 'updateFcmToken'])->name('patients.fcm-token');
