@@ -140,6 +140,8 @@ describe('Patient Activities', function () {
 
     it('returns empty array when patient has no activities', function () {
 
+        ActivityLog::truncate();
+
         $response = $this->getJson(
             route('patients.activities', [
                 'patient' => $this->patient->id,
@@ -151,6 +153,6 @@ describe('Patient Activities', function () {
                 'message',
                 'Activity history retrieved successfully'
             )
-            ->assertJsonCount(0, 'data');
+            ->assertJsonCount(0, 'data.data');
     });
 });

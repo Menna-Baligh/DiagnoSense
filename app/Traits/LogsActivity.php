@@ -3,11 +3,6 @@
 namespace App\Traits;
 
 use App\Models\ActivityLog;
-use App\Models\KeyPoint;
-use App\Models\Medication;
-use App\Models\Patient;
-use App\Models\Task;
-use App\Models\Visit;
 use Illuminate\Support\Carbon;
 
 trait LogsActivity
@@ -35,6 +30,10 @@ trait LogsActivity
 
     protected function shouldLogEvent(string $event): bool
     {
+        if (!request()->user() || !request()->user()->doctor) {
+            return false;
+        }
+
         if (property_exists($this, 'logOnlyEvents') && !in_array($event, $this->logOnlyEvents)) {
             return false;
         }
@@ -44,7 +43,7 @@ trait LogsActivity
         }
 
         return true;
-    }
+}
     public function logActivity(string $event): void
     {
         $doctor = request()->user()?->doctor;
