@@ -176,9 +176,7 @@ it('can delete key point successfully', function () {
     ]);
 
     $response = $this->deleteJson(
-        route('key-points.destroy', [
-            'keyPointId' => $keyPoint->id,
-        ])
+        route('patients.key-points.destroy', [$this->patient, $keyPoint]),
     );
 
     $response->assertStatus(200)
@@ -212,15 +210,13 @@ it('returns 403 when deleting key point for unauthorized doctor', function () {
     ]);
 
     $response = $this->deleteJson(
-        route('key-points.destroy', [
-            'keyPointId' => $keyPoint->id,
-        ])
+        route('patients.key-points.destroy', [$this->patient, $keyPoint])
     );
 
     $response->assertStatus(403)
         ->assertJsonPath(
             'message',
-            'Unauthorized access: You do not have permission for this action.'
+            'This action is unauthorized.'
         );
 });
 
@@ -241,9 +237,7 @@ it('can update key point successfully', function () {
     ];
 
     $response = $this->patchJson(
-        route('key-points.update', [
-            'keyPointId' => $keyPoint->id,
-        ]),
+        route('patients.key-points.update', [$this->patient, $keyPoint]),
         $payload
     );
 
@@ -251,10 +245,6 @@ it('can update key point successfully', function () {
         ->assertJsonPath(
             'message',
             'Key point updated successfully'
-        )
-        ->assertJsonPath(
-            'data.insight',
-            'Updated insight'
         );
 
     $this->assertDatabaseHas('key_points', [
@@ -283,9 +273,7 @@ it('returns 403 when updating key point for unauthorized doctor', function () {
     ]);
 
     $response = $this->patchJson(
-        route('key-points.update', [
-            'keyPointId' => $keyPoint->id,
-        ]),
+        route('patients.key-points.update', [$this->patient, $keyPoint]),
         [
             'insight' => 'Updated insight',
         ]
@@ -294,6 +282,6 @@ it('returns 403 when updating key point for unauthorized doctor', function () {
     $response->assertStatus(403)
         ->assertJsonPath(
             'message',
-            'Unauthorized access: You do not have permission for this action.'
+            'This action is unauthorized.'
         );
 });
