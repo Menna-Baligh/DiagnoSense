@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions;
+namespace App\Actions\Support;
 
 use App\Helpers\FileSystem;
 use App\Models\SupportTicket;

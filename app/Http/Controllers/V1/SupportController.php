@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\V1;
 
-use App\Actions\SupportTicketAction;
+use App\Actions\Support\SupportTicketAction;
 use App\Helpers\ApiResponse;
 use App\Http\Requests\StoreSupportRequest;
 use Illuminate\Http\JsonResponse;
