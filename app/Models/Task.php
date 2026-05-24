@@ -9,15 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Task extends Model
 {
-    use HasFactory;
-    // use LogsActivity;
-
-    protected array $logOnlyEvents = ['created', 'deleted'];
-
-    public function toActivityDisplayName(): string
-    {
-        return "Task: '{$this->title}'";
-    }
+    use HasFactory, LogsActivity;
 
     protected $fillable = [
         'title',
@@ -26,6 +18,12 @@ class Task extends Model
         'visit_id',
         'is_completed',
     ];
+    protected array $logOnlyEvents = ['created', 'deleted'];
+
+    public function toActivityDisplayName(): string
+    {
+        return "Task: '{$this->title}'";
+    }
 
     public function patient(): BelongsTo
     {
