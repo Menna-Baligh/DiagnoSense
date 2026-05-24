@@ -36,7 +36,10 @@ Route::prefix('v1')->group(function () {
         });
 
         Route::middleware('check-user-type')->group(function () {
-            Route::post('/login/{type}', [AuthenticatedController::class, 'login'])->middleware('throttle:login')->name('login');
+            Route::controller(AuthenticatedController::class)->group(function () {
+                Route::post('/login/{type}','login')->middleware('throttle:login')->name('login');
+                Route::post('/logout/{type}', 'logout')->name('logout')->middleware('auth:sanctum');
+            });
             Route::controller(ResetPasswordController::class)->as('password.')->group(function () {
                 Route::post('/forget-password/{type}', 'forgotPassword')->name('forgot');
                 Route::post('/verify-otp/{type}', 'verifyOtp')->name('verify');
@@ -45,32 +48,32 @@ Route::prefix('v1')->group(function () {
         });
 
         Route::middleware('auth:sanctum')->group(function () {
-            Route::post('/logout/{type}', [AuthenticatedController::class, 'logout'])->name('logout');
-            Route::post('/verify-contact', [ContactVerificationController::class, 'verifyContact'])->name('verify-contact');
-            Route::get('/resend-otp', [ContactVerificationController::class, 'resendOtp'])->name('resend-otp');
+            Route::controller(ContactVerificationController::class)->group(function () {
+                Route::post('/verify-contact','verifyContact')->name('verify-contact');
+                Route::get('/resend-otp', 'resendOtp')->name('resend-otp');
+            });
         });
     });
 
-    Route::middleware('auth:sanctum')->prefix('patients')->as('patients.')->group(function () {
-        Route::controller(PatientController::class)->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::controller(PatientController::class)->prefix('patients')->as('patients.')->group(function () {
             Route::get('', 'index')->name('index');
             Route::post('', 'store')->name('store')->middleware('check-ai-access');
             Route::get('{patient}/edit', 'edit')->name('edit');
+            Route::patch('/{patient}', 'update')->name('update');
+            Route::patch('{patient}/status', 'updateStatus')->name('update-status');
+            Route::post('/{patient}/re-analyze', 'triggerAiAnalysis')->name('re-analyze')->middleware('check-ai-access');
+            Route::get('/{patient}/activities', 'activityHistory')->name('activities');
+            Route::get('/{patient}/overview', 'overview')->name('overview');
+            Route::delete('/{patient}', 'destroy')->name('destroy');
             Route::middleware('can:view,patient')->group(function () {
                 Route::get('/{patient}/decision-support', 'getDecisionSupport')->name('decision-support');
                 Route::get('/{patient}/comparative-analysis', 'getComparativeAnalysis')->name('comparative-analysis');
             });
-            Route::patch('/{patient}', 'update')->name('update');
-            Route::patch('{patient}/status', 'updateStatus')->name('update-status');
-            Route::post('/{patient}/re-analyze', 'triggerAiAnalysis')->name('re-analyze')->middleware('check-ai-access');
-
         });
-        Route::controller(KeyPointController::class)->group(function () {
-            Route::get('/{patient}/key-info', 'index')->name('key-info')->middleware('can:view,patient');
-            Route::post('/{patient}/key-info', 'store')->name('add-note');
-            Route::patch('{patient}/key-info/{keyPoint}', 'update')->name('key-points.update');
-            Route::delete('{patient}/key-info/{keyPoint}', 'destroy')->name('key-points.destroy');
-        });
+        Route::apiResource('patients.key-points', KeyPointController::class)
+            ->only(['index', 'store', 'update', 'destroy'])
+            ->shallow()->middlewareFor('index', 'can:view,patient');
     });
 
     Route::controller(WalletController::class)->middleware('auth:sanctum')->prefix('wallets')->as('wallets.')->group(function () {
@@ -105,10 +108,9 @@ Route::prefix('v1')->group(function () {
         Route::get('/timeline', TimelineController::class)->name('timeline.index');
         Route::patch('/fcm-token', [PatientController::class, 'updateFcmToken'])->name('patients.fcm-token');
         Route::get('/mobile-notifications', MobileNotificationController::class)->name('mobile.notifications');
-        Route::get('/patients/{patient}/activities', [PatientController::class, 'activityHistory'])->name('patients.activities');
 
-        Route::get('/patients/{patient}/overview', [PatientController::class, 'overview'])->name('patients.overview');
-        Route::delete('/patients/{patient}', [PatientController::class, 'destroy'])->name('patients.destroy');
+
+
         Route::get('/dashboard/summary', [DashboardController::class, 'summary'])->name('dashboard.summary');
         Route::get('/dashboard/today-visits', [DashboardController::class, 'todayVisits'])->name('dashboard.todayVisits');
         Route::patch('/visits/{visit}/attend', [VisitController::class, 'attend'])->name('visits.attend');
