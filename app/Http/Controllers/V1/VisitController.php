@@ -68,9 +68,11 @@ class VisitController extends Controller
             );
         } catch (\Exception $e) {
             \Log::error('Show nest visit Error: '.$e->getMessage());
+
             return ApiResponse::error(message: 'An error occurred while fetching next visit.', status: 500);
         }
     }
+
     public function attend(Visit $visit)
     {
         try {
