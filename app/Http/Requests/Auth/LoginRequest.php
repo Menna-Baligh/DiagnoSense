@@ -24,7 +24,7 @@ class LoginRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'contact.required.required' => 'Contact is required.',
+            'contact.required' => 'Contact is required.',
         ];
     }
 }
