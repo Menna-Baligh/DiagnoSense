@@ -18,7 +18,9 @@ class MedicalFileController extends Controller
     {
         try {
             $user = $request->user();
-            if (!$user || !$user->patient) return ApiResponse::error(message: 'Patient profile not found.', status: 404);
+            if (! $user || ! $user->patient) {
+                return ApiResponse::error(message: 'Patient profile not found.', status: 404);
+            }
 
             $files = $this->medicalFileService->getPatientFiles(
                 patient: $user->patient,
@@ -32,7 +34,8 @@ class MedicalFileController extends Controller
             );
 
         } catch (\Exception $e) {
-            \Log::error("Error retrieving medical files: " . $e->getMessage());
+            \Log::error('Error retrieving medical files: '.$e->getMessage());
+
             return ApiResponse::error(message: 'An error occurred while fetching medical files.', status: 500);
         }
     }

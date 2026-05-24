@@ -4,7 +4,9 @@ use App\Models\Patient;
 use App\Models\Report;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
-use function Pest\Laravel\{actingAs, getJson};
+
+use function Pest\Laravel\actingAs;
+use function Pest\Laravel\getJson;
 
 beforeEach(function () {
     Storage::fake('azure');
@@ -22,16 +24,16 @@ describe('Unified Medical Files API Endpoint', function () {
     it('returns medical files successfully by type', function (string $type) {
         Report::create([
             'patient_id' => $this->patient->id,
-            'type'       => $type,
-            'file_name'  => "test_file_1.pdf",
-            'file_path'  => "reports/test_file_1.pdf",
+            'type' => $type,
+            'file_name' => 'test_file_1.pdf',
+            'file_path' => 'reports/test_file_1.pdf',
         ]);
 
         Report::create([
             'patient_id' => $this->patient->id,
-            'type'       => $type,
-            'file_name'  => "test_file_2.png",
-            'file_path'  => "reports/test_file_2.png",
+            'type' => $type,
+            'file_name' => 'test_file_2.png',
+            'file_path' => 'reports/test_file_2.png',
         ]);
 
         $response = getJson(route('patient.medical-files.index', ['type' => $type]));
@@ -50,21 +52,21 @@ describe('Unified Medical Files API Endpoint', function () {
     it('filters medical files accurately using search query', function () {
         Report::create([
             'patient_id' => $this->patient->id,
-            'type'       => 'lab',
-            'file_name'  => 'blood_cbc_report.pdf',
-            'file_path'  => 'reports/cbc.pdf',
+            'type' => 'lab',
+            'file_name' => 'blood_cbc_report.pdf',
+            'file_path' => 'reports/cbc.pdf',
         ]);
 
         Report::create([
             'patient_id' => $this->patient->id,
-            'type'       => 'lab',
-            'file_name'  => 'urine_test.pdf',
-            'file_path'  => 'reports/urine.pdf',
+            'type' => 'lab',
+            'file_name' => 'urine_test.pdf',
+            'file_path' => 'reports/urine.pdf',
         ]);
 
         $response = getJson(route('patient.medical-files.index', [
-            'type'   => 'lab',
-            'search' => 'cbc'
+            'type' => 'lab',
+            'search' => 'cbc',
         ]));
 
         $response->assertStatus(200)

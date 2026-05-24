@@ -7,7 +7,6 @@ use Illuminate\Validation\Rule;
 
 class PatientMedicalFilesRequest extends FormRequest
 {
-
     public function all($keys = null): array
     {
         return array_merge(parent::all(), $this->query());
@@ -18,7 +17,7 @@ class PatientMedicalFilesRequest extends FormRequest
         return [
             'type' => [
                 'nullable',
-                Rule::in(['lab', 'medical_history', 'radiology'])
+                Rule::in(['lab', 'medical_history', 'radiology']),
             ],
             'search' => ['nullable', 'string'],
         ];
