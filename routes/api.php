@@ -12,10 +12,10 @@ use App\Http\Controllers\V1\FlutterNotificationController;
 use App\Http\Controllers\V1\KeyPointController;
 use App\Http\Controllers\V1\MedicalFileController;
 use App\Http\Controllers\V1\MedicationController;
-use App\Http\Controllers\V1\MobileNotificationController;
-use App\Http\Controllers\V1\NotificationController;
-use App\Http\Controllers\V1\PatientController;
-use App\Http\Controllers\V1\PatientProfileController;
+use App\Http\Controllers\V1\Notification\MobileNotificationController;
+use App\Http\Controllers\V1\Notification\WebNotificationController;
+use App\Http\Controllers\V1\Patient\PatientController;
+use App\Http\Controllers\V1\Patient\PatientProfileController;
 use App\Http\Controllers\V1\PaymobWebhookController;
 use App\Http\Controllers\V1\PlanController;
 use App\Http\Controllers\V1\SubscriptionController;
@@ -93,7 +93,7 @@ Route::prefix('v1')->group(function () {
     Route::middleware('auth:sanctum')->prefix('patient')->as('patient.')->group(function () {
         Route::get('medical-files', MedicalFileController::class)->name('medical-files.index');
     });
-    Route::patch('/profile', [PatientProfileController::class, 'update'])->name('profile.update')->middleware('auth:sanctum');
+    Route::patch('/profile',[PatientProfileController::class])->name('profile.update')->middleware('auth:sanctum');
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/next-visit', [VisitController::class, 'show'])->name('next-visit');
@@ -111,7 +111,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/dashboard/summary', [DashboardController::class, 'summary'])->name('dashboard.summary');
         Route::get('/dashboard/today-visits', [DashboardController::class, 'todayVisits'])->name('dashboard.todayVisits');
         Route::patch('/visits/{visit}/attend', [VisitController::class, 'attend'])->name('visits.attend');
-        Route::controller(NotificationController::class)->prefix('notifications')->as('notifications.')->group(function () {
+        Route::controller(WebNotificationController::class)->prefix('notifications')->as('notifications.')->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('/unread-count', 'unreadCount')->name('unreadCount');
             Route::patch('/{notification}/read', 'read')->name('read');
