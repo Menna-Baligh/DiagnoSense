@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Events\UserRegistered;
+use App\Events\User\UserRegistered;
 use App\Mail\WelcomeMail;
 use App\Notifications\WelcomeSMSNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;

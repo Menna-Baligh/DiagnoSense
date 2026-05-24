@@ -1,13 +1,12 @@
 <?php
 
-use App\Events\UserRegistered;
+use App\Events\User\UserRegistered;
 use App\Models\User;
 use App\Models\UserSocialAccount;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Contracts\User as SocialiteUser;
 use Laravel\Socialite\Facades\Socialite;
-
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\get;
 use function Pest\Laravel\getJson;

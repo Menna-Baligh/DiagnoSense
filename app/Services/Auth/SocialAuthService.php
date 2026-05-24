@@ -2,7 +2,7 @@
 
 namespace App\Services\Auth;
 
-use App\Events\UserRegistered;
+use App\Events\User\UserRegistered;
 use App\Helpers\Auth;
 use App\Models\User;
 use App\Models\UserSocialAccount;

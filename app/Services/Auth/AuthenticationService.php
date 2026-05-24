@@ -2,7 +2,7 @@
 
 namespace App\Services\Auth;
 
-use App\Events\UserRegistered;
+use App\Events\User\UserRegistered;
 use App\Exceptions\InvalidOtpException;
 use App\Exceptions\InvalidUserTypeException;
 use App\Helpers\Auth;

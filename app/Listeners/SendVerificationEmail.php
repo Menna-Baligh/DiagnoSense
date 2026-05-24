@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Events\UserRegistered;
+use App\Events\User\UserRegistered;
 use App\Mail\EmailVerificationMail;
 use App\Notifications\EmailVerificationSMSNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;

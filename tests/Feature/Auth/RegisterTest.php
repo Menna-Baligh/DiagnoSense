@@ -1,6 +1,6 @@
 <?php
 
-use App\Events\UserRegistered;
+use App\Events\User\UserRegistered;
 use App\Models\User;
 use Illuminate\Support\Facades\Event;
 

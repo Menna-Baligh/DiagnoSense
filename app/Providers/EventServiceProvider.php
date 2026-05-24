@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Events\UserRegistered;
+use App\Events\User\UserRegistered;
 use App\Listeners\SendVerificationEmail;
 use App\Listeners\SendWelcomeEmail;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
