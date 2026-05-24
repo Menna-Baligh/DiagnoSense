@@ -36,7 +36,7 @@ it('returns all available plans successfully', function () {
         ],
     ]);
 
-    $response = $this->getJson(route('subscription.plans.index'));
+    $response = $this->getJson(route('subscriptions.plans.index'));
 
     $response->assertStatus(200)
         ->assertJsonPath('message', 'Available plans retrieved successfully')
@@ -44,7 +44,7 @@ it('returns all available plans successfully', function () {
 });
 
 it('returns empty array when no plans exist', function () {
-    $response = $this->getJson(route('subscription.plans.index'));
+    $response = $this->getJson(route('subscriptions.plans.index'));
 
     $response->assertStatus(200)
         ->assertJsonPath('message', 'Available plans retrieved successfully')
@@ -54,7 +54,7 @@ it('returns empty array when no plans exist', function () {
 it('returns 401 for guest user', function () {
     auth()->logout();
 
-    $response = $this->getJson(route('subscription.plans.index'));
+    $response = $this->getJson(route('subscriptions.plans.index'));
 
     $response->assertStatus(401);
 });
