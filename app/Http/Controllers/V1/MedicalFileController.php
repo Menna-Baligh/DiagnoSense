@@ -85,31 +85,7 @@ class MedicalFileController extends Controller
         }
     }
 
-    public function update(UpdateProfileRequest $request): JsonResponse
-    {
-
-        try {
-
-            $data = $this->medicalFileService->updateProfile(
-                user: auth()->user(),
-                data: $request->validated()
-            );
-
-            return ApiResponse::success(
-                message: 'Profile updated successfully',
-                data: $data,
-                status: 200
-            );
-
-        } catch (\Exception $e) {
-            \Log::error('Error updating profile: '.$e->getMessage(), ['user_id' => auth()->id()]);
-
-            return ApiResponse::error(
-                message: 'An error occurred while updating profile.',
-                status: $e->getCode() ?: 500
-            );
-        }
-    }
+    
 
     /**
      * Medications
