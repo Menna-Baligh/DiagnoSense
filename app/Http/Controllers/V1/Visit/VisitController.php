@@ -6,7 +6,7 @@ use App\Helpers\ApiResponse;
 use App\Http\Controllers\V1\Controller;
 use App\Http\Requests\Visit\GetNextVisitDetailsRequest;
 use App\Http\Requests\Visit\StoreNextVisitRequest;
-use App\Http\Resources\MedicationResource;
+use App\Http\Resources\Medication\MedicationResource;
 use App\Http\Resources\TaskResource;
 use App\Http\Resources\Visit\NextVisitResource;
 use App\Models\Patient;
