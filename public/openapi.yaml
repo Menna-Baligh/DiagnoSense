@@ -1065,10 +1065,10 @@ paths:
         422:
           description: 'Validation Error - Current password incorrect or confirmation mismatch'
 
-  '/api/v1/patients/{patientId}/key-info':
+  '/api/v1/patients/{patientId}/key-points':
     get:
-      summary: 'Get Patient Key Info'
-      operationId: getApiV1PatientsKeyInfo
+      summary: 'Get Patient Key Points'
+      operationId: getApiV1PatientsKeyPoints
       description: 'Retrieves categorized key medical insights and OCR file temporary URLs for a specific patient. Key points are automatically grouped by priority (high, medium, low) and display whether they were AI-generated or added manually as a Doctor Note.'
       tags:
         - Patient Profile
@@ -3259,7 +3259,7 @@ paths:
                 success: false
                 message: "Failed to update patient status."
                 data: null
-  '/api/v1/patients/{patient}/key-info/{keyPoint}':
+  '/api/v1/key-points/{keyPoint}':
     patch:
       summary: 'Update Patient Key Point Insight'
       operationId: patchApiV1PatientsKeyInfoUpdate
