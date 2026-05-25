@@ -23,11 +23,7 @@ class ResetPasswordController extends Controller
     {
         try {
             $data = $request->validated();
-            $status = $this->authenticationService->forgotPassword($data, $type);
-
-            if (! $status) {
-                return ApiResponse::error(message: 'User not found with these credentials.', status: 404);
-            }
+            $this->authenticationService->forgotPassword($data);
 
             return ApiResponse::success(message: 'OTP has been sent to your registered contact.');
         } catch (\Exception $e) {
@@ -41,20 +37,20 @@ class ResetPasswordController extends Controller
     {
         try {
             $data = $request->validated();
-            $result = $this->authenticationService->verifyOtp($data, $type);
+            $result = $this->authenticationService->verifyOtp($data);
+            if(!$result)
+            {
+                return ApiResponse::error(
+                    message: 'Invalid Or Expired OTP.',
+                    status: 401
+                );
+            }
 
             return ApiResponse::success(
                 message: 'OTP verified. You can now reset your password.',
                 data: ['reset_token' => $result]
             );
-        } catch (InvalidUserTypeException|InvalidOtpException $e) {
-
-            return ApiResponse::error(
-                message: $e->getMessage(),
-                status: $e->getCode()
-            );
-
-        } catch (\Throwable $e) {
+        } catch (\Exception $e) {
             \Log::error('Unexpected OTP Error: '.$e->getMessage(), ['exception' => $e]);
 
             return ApiResponse::error(

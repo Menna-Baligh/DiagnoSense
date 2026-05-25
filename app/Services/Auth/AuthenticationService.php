@@ -126,33 +126,22 @@ class AuthenticationService
         return true;
     }
 
-    public function forgotPassword(array $data, string $type): bool
+    public function forgotPassword(array $data): void
     {
         $user = $this->getUser($data['contact']);
-
-        if (! $user) {
-            return false;
-        }
 
         $otpCode = Auth::generateOtp($user->contact, $this->otp);
 
         $this->sendOtp($user, $otpCode, isPasswordReset: true);
-
-        return true;
     }
 
-    public function verifyOtp(array $data, string $type): string|false
+    public function verifyOtp(array $data): string|false
     {
         $user = $this->getUser($data['contact']);
 
-        if (! $user || $user->type !== $type) {
-            throw new InvalidUserTypeException;
-        }
-
         $result = $this->otp->validate($user->contact, $data['otp']);
-
-        if (! $result->status) {
-            throw new InvalidOtpException;
+        if (!$result->status) {
+            return false;
         }
 
         $token = $user->createToken('password_reset_'.$user->id, ['reset-password'],
