@@ -6,15 +6,10 @@ use App\Models\User;
 use App\Rules\UserData\ValidContactRule;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class VerifyOtpRequest extends FormRequest
 {
-    public function authorize(): bool
-    {
-        $type = $this->route('type');
-        $user = User::where('contact', $this->input('contact'))->first();
-        return $user && $user->type === $type;
-    }
     /**
      * Get the validation rules that apply to the request.
      *
@@ -22,9 +17,25 @@ class VerifyOtpRequest extends FormRequest
      */
     public function rules(): array
     {
+        $type = $this->route('type');
         return [
-            'contact' => ['required', new ValidContactRule],
+            'contact' => [
+                'required',
+                'string',
+                new ValidContactRule,
+                Rule::exists('users', 'contact')->where(function ($query) use ($type) {
+                    $query->where('type', $type);
+                })
+            ],
             'otp' => ['required', 'string', 'size:6'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'contact.required' => 'Contact is required.',
+            'contact.exists'   => 'This contact is invalid.',
         ];
     }
 }
