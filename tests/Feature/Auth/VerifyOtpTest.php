@@ -23,7 +23,7 @@ dataset('user_types', ['doctor', 'patient']);
 dataset('invalid_otp_data', [
     'empty contact' => [
         ['contact' => null],
-        ['contact' => ['The contact field is required.']],
+        ['contact' => ['Contact is required.']],
     ],
     'empty otp' => [
         ['otp' => null],
@@ -83,7 +83,7 @@ describe('Verify OTP (Password Reset)', function () {
             $response->assertStatus(401)
                 ->assertJson([
                     'success' => false,
-                    'message' => 'Invalid or expired OTP.',
+                    'message' => 'Invalid Or Expired OTP.',
                 ]);
         }
     })->with('user_types');
@@ -99,7 +99,7 @@ describe('Verify OTP (Password Reset)', function () {
             $response->assertStatus(401)
                 ->assertJson([
                     'success' => false,
-                    'message' => 'Invalid or expired OTP.',
+                    'message' => 'Invalid Or Expired OTP.',
                 ]);
         }
     })->with('user_types');
