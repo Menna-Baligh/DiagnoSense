@@ -12,7 +12,7 @@ class ForgetPasswordRequest extends FormRequest
     {
         $type = $this->route('type');
         $user = User::where('contact', $this->input('contact'))->first();
-        return $user && $user->type === $type;
+        return $user->type === $type;
     }
 
     public function rules(): array
