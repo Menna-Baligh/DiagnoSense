@@ -164,7 +164,7 @@ class AiAnalysisJob implements ShouldQueue
                 'current_medications' => $this->jobData['history']['current_medications'] ?? '',
                 'allergies' => $this->jobData['history']['allergies'] ?? '',
                 'family_history' => $this->jobData['history']['family_history'] ?? '',
-                'current_complaint' => $this->jobData['history']['current_complaint'] ?? '',
+                'current_complaint' => $this->jobData['history']['current_complaints'] ?? '',
             ],
             'decision_support' => (bool) ($this->jobData['features']['decision_support'] ?? false),
         ];

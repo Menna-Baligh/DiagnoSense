@@ -71,6 +71,7 @@ class SubscriptionController extends Controller
         if (! $doctor->billing_mode) {
             return ApiResponse::error(
                 message: 'No active subscription or billing mode found.',
+                data: $doctor->wallet ? ['credits' => $doctor->wallet->balance] : null,
                 status: 404
             );
         }
