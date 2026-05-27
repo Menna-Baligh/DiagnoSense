@@ -4,7 +4,7 @@ namespace App\Http\Controllers\V1\Visit;
 
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\V1\Controller;
-use App\Http\Requests\AttendVisitRequest;
+use App\Http\Requests\Visit\AttendVisitRequest;
 use App\Http\Requests\Visit\GetNextVisitDetailsRequest;
 use App\Http\Requests\Visit\StoreNextVisitRequest;
 use App\Http\Resources\Medication\MedicationResource;
