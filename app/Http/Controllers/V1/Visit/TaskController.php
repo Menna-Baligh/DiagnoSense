@@ -8,12 +8,11 @@ use App\Http\Requests\Task\CompleteTaskRequest;
 use App\Http\Requests\Task\DeleteTaskRequest;
 use App\Http\Requests\Task\GetTaskDetailsRequest;
 use App\Http\Requests\Visit\StoreTaskRequest;
-use App\Http\Resources\TaskResource;
+use App\Http\Resource\Patient\TaskResource;
 use App\Models\Task;
 use App\Models\Visit;
 use App\Services\TaskService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Validation\ValidationException;
 
 class TaskController extends Controller
 {
