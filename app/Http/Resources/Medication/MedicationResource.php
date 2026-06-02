@@ -22,6 +22,7 @@ class MedicationResource extends JsonResource
             'frequency' => $this->frequency,
             'duration' => $this->duration ?? null,
             'action' => $this->action,
+            'doctor_name' => $this->visit->doctor->user->name,
             'created_at' => $this->created_at->format('Y-m-d'),
             'updated_at' => $this->updated_at->format('Y-m-d'),
         ];
