@@ -44,9 +44,9 @@ class IngestPatientJob implements ShouldQueue
 
         try {
             $answer = $aiGatewayService->answer($this->patient, $this->question);
-            event(new ChatbotAnswerReady($this->doctorId, $answer));
+            event(new ChatbotAnswerReady($this->doctorId, $this->patient->id, $answer));
         } catch (\Exception $e) {
-            event(new ChatbotAnswerFailed($this->doctorId, 'Failed to get answer from chatbot'));
+            event(new ChatbotAnswerFailed($this->doctorId, $this->patient->id, 'Failed to get answer from chatbot'));
         }
     }
 }

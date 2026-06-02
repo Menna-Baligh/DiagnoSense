@@ -18,6 +18,7 @@ class ChatbotAnswerFailed implements ShouldBroadcast
      */
     public function __construct(
         public int $doctorId,
+        public int $patientId,
         public string $error,
     ) {}
 
@@ -29,7 +30,7 @@ class ChatbotAnswerFailed implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('chatbot-answer.'.$this->doctorId),
+            new PrivateChannel('chatbot-answer.'.$this->doctorId . '.' . $this->patientId),
         ];
     }
 
