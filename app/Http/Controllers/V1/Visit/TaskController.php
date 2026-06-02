@@ -8,7 +8,8 @@ use App\Http\Requests\Task\CompleteTaskRequest;
 use App\Http\Requests\Task\DeleteTaskRequest;
 use App\Http\Requests\Task\GetTaskDetailsRequest;
 use App\Http\Requests\Visit\StoreTaskRequest;
-use App\Http\Resource\Patient\TaskResource;
+use App\Http\Resources\Patient\TaskResource as PatientTaskResource;
+use App\Http\Resources\TaskResource as DoctorTaskResource;
 use App\Models\Task;
 use App\Models\Visit;
 use App\Services\TaskService;
@@ -28,7 +29,7 @@ class TaskController extends Controller
 
             return ApiResponse::success(
                 message: 'Tasks retrieved successfully',
-                data: TaskResource::collection($tasks),
+                data: PatientTaskResource::collection($tasks),
             );
         } catch (\Exception $e) {
             \Log::error('Error fetching tasks: '.$e->getMessage(), ['exception' => $e]);
@@ -46,7 +47,7 @@ class TaskController extends Controller
                 return ApiResponse::error(message: 'Next visit date is required for tasks.', status: 422);
             }
 
-            return ApiResponse::success(message: 'Task created successfully', data: new TaskResource($task));
+            return ApiResponse::success(message: 'Task created successfully', data: new DoctorTaskResource($task));
         } catch (\Exception $e) {
             \Log::error('Error creating task: '.$e->getMessage(), ['exception' => $e]);
 
@@ -74,7 +75,7 @@ class TaskController extends Controller
 
             return ApiResponse::success(
                 message: 'Task details retrieved successfully',
-                data: new TaskResource($task),
+                data: new DoctorTaskResource($task),
             );
         } catch (\Exception $e) {
             \Log::error('Error fetching task details: '.$e->getMessage(), ['exception' => $e]);
@@ -94,7 +95,7 @@ class TaskController extends Controller
             message: $task->is_completed
                ? 'Task marked as completed'
                : 'Task marked as uncompleted',
-            data: new TaskResource($task),
+            data: new DoctorTaskResource($task),
         );
     }
 }
