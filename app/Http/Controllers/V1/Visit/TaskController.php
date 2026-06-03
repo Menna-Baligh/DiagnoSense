@@ -75,7 +75,7 @@ class TaskController extends Controller
 
             return ApiResponse::success(
                 message: 'Task details retrieved successfully',
-                data: new DoctorTaskResource($task),
+                data: new PatientTaskResource($task),
             );
         } catch (\Exception $e) {
             \Log::error('Error fetching task details: '.$e->getMessage(), ['exception' => $e]);
@@ -95,7 +95,7 @@ class TaskController extends Controller
             message: $task->is_completed
                ? 'Task marked as completed'
                : 'Task marked as uncompleted',
-            data: new DoctorTaskResource($task),
+            data: new PatientTaskResource($task),
         );
     }
 }
