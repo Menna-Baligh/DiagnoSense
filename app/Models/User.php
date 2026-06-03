@@ -77,7 +77,7 @@ class User extends Authenticatable
     {
         return $this->contact;
     }
-    public function routeNotificationForFcm(): string
+    public function routeNotificationForFcm(): ?string
     {
         return $this->fcm_token;
     }
