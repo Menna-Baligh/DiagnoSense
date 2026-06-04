@@ -63,3 +63,14 @@ it('allows doctor to mark visit as attended successfully', function () {
         'message',
     ]);
 });
+
+it('allows doctor to update visit successfully', function () {
+    $response = $this->patch(route('visits.update', ['visit' => $this->visit->id]), [
+        'next_visit_date' => now()->addDays(7)->toDateTimeString(),
+    ]);
+    $response->assertStatus(200);
+    $this->assertDatabaseHas('visits', [
+        'id' => $this->visit->id,
+        'next_visit_date' => now()->addDays(7)->toDateTimeString(),
+    ]);
+});
