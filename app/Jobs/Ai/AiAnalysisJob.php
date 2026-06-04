@@ -181,6 +181,28 @@ class AiAnalysisJob implements ShouldQueue
                 'response' => ['error' => 'AI analysis failed after all retries', 'details' => $exception->getMessage()],
                 'status' => 'failed',
             ]);
+            $filePathsToDelete = [];
+            foreach (['lab', 'radiology', 'medical_history'] as $type) {
+                if (! empty($this->jobData['file_paths'][$type])) {
+                    $filePathsToDelete = array_merge($filePathsToDelete, $this->jobData['file_paths'][$type]);
+                }
+            }
+
+            if (! empty($filePathsToDelete)) {
+                foreach ($filePathsToDelete as $path) {
+                    FileSystem::deleteFile($path);
+                }
+
+                \DB::table('reports')
+                    ->where('patient_id', $this->jobData['patient_id'])
+                    ->whereIn('file_path', $filePathsToDelete)
+                    ->delete();
+
+                \Log::info('AI Clean-up executed via FileSystem: Deleted failed job files.', [
+                    'patient_id' => $this->jobData['patient_id'],
+                    'deleted_paths' => $filePathsToDelete
+                ]);
+            }
         }
     }
 }

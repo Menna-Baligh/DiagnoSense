@@ -149,4 +149,12 @@ class Patient extends Model
             self::STATUS_UNDER_REVIEW,
         ];
     }
+    public function latestAiAnalysisValue(string $column): ?string
+    {
+        return $this->aiAnalysisResults()
+        ->whereNotNull($column)
+        ->where($column, '!=', '')
+        ->latest('id')
+        ->value($column);
+    }
 }
