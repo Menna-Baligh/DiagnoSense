@@ -32,6 +32,7 @@ more informed clinical decisions.
   <a href="#-project-resources">Resources</a> •
   <a href="#-overview">Overview</a> •
   <a href="#-key-features">Features</a> •
+  <a href="#-how-it-works">How It Works</a>
 </p>
 
 </div>
@@ -190,3 +191,13 @@ status.
 </table>
 
 <br>
+## 🔄 How It Works
+
+DiagnoSense follows an end-to-end workflow that connects the doctor's
+platform, AI processing services, cloud storage, and the patient's mobile
+application.
+
+<p align="center">
+  <img src="assets/how-it-works.png" alt="DiagnoSense How It Works" width="100%">
+</p>
+
