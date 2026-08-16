@@ -1,3 +1,4 @@
+
 <div align="center">
 
 <img src="assets/cover.png" alt="DiagnoSense" width="100%">
@@ -27,3 +28,12 @@ more informed clinical decisions.
   <img src="https://img.shields.io/badge/Socialite-FF2D20?style=for-the-badge">
 </p>
 </div>
+
+## 🎥 Demo
+
+https://github.com/user-attachments/assets/dbdaff63-3fd9-4e31-91bf-9832c7d12a8a
+
+## 🔗 Project Resources
+
+- 📊 **Presentation:** [View Presentation](https://docs.google.com/presentation/d/1UKtqHuVS2AF8zNZ3gLH8zPPlaabc5fcc/edit?usp=drive_link)
+- 📚 **API Documentation:** [View API Documentation](https://registry.scalar.com/@default-team-mexre/apis/diagnosense-api-documentation@latest)
