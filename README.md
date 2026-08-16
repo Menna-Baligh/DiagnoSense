@@ -191,6 +191,7 @@ status.
 </table>
 
 <br>
+
 ## 🔄 How It Works
 
 DiagnoSense follows an end-to-end workflow that connects the doctor's
