@@ -37,3 +37,21 @@ https://github.com/user-attachments/assets/dbdaff63-3fd9-4e31-91bf-9832c7d12a8a
 
 - 📊 **Presentation:** [View Presentation](https://docs.google.com/presentation/d/1UKtqHuVS2AF8zNZ3gLH8zPPlaabc5fcc/edit?usp=drive_link)
 - 📚 **API Documentation:** [View API Documentation](https://registry.scalar.com/@default-team-mexre/apis/diagnosense-api-documentation@latest)
+
+## 📌 Overview
+
+**DiagnoSense** is an AI-powered Clinical Decision Support System designed to help doctors efficiently analyze complex and unstructured patient data.
+
+### The Challenge
+
+Doctors often need to review large volumes of medical information, including patient history, laboratory results, radiology reports, and other medical documents. Manually reviewing and connecting this information can be time-consuming and may make it difficult to identify important clinical details.
+
+This information overload can affect clinical workflow and make it harder for physicians to quickly access the insights they need during patient care.
+
+### The Solution
+
+DiagnoSense addresses this challenge by combining **AI-powered medical data analysis, document processing, and structured patient data management** into one integrated platform.
+
+The system processes patient information and medical files to help extract relevant clinical insights, organize complex medical data, and provide doctors with a clearer view of the patient's medical history.
+
+DiagnoSense is designed to **reduce information overload, save physicians' time, and support faster, more informed clinical decision-making** while keeping the physician at the center of the decision-making process.
