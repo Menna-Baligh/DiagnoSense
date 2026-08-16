@@ -32,7 +32,8 @@ more informed clinical decisions.
   <a href="#-project-resources">Resources</a> •
   <a href="#-overview">Overview</a> •
   <a href="#-key-features">Features</a> •
-  <a href="#-how-it-works">How It Works</a>
+  <a href="#-how-it-works">How It Works</a> •
+  <a href="#-installation--setup">Installation & Setup</a> 
 </p>
 
 </div>
@@ -201,4 +202,204 @@ application.
 <p align="center">
   <img src="assets/how-it-works.png" alt="DiagnoSense How It Works" width="100%">
 </p>
+
+<br>
+
+## 🚀 Installation & Setup
+
+Follow the steps below to set up DiagnoSense locally.
+
+### 📋 Requirements
+
+Before running the project, make sure you have:
+
+- **PHP 8.2+**
+- **Composer**
+- **MySQL**
+- **Node.js & npm**
+- **Git**
+
+DiagnoSense also integrates with **Azure Blob Storage, Firebase, Paymob, Brevo, and Vonage**. Their credentials should be configured in `.env` when required.
+
+---
+
+### 1️⃣ Clone the Repository
+
+```bash
+git clone https://github.com/Menna-Baligh/DiagnoSense.git
+cd DiagnoSense
+```
+
+### 2️⃣ Install PHP Dependencies
+
+```bash
+composer install
+```
+
+### 3️⃣ Configure Environment Variables
+
+Create the environment file:
+
+```bash
+cp .env.example .env
+```
+
+Generate the application key:
+
+```bash
+php artisan key:generate
+```
+
+Configure your database and external services in `.env`.
+
+Example:
+
+```env
+APP_NAME=DiagnoSense
+APP_ENV=local
+APP_KEY=
+APP_DEBUG=true
+APP_URL=http://localhost
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=diagnosense
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+> ⚠️ Never commit `.env`, API keys, credentials, Firebase credentials, or cloud-storage secrets.
+
+### 4️⃣ Set Up the Database
+
+Create a MySQL database, then run:
+
+```bash
+php artisan migrate
+```
+
+To seed initial data:
+
+```bash
+php artisan db:seed
+```
+
+Or:
+
+```bash
+php artisan migrate --seed
+```
+
+### 5️⃣ Install Frontend Dependencies
+
+```bash
+npm install
+```
+
+Build assets:
+
+```bash
+npm run build
+```
+
+For local development:
+
+```bash
+npm run dev
+```
+
+### 6️⃣ Configure Azure Blob Storage
+
+DiagnoSense uses **Azure Blob Storage** for medical files such as laboratory reports, radiology reports, and uploaded documents.
+
+Configure the Azure storage credentials in `.env` according to the project's filesystem configuration.
+
+The database stores file metadata and paths, while the actual files are stored in Azure Blob Storage.
+
+### 7️⃣ Configure Firebase Notifications
+
+The patient mobile application uses **Firebase Cloud Messaging (FCM)** for push notifications.
+
+Configure the Firebase credentials required by the Laravel Firebase integration.
+
+The backend stores each patient's **FCM token** and uses it to send notifications to the corresponding device.
+
+### 8️⃣ Configure Paymob
+
+DiagnoSense integrates **Paymob** for wallet recharging and payment processing.
+
+Add the required Paymob credentials and configuration values to `.env`.
+
+### 9️⃣ Configure Email & SMS Services
+
+The project uses:
+
+- **Brevo** for email delivery
+- **Vonage** for SMS / OTP communication
+
+Configure the required credentials in `.env`.
+
+### 🔟 Run the Queue Worker
+
+Long-running operations, including AI-related processing, are handled asynchronously using Laravel Jobs and Queues.
+
+```bash
+php artisan queue:work
+```
+
+Keep the queue worker running while using the application.
+
+### 1️⃣1️⃣ Run Laravel Reverb
+
+DiagnoSense uses **Laravel Reverb** for real-time communication and notifications.
+
+```bash
+php artisan reverb:start
+```
+
+### 1️⃣2️⃣ Start the Laravel Server
+
+In another terminal:
+
+```bash
+php artisan serve
+```
+
+The application will be available at:
+
+```text
+http://127.0.0.1:8000
+```
+
+### ⚡ Quick Development Setup
+
+The project includes a Composer development script that starts the Laravel server, queue worker, and Vite development server together:
+
+```bash
+composer run dev
+```
+
+### ✅ Setup Checklist
+
+- [ ] PHP & Composer installed
+- [ ] MySQL database created
+- [ ] `.env` configured
+- [ ] Application key generated
+- [ ] Database migrations completed
+- [ ] Composer dependencies installed
+- [ ] npm dependencies installed
+- [ ] Azure Blob Storage configured
+- [ ] Firebase configured
+- [ ] Paymob configured
+- [ ] Brevo / Vonage configured
+- [ ] Queue worker running
+- [ ] Laravel Reverb running
+- [ ] Laravel application running
+
+<br>
+
+> Built with Passion by the DiagnoSense Team 💙
+>
+> *Because no critical piece of information should ever be overlooked.*
 
